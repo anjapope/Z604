@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catalog Card</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="topnav" aria-label="Primary navigation">
+      <a class="brand" href="index.html">Library Services Portal</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="catalog.html" aria-current="page">Card Catalog</a>
+        <a href="account.html">My Account</a>
+        <a href="events.html">Events</a>
+        <a href="programs.html">Programs</a>
+        <a href="research-help.html">Research Help</a>
+        <a href="about.html">About</a>
+        <a href="instructions.html">Instructions</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="catalog-card">
+      <p class="eyebrow">Catalog Card</p>
+      <h1>Record details</h1>
+      <p class="catalog-subtitle">Single-entry card view for manual browsing and class demonstration.</p>
+
+      <article id="catalogDetailPage" class="catalog-entry catalog-detail-page" aria-live="polite"></article>
+      <p><a class="catalog-open-link" href="catalog.html">Back to catalog index</a></p>
+    </section>
+  </main>
+
+  <script src="catalog-data.js"></script>
+  <script src="catalog-detail.js"></script>
+</body>
+</html>

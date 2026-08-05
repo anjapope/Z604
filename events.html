@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Library Events Calendar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="topnav" aria-label="Primary navigation">
+      <a class="brand" href="index.html">Library Services Portal</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="catalog.html">Card Catalog</a>
+        <a href="account.html">My Account</a>
+        <a href="events.html" aria-current="page">Events</a>
+        <a href="programs.html">Programs</a>
+        <a href="research-help.html">Research Help</a>
+        <a href="about.html">About</a>
+        <a href="instructions.html">Instructions</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="events-card">
+      <p class="eyebrow">Community Calendar</p>
+      <h1>Library Events and Programs</h1>
+      <p class="events-subtitle">Recurring events, seasonal highlights, and public meetings for families, teens, and adults.</p>
+
+      <div class="hours-panel">
+        <h2>Library hours</h2>
+        <ul>
+          <li><strong>Monday-Friday:</strong> 8:00 AM-8:00 PM</li>
+          <li><strong>Saturday:</strong> 8:00 AM-5:00 PM</li>
+          <li><strong>Sunday:</strong> 12:00 PM-4:00 PM</li>
+        </ul>
+      </div>
+
+      <div class="events-grid">
+        <article class="event-panel">
+          <h2>Weekly recurring events</h2>
+          <ul>
+            <li><strong>Storytime:</strong> Tuesdays and Fridays, 10:00-11:00 AM</li>
+            <li><strong>Tech Team Training Seminars:</strong> Mondays, 11:00 AM (open to the public)</li>
+            <li><strong>Adult Book Club:</strong> Wednesdays, 6:30 PM</li>
+            <li><strong>Fiction Convention Showcase:</strong> Fridays, 6:30 PM</li>
+            <li><strong>Teen Game and Craft Days/Tournaments:</strong> Saturdays, 12:00-4:00 PM</li>
+          </ul>
+        </article>
+
+        <article class="event-panel">
+          <h2>Monthly recurring events</h2>
+          <ul>
+            <li><strong>Lego Lab:</strong> 4th Thursday, 5:30-7:30 PM (families, kids, enthusiasts)</li>
+            <li><strong>Board Meeting:</strong> 4th Thursday, 8:00 PM (open to the public)</li>
+          </ul>
+        </article>
+
+        <article class="event-panel">
+          <h2>Alternating-month workshops</h2>
+          <ul>
+            <li><strong>Digital Citizenship Workshop:</strong> Tuesdays at 7:30 PM in every other month (all ages)</li>
+          </ul>
+        </article>
+
+        <article class="event-panel">
+          <h2>Seasonal and special programs</h2>
+          <ul>
+            <li><strong>Summer Reading Program:</strong> June 1-July 31 with prizes; families sign up in the BeanStack app.</li>
+            <li><strong>Frontiers and Folktales:</strong> Runs through Fall in partnership with Youth Services, Special Collections, and Mercer Park; features oral renditions of regional folktales.</li>
+            <li><strong>Youth Services Monster Prom:</strong> Weekend before Halloween, 8:00-10:30 PM.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="events-card">
+      <div class="calendar-header">
+        <p class="eyebrow">Date View</p>
+        <h2>Events Calendar</h2>
+        <p class="events-subtitle">Use arrows to browse months. Events are listed directly in each day on the calendar.</p>
+      </div>
+
+      <div class="calendar-nav" aria-label="Calendar month navigation">
+        <button id="prevMonth" type="button" aria-label="Previous month">◀</button>
+        <h3 id="monthTitle" class="month-title"></h3>
+        <button id="nextMonth" type="button" aria-label="Next month">▶</button>
+      </div>
+
+      <div id="monthSummary" class="month-summary" aria-live="polite"></div>
+
+      <div class="weekday-row" aria-hidden="true">
+        <span>Sun</span>
+        <span>Mon</span>
+        <span>Tue</span>
+        <span>Wed</span>
+        <span>Thu</span>
+        <span>Fri</span>
+        <span>Sat</span>
+      </div>
+
+      <div id="monthGrid" class="month-grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="events.js"></script>
+</body>
+</html>

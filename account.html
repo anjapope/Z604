@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patron Account Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="topnav" aria-label="Primary navigation">
+      <a class="brand" href="index.html">Library Services Portal</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="catalog.html">Card Catalog</a>
+        <a href="account.html" aria-current="page">My Account</a>
+        <a href="events.html">Events</a>
+        <a href="programs.html">Programs</a>
+        <a href="research-help.html">Research Help</a>
+        <a href="about.html">About</a>
+        <a href="instructions.html">Instructions</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="account-card">
+      <p class="eyebrow">Patron Portal</p>
+      <h1>Sign in to your library account</h1>
+      <p class="account-subtitle">Classroom demo login. Enter any credentials to continue.</p>
+
+      <form class="account-form" action="account-summary.html" method="get">
+        <label for="cardNumber">Library card number</label>
+        <input id="cardNumber" name="cardNumber" type="text" autocomplete="off" placeholder="Enter card number">
+
+        <label for="pin">PIN or password</label>
+        <input id="pin" name="pin" type="password" autocomplete="off" placeholder="Enter PIN or password">
+
+        <button type="submit">Access Account</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Library Card Catalog</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="topnav" aria-label="Primary navigation">
+      <a class="brand" href="index.html">Library Services Portal</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="catalog.html" aria-current="page">Card Catalog</a>
+        <a href="account.html">My Account</a>
+        <a href="events.html">Events</a>
+        <a href="programs.html">Programs</a>
+        <a href="research-help.html">Research Help</a>
+        <a href="about.html">About</a>
+        <a href="instructions.html">Instructions</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="catalog-card">
+      <div class="catalog-header">
+        <div>
+          <p class="eyebrow">Manual Browse</p>
+          <h1>Classroom Card Catalog</h1>
+          <p class="catalog-subtitle">Mock catalog with real titles, mixed genres and formats, and sample call numbers for discovery practice.</p>
+        </div>
+        <p class="catalog-count" id="catalogCount">0 titles</p>
+      </div>
+
+      <form class="catalog-controls" id="catalogControls" aria-label="Catalog filters">
+        <label>
+          Search
+          <input id="catalogSearch" type="search" placeholder="Title, author, subject, or call number">
+        </label>
+        <label>
+          Genre
+          <select id="genreFilter">
+            <option value="">All genres</option>
+          </select>
+        </label>
+        <label>
+          Format
+          <select id="formatFilter">
+            <option value="">All formats</option>
+          </select>
+        </label>
+      </form>
+
+      <div class="catalog-feedback" aria-live="polite">
+        <p id="filterStatus" class="filter-status">Ready</p>
+        <p id="benchmarkReadout" class="benchmark-readout">Last update: -- ms</p>
+      </div>
+
+      <div class="catalog-browser">
+        <section class="catalog-index-pane" aria-labelledby="catalogIndexTitle">
+          <h2 id="catalogIndexTitle" class="catalog-pane-title">Catalog Index</h2>
+          <p class="catalog-index-help">Tip: search first, then click a result to open its card details.</p>
+          <div class="catalog-index" id="catalogIndex" aria-live="polite"></div>
+        </section>
+
+        <article id="catalogDetail" class="catalog-entry catalog-detail" aria-live="polite"></article>
+      </div>
+
+      <div class="catalog-pagination" aria-label="Catalog pagination">
+        <button id="prevPage" type="button">Previous</button>
+        <p id="pageStatus" class="page-status">Showing 0-0 of 0</p>
+        <button id="nextPage" type="button">Next</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="catalog-data.js"></script>
+  <script src="catalog.js"></script>
+</body>
+</html>
