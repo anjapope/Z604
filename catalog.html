@@ -3,13 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Library Card Catalog</title>
+  <title>Stapleton Public Library Catalog</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="site-header">
     <nav class="topnav" aria-label="Primary navigation">
-      <a class="brand" href="index.html">Library Services Portal</a>
+      <a class="brand" href="index.html" aria-label="Stapleton Public Library home">
+        <span class="brand-mark" aria-hidden="true">SPL</span>
+        <span class="brand-copy">
+          <span class="brand-name">Stapleton Public Library</span>
+          <span class="brand-tag">Digital services, events, and research support</span>
+        </span>
+      </a>
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="catalog.html" aria-current="page">Card Catalog</a>
@@ -27,9 +33,9 @@
     <section class="catalog-card">
       <div class="catalog-header">
         <div>
-          <p class="eyebrow">Manual Browse</p>
-          <h1>Classroom Card Catalog</h1>
-          <p class="catalog-subtitle">Mock catalog with real titles, mixed genres and formats, and sample call numbers for discovery practice.</p>
+          <p class="eyebrow">Collection Search</p>
+          <h1>Stapleton Public Library catalog</h1>
+          <p class="catalog-subtitle">Browse the Stapleton Public Library catalog with sample holdings, multiple formats, and call numbers for guided discovery.</p>
         </div>
         <p class="catalog-count" id="catalogCount">0 titles</p>
       </div>
@@ -61,7 +67,7 @@
       <div class="catalog-browser">
         <section class="catalog-index-pane" aria-labelledby="catalogIndexTitle">
           <h2 id="catalogIndexTitle" class="catalog-pane-title">Catalog Index</h2>
-          <p class="catalog-index-help">Tip: search first, then click a result to open its card details.</p>
+          <p class="catalog-index-help">Tip: search the Stapleton Public Library catalog, then click a result to open its full card details.</p>
           <div class="catalog-index" id="catalogIndex" aria-live="polite"></div>
         </section>
 

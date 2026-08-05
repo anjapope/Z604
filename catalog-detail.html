@@ -3,13 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Catalog Card</title>
+  <title>Stapleton Public Library Catalog Card</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="site-header">
     <nav class="topnav" aria-label="Primary navigation">
-      <a class="brand" href="index.html">Library Services Portal</a>
+      <a class="brand" href="index.html" aria-label="Stapleton Public Library home">
+        <span class="brand-mark" aria-hidden="true">SPL</span>
+        <span class="brand-copy">
+          <span class="brand-name">Stapleton Public Library</span>
+          <span class="brand-tag">Digital services, events, and research support</span>
+        </span>
+      </a>
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="catalog.html" aria-current="page">Card Catalog</a>
@@ -26,8 +32,8 @@
   <main class="page-shell">
     <section class="catalog-card">
       <p class="eyebrow">Catalog Card</p>
-      <h1>Record details</h1>
-      <p class="catalog-subtitle">Single-entry card view for manual browsing and class demonstration.</p>
+      <h1>Stapleton Public Library record details</h1>
+      <p class="catalog-subtitle">Single-entry card view for detailed review of an SPL catalog record.</p>
 
       <article id="catalogDetailPage" class="catalog-entry catalog-detail-page" aria-live="polite"></article>
       <p><a class="catalog-open-link" href="catalog.html">Back to catalog index</a></p>

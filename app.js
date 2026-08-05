@@ -5,7 +5,7 @@ const quickActions = document.querySelectorAll('.quick-action');
 const sendButton = chatForm ? chatForm.querySelector('button[type="submit"]') : null;
 const statusPill = document.querySelector('.status-pill');
 
-const welcomeMessage = 'Welcome to the Library. What can I help you with today?';
+const welcomeMessage = 'Hello, I’m Pericles, the AI support client for Stapleton Public Library. What can I help you with today?';
 const conversationHistory = [];
 let isAwaitingReply = false;
 let isLiveAiMode = false;
@@ -16,13 +16,13 @@ function updateStatusPill(mode) {
   }
 
   if (mode === 'live') {
-    statusPill.textContent = 'Live AI';
+    statusPill.textContent = 'Pericles Live';
     statusPill.classList.add('status-live');
     statusPill.classList.remove('status-fallback');
     return;
   }
 
-  statusPill.textContent = 'Fallback Mode';
+  statusPill.textContent = 'Guided Mode';
   statusPill.classList.add('status-fallback');
   statusPill.classList.remove('status-live');
 }
@@ -46,19 +46,19 @@ async function initializeChatMode() {
 const cannedReplies = [
   {
     match: /(event|week|calendar|author|workshop)/i,
-    reply: 'This week the library is highlighting community events, author talks, and hands-on workshops. Open the Events page for the full calendar view, or ask for adult programs, youth activities, or technology classes to narrow it down.'
+    reply: 'I’m Pericles, and I can help you explore Stapleton Public Library events, author talks, and hands-on workshops this week. Open the Events page for the full calendar view, or ask about adult programs, youth activities, or technology classes to narrow it down.'
   },
   {
     match: /(program|children|kids|teen|story)/i,
-    reply: 'Our programs include story times, teen maker activities, and lifelong learning workshops for adults. Tell me the age group or topic you want, and I can guide you to a good fit.'
+    reply: 'I’m Pericles, and I can help you explore Stapleton Public Library programs, including story times, teen maker activities, and lifelong learning workshops for adults. Tell me the age group or topic you want, and I can guide you to a good fit.'
   },
   {
     match: /(research|reference|genealogy|database|citation|history)/i,
-    reply: 'For research help, the library can connect you with databases, citation support, local history tools, and genealogy resources. If you share your topic, I can suggest a starting point.'
+    reply: 'I’m Pericles, and I can help connect you with Stapleton Public Library databases, citation support, local history tools, and genealogy resources. If you share your topic, I can suggest a starting point.'
   },
   {
     match: /(book|catalog|collection|borrow|recommend)/i,
-    reply: 'The collection includes print books, ebooks, audiobooks, and media. You can browse the classroom Card Catalog page for full entries, or tell me a genre and I can suggest where to begin.'
+    reply: 'I’m Pericles, and I can help you explore the Stapleton Public Library collection, including print books, ebooks, audiobooks, and media. You can browse the Card Catalog page for full entries, or tell me a genre and I can suggest where to begin.'
   }
 ];
 
@@ -92,7 +92,7 @@ function buildReply(prompt) {
     return found.reply;
   }
 
-  return 'I can help with library collections, events, programs, and reference questions. Try asking about a book recommendation, this week\'s events, children\'s programming, or research support.';
+  return 'I’m Pericles, and I can help with Stapleton Public Library collections, events, programs, and reference questions. Try asking about a book recommendation, this week\'s events, children\'s programming, or research support.';
 }
 
 async function fetchAssistantReply(prompt) {
@@ -153,7 +153,7 @@ async function sendPrompt(prompt) {
   } catch (error) {
     isLiveAiMode = false;
     updateStatusPill('fallback');
-    const fallbackReply = `${buildReply(trimmed)}\n\n(Demo fallback: live chat service unavailable.)`;
+    const fallbackReply = `${buildReply(trimmed)}\n\n(Stapleton Public Library fallback: live chat service unavailable.)`;
     updateBubbleText(pendingBubble, fallbackReply);
     conversationHistory.push({ role: 'assistant', content: fallbackReply });
   } finally {

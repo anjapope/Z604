@@ -1,11 +1,11 @@
 # Z604
 
-A classroom demo for a library services portal with:
+A Stapleton Public Library portal demo with:
 
 - searchable card catalog
 - events calendar
 - account mock pages
-- chatbot UI wired to a secure backend `/api/chat` route
+- Pericles-guided chatbot UI wired to a secure backend `/api/chat` route
 
 ## Run locally (secure chat enabled)
 
@@ -22,4 +22,4 @@ A classroom demo for a library services portal with:
 ## Notes
 
 - The API key stays server-side in `.env` and is never exposed to browser JavaScript.
-- If the backend is unavailable or key is missing, chat falls back to canned demo replies.
+- If the backend is unavailable or the key is missing, chat falls back to guided Stapleton Public Library replies.

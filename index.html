@@ -3,13 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Library Services Portal</title>
+  <title>Stapleton Public Library</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="site-header">
     <nav class="topnav" aria-label="Primary navigation">
-      <a class="brand" href="index.html">Library Services Portal</a>
+      <a class="brand" href="index.html" aria-label="Stapleton Public Library home">
+        <span class="brand-mark" aria-hidden="true">SPL</span>
+        <span class="brand-copy">
+          <span class="brand-name">Stapleton Public Library</span>
+          <span class="brand-tag">Digital services, events, and research support</span>
+        </span>
+      </a>
       <div class="nav-links">
         <a href="index.html" aria-current="page">Home</a>
         <a href="catalog.html">Card Catalog</a>
@@ -26,22 +32,22 @@
   <main class="page-shell">
     <section class="hero-card">
       <div class="hero-copy">
-        <p class="eyebrow">Your digital front desk</p>
-        <h1>Explore collections, events, programs, and research help in one place.</h1>
-        <p class="hero-text">This classroom demo simulates a library chatbot experience with guided prompts and open-ended questions.</p>
+        <p class="eyebrow">Stapleton Public Library</p>
+        <h1>Your digital front desk for collections, programs, events, and research help.</h1>
+        <p class="hero-text">Explore Stapleton Public Library services in one place, from catalog discovery to community programs and guided help from Pericles.</p>
       </div>
       <div class="hero-panels">
         <article class="info-panel" id="catalog">
           <h2>Collections</h2>
-          <p>Browse books, media, archives, and digital resources in the classroom card catalog.</p>
+          <p>Browse Stapleton Public Library books, media, archives, and digital resources in the catalog.</p>
         </article>
         <article class="info-panel" id="events">
           <h2>Events</h2>
-          <p>See workshops, storytimes, and community happenings in the events calendar.</p>
+          <p>See SPL workshops, storytimes, and community happenings in the events calendar.</p>
         </article>
         <article class="info-panel" id="programs">
           <h2>Programs</h2>
-          <p>Discover story times, classes, and lifelong learning opportunities.</p>
+          <p>Discover Youth Services, Adult Services, technology classes, and lifelong learning opportunities.</p>
         </article>
       </div>
     </section>
@@ -49,10 +55,10 @@
     <section class="chat-shell" aria-labelledby="chat-title">
       <div class="chat-header">
         <div>
-          <p class="chat-kicker">Chat with the library</p>
-          <h2 id="chat-title">Ask for help or choose a starting point.</h2>
+          <p class="chat-kicker">Ask Pericles at SPL</p>
+          <h2 id="chat-title">Ask Pericles for help or choose a Stapleton Public Library starting point.</h2>
         </div>
-        <span class="status-pill">Demo Mode</span>
+        <span class="status-pill">Pericles Pilot</span>
       </div>
 
       <div class="quick-actions" aria-label="Suggested questions">
@@ -65,8 +71,8 @@
       <div class="chat-window" id="chatWindow" aria-live="polite"></div>
 
       <form class="chat-form" id="chatForm">
-        <label class="sr-only" for="userPrompt">Ask the library chatbot a question</label>
-        <textarea id="userPrompt" name="prompt" rows="2" placeholder="Ask about collections, events, programs, or research help..."></textarea>
+        <label class="sr-only" for="userPrompt">Ask Pericles, the Stapleton Public Library assistant, a question</label>
+        <textarea id="userPrompt" name="prompt" rows="2" placeholder="Ask Stapleton Public Library about collections, events, programs, or research help..."></textarea>
         <button type="submit">Send</button>
       </form>
     </section>
@@ -74,11 +80,11 @@
     <section class="support-grid">
       <article class="support-card" id="research-help">
         <h2>Reference Help</h2>
-        <p>Get help with databases, citations, local history, and research strategies.</p>
+        <p>Get Stapleton Public Library help with databases, citations, local history, and research strategies.</p>
       </article>
       <article class="support-card" id="about">
-        <h2>About This Demo</h2>
-        <p>This interface is designed for classroom use to simulate how a library services chatbot could welcome and guide patrons.</p>
+        <h2>About SPL Online Services</h2>
+        <p>This portal presents Stapleton Public Library resources, programs, and guided service pathways in a single branded experience.</p>
       </article>
     </section>
   </main>
