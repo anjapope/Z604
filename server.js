@@ -4,32 +4,15 @@ const vm = require('vm');
 const express = require('express');
 const dotenv = require('dotenv');
 
+const { buildSystemPrompt } = require('./pericles/prompts/build-system-prompt');
+const { buildGroundingContext } = require('./pericles/prompts/build-grounding-context');
+
 dotenv.config();
 
 const app = express();
 const PORT = Number(process.env.PORT || 4000);
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
-
-const LIBRARY_HOURS = [
-  'Monday-Friday: 8:00 AM-8:00 PM',
-  'Saturday: 8:00 AM-5:00 PM',
-  'Sunday: 12:00 PM-4:00 PM'
-];
-
-const EVENTS_CONTEXT = [
-  'Storytime: Tuesdays and Fridays, 10:00-11:00 AM (weekly).',
-  'Tech Team Training Seminars: Mondays at 11:00 AM (open to the public).',
-  'Adult Book Club: Wednesdays at 6:30 PM.',
-  'Fiction Convention Showcase: Fridays at 6:30 PM.',
-  'Teen Game and Craft Days/Tournaments: Saturdays, 12:00-4:00 PM.',
-  'Lego Lab: 4th Thursday monthly, 5:30-7:30 PM (families, kids, enthusiasts).',
-  'Board Meeting: 4th Thursday monthly at 8:00 PM (open to the public).',
-  'Digital Citizenship Workshop: Tuesdays at 7:30 PM in alternating months (all ages).',
-  'Summer Reading Program: June 1-July 31; prizes; families can sign up in BeanStack.',
-  'Frontiers and Folktales: runs through Fall with Youth Services, Special Collections, and Mercer Park.',
-  'Monster Prom: Youth Services event on the weekend before Halloween, 8:00-10:30 PM.'
-];
 
 function loadCatalogSeedEntries() {
   try {
@@ -60,10 +43,7 @@ function loadCatalogSeedEntries() {
         entry.description
       ].join(' ').toLowerCase();
 
-      return {
-        ...entry,
-        searchableText
-      };
+      return { ...entry, searchableText };
     });
   } catch (_error) {
     return [];
@@ -88,28 +68,14 @@ function scoreCatalogEntry(entry, query, tokens) {
   const callNumber = String(entry.callNumber || '').toLowerCase();
   const searchableText = entry.searchableText;
 
-  if (normalizedQuery && title.includes(normalizedQuery)) {
-    score += 14;
-  }
-
-  if (normalizedQuery && author.includes(normalizedQuery)) {
-    score += 10;
-  }
-
-  if (normalizedQuery && callNumber.includes(normalizedQuery)) {
-    score += 8;
-  }
+  if (normalizedQuery && title.includes(normalizedQuery)) score += 14;
+  if (normalizedQuery && author.includes(normalizedQuery)) score += 10;
+  if (normalizedQuery && callNumber.includes(normalizedQuery)) score += 8;
 
   tokens.forEach((token) => {
-    if (title.includes(token)) {
-      score += 4;
-    }
-    if (author.includes(token)) {
-      score += 3;
-    }
-    if (searchableText.includes(token)) {
-      score += 2;
-    }
+    if (title.includes(token)) score += 4;
+    if (author.includes(token)) score += 3;
+    if (searchableText.includes(token)) score += 2;
   });
 
   return score;
@@ -118,10 +84,7 @@ function scoreCatalogEntry(entry, query, tokens) {
 function findCatalogMatches(query, limit = 6) {
   const tokens = tokenizeQuery(query);
   const normalizedQuery = query.trim().toLowerCase();
-
-  if (!normalizedQuery || (!tokens.length && normalizedQuery.length < 4)) {
-    return [];
-  }
+  if (!normalizedQuery || (!tokens.length && normalizedQuery.length < 4)) return [];
 
   return CATALOG_SEED_INDEX
     .map((entry) => ({ entry, score: scoreCatalogEntry(entry, normalizedQuery, tokens) }))
@@ -131,58 +94,21 @@ function findCatalogMatches(query, limit = 6) {
     .map((item) => item.entry);
 }
 
-function buildGroundingContext(message) {
-  const catalogMatches = findCatalogMatches(message, 6);
-  const contextSections = [];
-
-  contextSections.push(`Library Hours:\n- ${LIBRARY_HOURS.join('\n- ')}`);
-  contextSections.push(`Events Calendar Context:\n- ${EVENTS_CONTEXT.join('\n- ')}`);
-
-  if (catalogMatches.length) {
-    const catalogLines = catalogMatches.map((entry, index) => {
-      return `${index + 1}. ${entry.title} by ${entry.author} (${entry.year}) | ${entry.format} | Call No: ${entry.callNumber} | Location: ${entry.location} | Subjects: ${(entry.subjects || []).join(', ')}`;
-    });
-
-    contextSections.push(`Relevant Collection Matches:\n${catalogLines.join('\n')}`);
-  } else {
-    contextSections.push('Relevant Collection Matches:\n- No confident title matches found for this specific prompt in the catalog seed index.');
-  }
-
-  contextSections.push('Catalog Scope Note:\n- The demo catalog is large and generated from a seed title list; if no match appears above, suggest searching the Card Catalog page directly.');
-
-  return contextSections.join('\n\n');
-}
-
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.resolve(__dirname)));
 
 app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
+    assistant: 'Pericles',
     liveAiConfigured: Boolean(OPENAI_API_KEY),
     model: OPENAI_MODEL,
     catalogSeedCount: CATALOG_SEED_INDEX.length
   });
 });
 
-function buildSystemPrompt() {
-  return [
-    'You are a library services assistant for a classroom demo portal.',
-    'Provide concise, friendly answers focused on library collections, events, programs, library hours, and research help.',
-    'Use ONLY the supplied grounding context for factual details about collections, events, and hours.',
-    'If a requested title or detail is not in the grounding context, say you cannot confirm it and suggest checking the Card Catalog page.',
-    'For events questions, answer from recurring schedule context and mention the Events page for month-by-month navigation.',
-    'For hours questions, answer directly with exact hours.',
-    'If asked about account-specific details, explain this is a demo and direct the user to the My Account page.',
-    'If asked about catalog browsing, mention the Card Catalog page.',
-    'Do not invent unsafe or private patron data.'
-  ].join(' ');
-}
-
 function normalizeHistory(history) {
-  if (!Array.isArray(history)) {
-    return [];
-  }
+  if (!Array.isArray(history)) return [];
 
   return history
     .filter((item) => item && (item.role === 'user' || item.role === 'assistant') && typeof item.content === 'string')
@@ -194,19 +120,15 @@ app.post('/api/chat', async (req, res) => {
   const message = typeof req.body?.message === 'string' ? req.body.message.trim() : '';
   const history = normalizeHistory(req.body?.history);
 
-  if (!message) {
-    return res.status(400).json({ error: 'Message is required.' });
-  }
+  if (!message) return res.status(400).json({ error: 'Message is required.' });
+  if (!OPENAI_API_KEY) return res.status(500).json({ error: 'OPENAI_API_KEY is not configured.' });
 
-  if (!OPENAI_API_KEY) {
-    return res.status(500).json({ error: 'OPENAI_API_KEY is not configured.' });
-  }
-
-  const groundingContext = buildGroundingContext(message);
+  const catalogMatches = findCatalogMatches(message, 6);
+  const groundingContext = buildGroundingContext({ catalogMatches });
 
   const messages = [
     { role: 'system', content: buildSystemPrompt() },
-    { role: 'system', content: `Grounding Context:\n\n${groundingContext}` },
+    { role: 'system', content: `# Verified SPL Grounding Context\n\n${groundingContext}` },
     ...history,
     { role: 'user', content: message }
   ];
@@ -221,8 +143,8 @@ app.post('/api/chat', async (req, res) => {
       body: JSON.stringify({
         model: OPENAI_MODEL,
         messages,
-        temperature: 0.4,
-        max_tokens: 400
+        temperature: 0.35,
+        max_tokens: 500
       })
     });
 
@@ -233,17 +155,14 @@ app.post('/api/chat', async (req, res) => {
 
     const payload = await response.json();
     const reply = payload?.choices?.[0]?.message?.content?.trim();
-
-    if (!reply) {
-      return res.status(502).json({ error: 'No reply returned by model.' });
-    }
+    if (!reply) return res.status(502).json({ error: 'No reply returned by model.' });
 
     return res.json({ reply });
-  } catch (error) {
+  } catch (_error) {
     return res.status(500).json({ error: 'Chat service failed to respond.' });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Library portal running at http://localhost:${PORT}`);
+  console.log(`Stapleton Public Library portal running at http://localhost:${PORT}`);
 });
