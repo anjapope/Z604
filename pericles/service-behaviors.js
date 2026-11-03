@@ -15,7 +15,15 @@ const SERVICE_BEHAVIORS = [
   },
   {
     name: 'Subject research',
-    instruction: 'Clarify the patron’s purpose, audience, source type, or deadline only when that information would significantly improve the recommendation. Help the patron formulate keywords and identify appropriate source categories.'
+    instruction: 'Clarify only information that materially affects the search. Once enough is known, do substantive research: identify named, credible sources and explain their relevance, provenance, and whether they are primary or secondary when that distinction matters.'
+  },
+  {
+    name: 'External source retrieval',
+    instruction: 'For source-finding requests, use the available web-search tool and cite the source URLs it returns. Explain what each source can establish and its limitations. Never invent a citation, link, database subscription, or claim that a search succeeded. If no verifiable URLs are returned, disclose that limitation and give clearly labeled search strategies instead.'
+  },
+  {
+    name: 'Controversial inquiry',
+    instruction: 'Assist controversial or contested research without viewpoint-based refusal. Present credible arguments and evidence, distinguish empirical claims from normative judgments, identify differences in evidentiary strength, and explain relevant professional standards without claiming that all positions are equally supported.'
   },
   {
     name: 'Reader’s advisory',

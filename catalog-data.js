@@ -79,7 +79,7 @@ const CATALOG_SEED_ENTRIES = [
   { title: 'Attached', author: 'Amir Levine', year: 2010, genre: 'Psychology', format: 'Print Book', callNumber: '158.2 LEV', location: 'Nonfiction', audience: 'Adult', subjects: ['Relationships', 'Attachment theory', 'Communication'], description: 'A practical guide to attachment styles in adult relationships.' },
   { title: 'Quiet', author: 'Susan Cain', year: 2012, genre: 'Psychology', format: 'Audiobook', callNumber: 'AUDIO 155.232 CAI', location: 'Digital Audio', audience: 'Adult', subjects: ['Introversion', 'Personality', 'Workplace'], description: 'An argument for valuing introverted strengths in loud cultures.' },
   { title: 'Maybe You Should Talk to Someone', author: 'Lori Gottlieb', year: 2019, genre: 'Psychology', format: 'Print Book', callNumber: '616.8914 GOT', location: 'Nonfiction', audience: 'Adult', subjects: ['Therapy', 'Memoir', 'Mental health'], description: 'A therapist recounts client stories and her own counseling journey.' },
-  { title: 'The Queen\'s Gambit', author: 'Walter Tevis', year: 1983, genre: 'Sports & Games', format: 'Print Book', callNumber: 'FIC TEV', location: 'Fiction Stacks', audience: 'Adult', subjects: ['Chess', 'Competition', 'Addiction'], description: 'A prodigy rises through the chess world while battling dependency.' },
+  { title: 'The Queen\'s Gambit', author: 'Walter Tevis', year: 1983, genre: 'Literary Fiction', format: 'Print Book', callNumber: 'FIC TEV', location: 'Fiction Stacks', audience: 'Adult', subjects: ['Chess', 'Competition', 'Addiction'], description: 'A prodigy rises through the chess world while battling dependency.' },
   { title: 'Moneyball', author: 'Michael Lewis', year: 2003, genre: 'Sports & Games', format: 'Ebook', callNumber: 'EBOOK 796.357 LEW', location: 'Digital Library', audience: 'Adult', subjects: ['Baseball', 'Analytics', 'Management'], description: 'How data changed roster strategy in major league baseball.' },
   { title: 'Open', author: 'Andre Agassi', year: 2009, genre: 'Sports & Games', format: 'Audiobook', callNumber: 'AUDIO BIO AGASSI', location: 'Digital Audio', audience: 'Adult', subjects: ['Tennis', 'Memoir', 'Performance'], description: 'A candid memoir of talent, pressure, and reinvention.' },
   { title: 'Shoe Dog', author: 'Phil Knight', year: 2016, genre: 'Business', format: 'Print Book', callNumber: '338.768 KNI', location: 'Nonfiction', audience: 'Adult', subjects: ['Entrepreneurship', 'Nike', 'Business memoir'], description: 'The founder of Nike tells the company\'s improbable early story.' },
@@ -128,7 +128,7 @@ function buildCatalogEntries(seedEntries, targetSize) {
     const copyNumber = Math.floor(index / seedEntries.length) + 1;
     const recordId = `CAT-${String(index + 1).padStart(4, '0')}`;
 
-    const format = copyNumber === 1
+    const format = copyNumber === 1 || ['DVD', 'Blu-ray'].includes(seed.format)
       ? seed.format
       : FORMAT_ROTATION[(copyNumber + index) % FORMAT_ROTATION.length];
 
@@ -142,8 +142,8 @@ function buildCatalogEntries(seedEntries, targetSize) {
       recordId,
       title,
       format,
-      location: FORMAT_LOCATION_MAP[format] || seed.location,
-      callNumber: normalizeCallNumber(seed.callNumber, copyNumber),
+      location: format === 'Print Book' ? (seed.audience.includes('Children') ? (seed.callNumber.startsWith('E ') ? "Children's Room" : 'Juvenile Fiction') : seed.audience === 'Teen' ? 'Young Adult' : /\bFIC\b/.test(seed.callNumber) ? 'Fiction Stacks' : 'Nonfiction') : FORMAT_LOCATION_MAP[format] || seed.location,
+      callNumber: normalizeCallNumber((({ Audiobook: 'AUDIO ', Ebook: 'EBOOK ', 'Large Print': 'LP ', DVD: 'DVD ', 'Blu-ray': 'BLU ' })[format] || '') + seed.callNumber.replace(/^(?:AUDIO |EBOOK |LP |DVD |BLU )/, ''), copyNumber),
       description
     };
 

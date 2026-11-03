@@ -7,6 +7,7 @@ const statusPill = document.querySelector('.status-pill');
 
 const welcomeMessage = 'Hello, I’m Pericles, the AI support client for Stapleton Public Library. What can I help you with today?';
 const conversationHistory = [];
+const MAX_HISTORY_MESSAGES = 12;
 let isAwaitingReply = false;
 let isLiveAiMode = false;
 
@@ -16,7 +17,7 @@ function updateStatusPill(mode) {
   }
 
   if (mode === 'live') {
-    statusPill.textContent = 'Pericles Live';
+    statusPill.textContent = 'Pericles Ready';
     statusPill.classList.add('status-live');
     statusPill.classList.remove('status-fallback');
     return;
@@ -29,13 +30,13 @@ function updateStatusPill(mode) {
 
 async function initializeChatMode() {
   try {
-    const response = await fetch('/api/health');
+    const response = await (window.PericlesApi?.fetch || fetch)('/api/health');
     if (!response.ok) {
       throw new Error('Health check failed');
     }
 
     const payload = await response.json();
-    isLiveAiMode = Boolean(payload.liveAiConfigured);
+    isLiveAiMode = Boolean(payload.ok);
   } catch (_error) {
     isLiveAiMode = false;
   }
@@ -43,32 +44,13 @@ async function initializeChatMode() {
   updateStatusPill(isLiveAiMode ? 'live' : 'fallback');
 }
 
-const cannedReplies = [
-  {
-    match: /(event|week|calendar|author|workshop)/i,
-    reply: 'I’m Pericles, and I can help you explore Stapleton Public Library events, author talks, and hands-on workshops this week. Open the Events page for the full calendar view, or ask about adult programs, youth activities, or technology classes to narrow it down.'
-  },
-  {
-    match: /(program|children|kids|teen|story)/i,
-    reply: 'I’m Pericles, and I can help you explore Stapleton Public Library programs, including story times, teen maker activities, and lifelong learning workshops for adults. Tell me the age group or topic you want, and I can guide you to a good fit.'
-  },
-  {
-    match: /(research|reference|genealogy|database|citation|history)/i,
-    reply: 'I’m Pericles, and I can help connect you with Stapleton Public Library databases, citation support, local history tools, and genealogy resources. If you share your topic, I can suggest a starting point.'
-  },
-  {
-    match: /(book|catalog|collection|borrow|recommend)/i,
-    reply: 'I’m Pericles, and I can help you explore the Stapleton Public Library collection, including print books, ebooks, audiobooks, and media. You can browse the Card Catalog page for full entries, or tell me a genre and I can suggest where to begin.'
-  }
-];
-
-function addMessage(role, text) {
+function addMessage(role, text, sources = []) {
   const message = document.createElement('div');
   message.className = `message ${role}`;
 
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
-  bubble.textContent = text;
+  window.PericlesCitationRenderer.renderMessageContent(bubble, text, sources);
 
   message.appendChild(bubble);
   chatWindow.appendChild(message);
@@ -77,27 +59,28 @@ function addMessage(role, text) {
   return bubble;
 }
 
-function updateBubbleText(bubble, text) {
+function updateBubbleText(bubble, text, sources = []) {
   if (!bubble) {
     return;
   }
 
-  bubble.textContent = text;
+  window.PericlesCitationRenderer.renderMessageContent(bubble, text, sources);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
 function buildReply(prompt) {
-  const found = cannedReplies.find((entry) => entry.match.test(prompt));
-  if (found) {
-    return found.reply;
+  if (/(book|catalog|collection|borrow|fiction)/i.test(prompt)) {
+    return 'Live reference chat is unavailable. The Card Catalog remains available for checking the demonstration collection; it does not show current circulation status.';
   }
-
-  return 'I’m Pericles, and I can help with Stapleton Public Library collections, events, programs, and reference questions. Try asking about a book recommendation, this week\'s events, children\'s programming, or research support.';
+  if (/(research|reference|genealogy|database|citation|history|source)/i.test(prompt)) {
+    return 'Live reference research is unavailable right now. Please try again later or visit the Research Help page for library research support.';
+  }
+  return 'Live chat is unavailable right now. Please try again later or browse the Stapleton Public Library pages using the navigation above.';
 }
 
 async function fetchAssistantReply(prompt) {
   const recentHistory = conversationHistory.slice(-10);
-  const response = await fetch('/api/chat', {
+  const response = await (window.PericlesApi?.fetch || fetch)('/api/chat', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -109,15 +92,29 @@ async function fetchAssistantReply(prompt) {
   });
 
   if (!response.ok) {
-    throw new Error('Chat request failed');
+    let errorMessage = 'Chat request failed';
+    try {
+      const errorPayload = await response.json();
+      if (typeof errorPayload.error === 'string') {
+        errorMessage = errorPayload.error;
+      }
+    } catch (_error) {
+      errorMessage = 'Chat request failed';
+    }
+    throw new Error(errorMessage);
   }
 
   const payload = await response.json();
+  if (payload.fictionalCirculation) window.FictionalAccounts?.changed();
+  else window.FictionalAccounts?.clearPreview();
   if (!payload.reply) {
     throw new Error('Chat response missing reply');
   }
 
-  return payload.reply;
+  return {
+    reply: payload.reply,
+    sources: Array.isArray(payload.sources) ? payload.sources : []
+  };
 }
 
 function setChatPendingState(isPending) {
@@ -140,22 +137,31 @@ async function sendPrompt(prompt) {
 
   addMessage('user', trimmed);
   conversationHistory.push({ role: 'user', content: trimmed });
+  conversationHistory.splice(0, Math.max(0, conversationHistory.length - MAX_HISTORY_MESSAGES));
 
   const pendingBubble = addMessage('assistant', 'Thinking...');
   setChatPendingState(true);
 
   try {
-    const assistantReply = await fetchAssistantReply(trimmed);
+    const assistantResult = await fetchAssistantReply(trimmed);
     isLiveAiMode = true;
     updateStatusPill('live');
-    updateBubbleText(pendingBubble, assistantReply);
-    conversationHistory.push({ role: 'assistant', content: assistantReply });
+    updateBubbleText(pendingBubble, assistantResult.reply, assistantResult.sources);
+    const sourceContext = assistantResult.sources
+      .map((source) => `${source.title} ${source.url}`)
+      .join('\n');
+    conversationHistory.push({
+      role: 'assistant',
+      content: [assistantResult.reply, sourceContext].filter(Boolean).join('\n\n')
+    });
+    conversationHistory.splice(0, Math.max(0, conversationHistory.length - MAX_HISTORY_MESSAGES));
   } catch (error) {
     isLiveAiMode = false;
     updateStatusPill('fallback');
-    const fallbackReply = `${buildReply(trimmed)}\n\n(Stapleton Public Library fallback: live chat service unavailable.)`;
+    const fallbackReply = error.message || buildReply(trimmed);
     updateBubbleText(pendingBubble, fallbackReply);
     conversationHistory.push({ role: 'assistant', content: fallbackReply });
+    conversationHistory.splice(0, Math.max(0, conversationHistory.length - MAX_HISTORY_MESSAGES));
   } finally {
     setChatPendingState(false);
   }

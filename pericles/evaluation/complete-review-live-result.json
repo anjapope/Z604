@@ -1,0 +1,22 @@
+{
+  "query": "Find three credible sources on the history of public libraries in Indiana from 1900 to 1950, preferably primary sources.",
+  "status": 200,
+  "diagnostics": [
+    {
+      "event": "pericles_research_pipeline",
+      "retrievedCount": 17,
+      "evaluatedCount": 17,
+      "acceptedCount": 0,
+      "recommendedCount": 0,
+      "classificationCounts": {
+        "direct": 0,
+        "supplementary": 0,
+        "excluded": 17
+      }
+    }
+  ],
+  "patronResponse": {
+    "reply": "After an initial search and one focused recovery search, I could not validate any retrieved sources as sufficiently relevant to your request. I have not listed rejected candidates as recommendations. A useful next step is to search the responsible archive or organization for original reports, finding aids, and contemporaneous publications, then assess each item’s subject and coverage before relying on it. URLs were returned by web search; I have not independently fetched the linked pages.",
+    "sources": []
+  }
+}

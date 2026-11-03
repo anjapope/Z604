@@ -1,0 +1,257 @@
+{
+  "fictional": true,
+  "testDate": "2026-11-02",
+  "steps": [
+    {
+      "message": "When are my books due?",
+      "status": 200,
+      "reply": "Fictional demonstration — Patron B, Bram Bookmark (fictional).\nCurrent checkouts:\n- Educated (B-1): due 2026-10-28 (overdue); renewals 0/2; eligible for renewal\n- The Great Gatsby (B-2): due 2026-11-06; renewals 0/2; blocked: another fictional patron has an active hold on this work\n- 1984 (B-3): due 2026-11-08; renewals 2/2; blocked: renewal limit of 2 reached\nActive holds: 1. These are fictional records; no real account is connected."
+    },
+    {
+      "message": "Can you renew everything?",
+      "status": 200,
+      "reply": "Fictional demonstration — Patron B.\nEligible for renew:\n- Educated (B-1): due 2026-10-28 → 2026-11-23; renewals 0 → 1/2\nBlocked (will remain unchanged):\n- The Great Gatsby: another fictional patron has an active hold on this work\n- 1984: renewal limit of 2 reached\nConfirm renewal of only these eligible loans? Say “yes” or “cancel”. This preview expires in 5 minutes."
+    },
+    {
+      "message": "Yes, renew the eligible ones.",
+      "status": 200,
+      "reply": "Fictional demonstration — Patron B. Server confirmed renewal.\n- Educated: due 2026-11-23; renewals 1/2\nUnchanged: The Great Gatsby (another fictional patron has an active hold on this work); 1984 (renewal limit of 2 reached).\nThe account page now reads this same server state. No real library transaction occurred."
+    },
+    {
+      "message": "Yes, renew the eligible ones.",
+      "status": 200,
+      "reply": "There is no pending fictional transaction to confirm. Select an account and request a renewal or hold first."
+    },
+    {
+      "message": "Why can't I renew this book?",
+      "status": 200,
+      "reply": "Fictional Patron B renewal eligibility:\n- Educated (B-1): eligible; renewals 1/2\n- The Great Gatsby (B-2): another fictional patron has an active hold on this work\n- 1984 (B-3): renewal limit of 2 reached\nNo changes were made. Ask to renew a named loan or everything for a confirmation preview."
+    },
+    {
+      "message": "Place a hold on Dune.",
+      "status": 200,
+      "reply": "Fictional demonstration — Patron B.\nEligible for hold:\n- Dune (CAT-0011): one simulated work-level hold\nConfirm placement of this hold? Say “yes” or “cancel”. This preview expires in 5 minutes."
+    },
+    {
+      "message": "Yes",
+      "status": 200,
+      "reply": "Fictional demonstration — Patron B. Server confirmed hold placement.\n- Dune: hold e1b486fe-6f12-4f5b-9347-849a56e52c64 placed 2026-11-02; simulated request only\nThe account page now reads this same server state. No real library transaction occurred."
+    },
+    {
+      "message": "What holds do I already have?",
+      "status": 200,
+      "reply": "Fictional Patron B existing holds:\n- The Hobbit: placed 2026-11-02; Simulated request; no real availability confirmed\n- Dune: placed 2026-11-02; Simulated request; no real availability confirmed"
+    },
+    {
+      "message": "Place a hold on Dune.",
+      "status": 200,
+      "reply": "Fictional demonstration — Patron B.\nNo eligible items; nothing will be changed.\nBlocked (will remain unchanged):\n- Dune: this account already has an active hold on this work"
+    },
+    {
+      "message": "Can you renew everything?",
+      "status": 200,
+      "reply": "Fictional demonstration — Patron B.\nEligible for renew:\n- Educated (B-1): due 2026-11-23 → 2026-12-14; renewals 1 → 2/2\nBlocked (will remain unchanged):\n- The Great Gatsby: another fictional patron has an active hold on this work\n- 1984: renewal limit of 2 reached\nConfirm renewal of only these eligible loans? Say “yes” or “cancel”. This preview expires in 5 minutes."
+    },
+    {
+      "message": "Cancel",
+      "status": 200,
+      "reply": "Fictional demonstration: the pending action was cancelled; no changes were made."
+    },
+    {
+      "message": "Yes",
+      "status": 200,
+      "reply": "There is no pending fictional transaction to confirm. Select an account and request a renewal or hold first."
+    }
+  ],
+  "finalAccount": {
+    "fictional": true,
+    "patron": {
+      "id": "B",
+      "name": "Bram Bookmark (fictional)",
+      "audience": "Adult",
+      "situation": "Overdue loan, hold block, renewal limit, existing hold"
+    },
+    "today": "2026-11-02",
+    "policies": {
+      "fictional": true,
+      "timezone": "America/Indiana/Indianapolis",
+      "loanDays": {
+        "Print Book": 21,
+        "Large Print": 21,
+        "Ebook": 14,
+        "Audiobook": 14,
+        "DVD": 7,
+        "Blu-ray": 7
+      },
+      "renewalLimit": 2,
+      "holdLimit": 5,
+      "confirmationMinutes": 5,
+      "renewalRule": "Renew from the later of today or the current due date, for one format-specific loan period. Overdue loans may be renewed. Another patron’s active work-level hold or two prior renewals blocks renewal.",
+      "holdRule": "One active hold per work per account; at most five active holds. No holds on a work already checked out to this account. Child account C may hold Children or All Ages works only. Holds are simulated requests, not reservations of real stock.",
+      "restrictions": "Only the three fictional accounts are supported. No real sign-in, checkout, return, payment, fines, automatic fulfillment, or real library integration. Confirmations expire after five minutes and are cancelled by an account switch, another chat topic, or cancellation."
+    },
+    "loans": [
+      {
+        "id": "B-1",
+        "recordId": "CAT-0021",
+        "dueDate": "2026-11-23",
+        "renewals": 1,
+        "title": "Educated",
+        "format": "Print Book",
+        "overdue": false,
+        "renewalLimit": 2,
+        "eligible": true,
+        "reasons": [],
+        "newDueDate": "2026-12-14"
+      },
+      {
+        "id": "B-2",
+        "recordId": "CAT-0001",
+        "dueDate": "2026-11-06",
+        "renewals": 0,
+        "title": "The Great Gatsby",
+        "format": "Print Book",
+        "overdue": false,
+        "renewalLimit": 2,
+        "eligible": false,
+        "reasons": [
+          "another fictional patron has an active hold on this work"
+        ],
+        "newDueDate": "2026-11-27"
+      },
+      {
+        "id": "B-3",
+        "recordId": "CAT-0003",
+        "dueDate": "2026-11-08",
+        "renewals": 2,
+        "title": "1984",
+        "format": "Print Book",
+        "overdue": false,
+        "renewalLimit": 2,
+        "eligible": false,
+        "reasons": [
+          "renewal limit of 2 reached"
+        ],
+        "newDueDate": "2026-11-29"
+      }
+    ],
+    "holds": [
+      {
+        "id": "H-B-1",
+        "recordId": "CAT-0006",
+        "placedOn": "2026-11-02",
+        "title": "The Hobbit",
+        "status": "Simulated request; no real availability confirmed"
+      },
+      {
+        "id": "e1b486fe-6f12-4f5b-9347-849a56e52c64",
+        "recordId": "CAT-0011",
+        "placedOn": "2026-11-02",
+        "title": "Dune",
+        "status": "Simulated request; no real availability confirmed"
+      }
+    ],
+    "transactions": [
+      {
+        "fictional": true,
+        "transactionId": "63faee0d-4b81-4764-bfc8-8f905296dc09",
+        "accountId": "B",
+        "action": "renew",
+        "completed": [
+          {
+            "loanId": "B-1",
+            "recordId": "CAT-0021",
+            "title": "Educated",
+            "dueDate": "2026-11-23",
+            "renewals": 1
+          }
+        ],
+        "blocked": [
+          {
+            "id": "B-2",
+            "recordId": "CAT-0001",
+            "dueDate": "2026-11-06",
+            "renewals": 0,
+            "title": "The Great Gatsby",
+            "format": "Print Book",
+            "overdue": false,
+            "renewalLimit": 2,
+            "eligible": false,
+            "reasons": [
+              "another fictional patron has an active hold on this work"
+            ],
+            "newDueDate": "2026-11-27"
+          },
+          {
+            "id": "B-3",
+            "recordId": "CAT-0003",
+            "dueDate": "2026-11-08",
+            "renewals": 2,
+            "title": "1984",
+            "format": "Print Book",
+            "overdue": false,
+            "renewalLimit": 2,
+            "eligible": false,
+            "reasons": [
+              "renewal limit of 2 reached"
+            ],
+            "newDueDate": "2026-11-29"
+          }
+        ],
+        "replayed": false,
+        "timestamp": "2026-11-02T17:00:00.000Z"
+      },
+      {
+        "fictional": true,
+        "transactionId": "4af97ab2-c009-4c4b-98d4-4520b974aee1",
+        "accountId": "B",
+        "action": "hold",
+        "completed": [
+          {
+            "id": "e1b486fe-6f12-4f5b-9347-849a56e52c64",
+            "recordId": "CAT-0011",
+            "placedOn": "2026-11-02",
+            "title": "Dune"
+          }
+        ],
+        "blocked": [],
+        "replayed": false,
+        "timestamp": "2026-11-02T17:00:00.000Z"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "url": "/account.html",
+      "status": 200
+    },
+    {
+      "url": "/account-summary.html",
+      "status": 200
+    },
+    {
+      "url": "/account.js",
+      "status": 200
+    },
+    {
+      "url": "/api/circulation/policies",
+      "status": 200
+    },
+    {
+      "url": "/api/catalog/summary",
+      "status": 200
+    },
+    {
+      "url": "/pericles/data/circulation.json",
+      "status": 404
+    },
+    {
+      "url": "/pericles/circulation-service.js",
+      "status": 404
+    },
+    {
+      "url": "/.env",
+      "status": 404
+    }
+  ]
+}

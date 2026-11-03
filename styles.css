@@ -293,6 +293,36 @@ body {
   border: 1px solid var(--line);
 }
 
+.message.assistant .bubble a {
+  color: var(--teal);
+  overflow-wrap: anywhere;
+}
+
+.message-sources {
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.message-sources ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.message-sources li {
+  margin: 0.65rem 0;
+}
+
+.source-relevance {
+  margin: 0.25rem 0;
+}
+
+.message-sources small {
+  display: block;
+  color: #5b6470;
+  margin-top: 0.2rem;
+}
+
 .message.user .bubble {
   background: linear-gradient(135deg, var(--navy), var(--teal));
   color: #fff;
@@ -947,3 +977,9 @@ body {
     flex-direction: column;
   }
 }
+.demo-account-selector { margin: 1rem 0; padding: 1rem; border: 1px solid #b7c7cc; border-radius: .5rem; }
+.demo-account-selector label { display: block; font-weight: 700; margin-bottom: .5rem; }
+.demo-account-selector select { max-width: 100%; padding: .6rem; }
+#demoAccountActions button, #demoConfirmation button, #demoAccountActions input { margin: .5rem; padding: .6rem; }
+#demoAccountActions label { display: block; margin-top: 1rem; }
+.demo-preview, #demoTransactionStatus { white-space: pre-wrap; }

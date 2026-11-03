@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stapleton Public Library Account Login</title>
+  <title>Stapleton Public Library Fictional Demonstration Account</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -31,20 +31,22 @@
 
   <main class="page-shell">
     <section class="account-card">
-      <p class="eyebrow">Patron Portal</p>
-      <h1>Sign in to your Stapleton Public Library account</h1>
-      <p class="account-subtitle">Demonstration login for the Stapleton Public Library patron portal. Enter any credentials to continue.</p>
-
-      <form class="account-form" action="account-summary.html" method="get">
-        <label for="cardNumber">Library card number</label>
-        <input id="cardNumber" name="cardNumber" type="text" autocomplete="off" placeholder="Enter card number">
-
-        <label for="pin">PIN or password</label>
-        <input id="pin" name="pin" type="password" autocomplete="off" placeholder="Enter PIN or password">
-
-        <button type="submit">Access Account</button>
-      </form>
+      <p class="eyebrow">Fictional Demonstration Account</p>
+      <h1>Explore a fictional library account</h1>
+      <p class="account-subtitle">Choose one of three fictional classroom accounts. Changes persist on this demonstration server and are shared by everyone selecting that fictional patron. No real library account is connected.</p>
+      <p>No library card number, PIN, or password is needed. Do not enter or share real library credentials.</p>
+      <div class="demo-account-selector">
+        <label for="demoAccount">Fictional demonstration patron</label>
+        <select id="demoAccount" aria-describedby="demoAccountStatus">
+          <option value="">Choose A, B, or C (no sign-in)</option>
+        </select>
+        <p id="demoAccountStatus" role="status">No sign-in is required. These shared classroom accounts contain fictional data only.</p>
+      </div>
+      <p><a class="catalog-open-link" href="account-summary.html">Open fictional demonstration account</a></p>
     </section>
   </main>
+  <script src="frontend-config.js"></script>
+  <script src="api-client.js"></script>
+  <script src="account.js"></script>
 </body>
 </html>

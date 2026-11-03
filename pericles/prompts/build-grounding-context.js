@@ -7,17 +7,18 @@ const {
   POLICY_CONTEXT
 } = require('../knowledge/library-facts');
 const { INSTITUTIONAL_CONTEXT } = require('../knowledge/institutional-context');
+const { CATALOG_ENTRIES } = require('../catalog-service');
 
 function formatCatalogMatches(catalogMatches) {
   if (!catalogMatches.length) {
-    return 'Relevant Collection Matches:\n- No confident title matches found for this prompt in the catalog seed index.';
+    return 'Relevant Collection Matches:\n- No relevant records were found in the demonstration catalog for this prompt.';
   }
 
   const lines = catalogMatches.map((entry, index) => {
-    return `${index + 1}. ${entry.title} by ${entry.author} (${entry.year}) | ${entry.format} | Call No: ${entry.callNumber} | Location: ${entry.location} | Subjects: ${(entry.subjects || []).join(', ')}`;
+    return `${index + 1}. Record ${entry.recordId}: ${entry.title} by ${entry.author} (${entry.year}) | ${entry.format} | Call No: ${entry.callNumber} | Location: ${entry.location} | Subjects: ${(entry.subjects || []).join(', ')}`;
   });
 
-  return `Relevant Collection Matches:\n${lines.join('\n')}`;
+  return `Verified Demonstration Catalog Records (record existence only; availability is not tracked):\n${lines.join('\n')}`;
 }
 
 function buildGroundingContext({ catalogMatches = [] } = {}) {
@@ -29,7 +30,7 @@ function buildGroundingContext({ catalogMatches = [] } = {}) {
     `Policy Context:\n- ${POLICY_CONTEXT.join('\n- ')}`,
     `Community Context:\n- ${INSTITUTIONAL_CONTEXT.community.join('\n- ')}`,
     formatCatalogMatches(catalogMatches),
-    'Catalog Scope Note:\n- The demonstration catalog is generated from a seed title list. A missing match does not prove that a real library would not own the item. Suggest the Card Catalog page when the supplied matches are insufficient.'
+    `Catalog Scope Note:\n- The demonstration catalog contains ${CATALOG_ENTRIES.length} generated records; this is not a verified inventory of the library's complete real-world holdings.\n- Catalog records do not indicate current availability, checkout status, or whether an item is on the shelf.\n- A missing match does not prove that a real library would not own the item.`
   ];
 
   return sections.join('\n\n');

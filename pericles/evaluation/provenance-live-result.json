@@ -1,0 +1,8 @@
+{
+  "query": "Find three credible sources on the history of public libraries in Indiana from 1900 to 1950, preferably primary sources.",
+  "status": 502,
+  "diagnostics": [],
+  "patronResponse": {
+    "error": "The reference service could not return a verified response. Please try again."
+  }
+}

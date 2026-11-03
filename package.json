@@ -6,8 +6,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build:frontend": "node scripts/prepare-frontend.cjs",
+    "test": "node --test"
   },
+  "engines": { "node": ">=22" },
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.19.2"

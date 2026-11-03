@@ -1,0 +1,65 @@
+{
+  "phase": "diagnosis",
+  "query": "I'm researching the history of public libraries in Indiana between 1900 and 1950. Can you find three specific, credible sources, preferably including primary sources, and give me links to them?",
+  "httpStatus": 502,
+  "durationMs": 14147,
+  "trace": [
+    {
+      "operation": "research_initial",
+      "stage": "retrieval",
+      "attempt": 1,
+      "executed": true,
+      "maxOutputTokens": 2200,
+      "httpStatus": 200,
+      "providerStatus": "completed",
+      "outputTokens": 340,
+      "completed": true,
+      "retrievedCount": 24,
+      "durationMs": 3202
+    },
+    {
+      "stage": "page_inspection",
+      "attempt": 1,
+      "executed": true,
+      "completed": true,
+      "attemptedCount": 2,
+      "inspectedCount": 1,
+      "durationMs": 511
+    },
+    {
+      "operation": "research_initial_evaluation",
+      "stage": "relevance_evaluation",
+      "attempt": 1,
+      "executed": true,
+      "maxOutputTokens": 6940,
+      "httpStatus": 200,
+      "providerStatus": "completed",
+      "outputTokens": 1144,
+      "completed": true,
+      "expectedCount": 24,
+      "parsed": true,
+      "returnedCount": 24,
+      "uniqueIdCount": 23,
+      "missingIdCount": 1,
+      "unknownIdCount": 0,
+      "completeIdReview": false,
+      "errorCategory": "source_review_validation_error",
+      "durationMs": 9299
+    }
+  ],
+  "logs": [
+    {
+      "level": "error",
+      "event": "openai_request_failure",
+      "operation": "research_initial_evaluation",
+      "errorType": "source_review_validation_error",
+      "retrievedCount": 24,
+      "evaluatedCount": 0,
+      "batchCount": 24,
+      "responseStatus": "completed"
+    }
+  ],
+  "patronResponse": {
+    "error": "The reference service could not return a verified response. Please try again."
+  }
+}

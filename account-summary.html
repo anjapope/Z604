@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stapleton Public Library Account Summary</title>
+  <title>Stapleton Public Library Fictional Account Summary</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -31,44 +31,38 @@
 
   <main class="page-shell">
     <section class="account-card">
-      <p class="eyebrow">Patron Portal</p>
-      <h1>Account summary</h1>
-      <p class="account-subtitle">This Stapleton Public Library demonstration account displays the same sample information for all logins.</p>
-
-      <div class="account-grid">
-        <article class="account-panel">
-          <h2>Items checked out</h2>
-          <ul>
-            <li>The Midnight Library — Due Jul 1, 2026</li>
-            <li>Atomic Habits — Due Jul 3, 2026</li>
-            <li>Project Hail Mary (Audiobook) — Due Jul 5, 2026</li>
-          </ul>
-        </article>
-
-        <article class="account-panel overdue">
-          <h2>Overdue items</h2>
-          <ul>
-            <li>Educated — Due Jun 10, 2026 (8 days overdue)</li>
-          </ul>
-        </article>
-
-        <article class="account-panel">
-          <h2>Fines and fees</h2>
-          <p class="account-value">$4.50</p>
-          <p>Overdue fine: $3.00</p>
-          <p>Replacement processing fee: $1.50</p>
-        </article>
-
-        <article class="account-panel">
-          <h2>Contact on file</h2>
-          <p><strong>Address:</strong> 214 Maple Avenue, Stapleton, CA 90210</p>
-          <p><strong>Phone:</strong> (555) 014-7821</p>
-          <p><strong>Email:</strong> patron.services@stapletonlibrary.org</p>
-        </article>
+      <p class="eyebrow">Fictional Demonstration Account</p>
+      <h1>Fictional account summary</h1>
+      <p class="account-subtitle">Fictional classroom circulation, backed by server state. No sign-in is required. Renewals and holds require an explicit confirmation. No real loans, payments, credentials, or patron records are involved.</p>
+      <div class="demo-account-selector">
+        <label for="demoAccount">Fictional demonstration patron</label>
+        <select id="demoAccount" aria-describedby="demoAccountStatus">
+          <option value="">Choose A, B, or C (no sign-in)</option>
+        </select>
+        <p id="demoAccountStatus" role="status">No sign-in is required. These shared classroom accounts contain fictional data only.</p>
       </div>
+      <p><a href="index.html">Ask Pericles</a>: "When are my books due?", "Can you renew everything?", or "Place a hold on Dune."</p>
+      <div id="demoAccountDetails" aria-live="polite"></div>
+      <div id="demoAccountActions" hidden>
+        <button id="demoRenewAll" type="button">Preview renewal of all fictional loans</button>
+        <label for="demoHoldTitle">Find a demonstration catalog work to hold</label>
+        <input id="demoHoldTitle" type="text" maxlength="200" placeholder="Title, for example Dune">
+        <button id="demoFindHold" type="button">Find catalog works</button>
+        <div id="demoHoldResults"></div>
+      </div>
+      <section id="demoConfirmation" hidden aria-live="polite">
+        <h2>Confirm fictional transaction</h2>
+        <p id="demoPreviewText" class="demo-preview"></p>
+        <button id="demoConfirm" type="button">Confirm eligible action</button>
+        <button id="demoCancel" type="button">Cancel</button>
+      </section>
+      <p id="demoTransactionStatus" role="status"></p>
 
-      <p><a class="account-back-link" href="account.html">Back to login</a></p>
+      <p><a class="account-back-link" href="account.html">Back to demonstration account</a></p>
     </section>
   </main>
+  <script src="frontend-config.js"></script>
+  <script src="api-client.js"></script>
+  <script src="account.js"></script>
 </body>
 </html>

@@ -61,6 +61,13 @@
         <span class="status-pill">Pericles Pilot</span>
       </div>
 
+      <div class="demo-account-selector">
+        <label for="demoAccount">Fictional demonstration patron</label>
+        <select id="demoAccount" aria-describedby="demoAccountStatus">
+          <option value="">Choose A, B, or C (no sign-in)</option>
+        </select>
+        <p id="demoAccountStatus" role="status">No sign-in is required. These shared classroom accounts contain fictional data only.</p>
+      </div>
       <div class="quick-actions" aria-label="Suggested questions">
         <button type="button" class="quick-action">Find a book club recommendation</button>
         <button type="button" class="quick-action">What events are happening this week?</button>
@@ -72,7 +79,7 @@
 
       <form class="chat-form" id="chatForm">
         <label class="sr-only" for="userPrompt">Ask Pericles, the Stapleton Public Library assistant, a question</label>
-        <textarea id="userPrompt" name="prompt" rows="2" placeholder="Ask Stapleton Public Library about collections, events, programs, or research help..."></textarea>
+        <textarea id="userPrompt" name="prompt" rows="2" maxlength="4000" placeholder="Ask Stapleton Public Library about collections, events, programs, or research help..."></textarea>
         <button type="submit">Send</button>
       </form>
     </section>
@@ -89,6 +96,10 @@
     </section>
   </main>
 
+  <script src="pericles/citation-renderer.js"></script>
+  <script src="frontend-config.js"></script>
+  <script src="api-client.js"></script>
+  <script src="account.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

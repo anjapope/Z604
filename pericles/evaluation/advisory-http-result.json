@@ -1,0 +1,56 @@
+[
+  {
+    "scenario": "Child fantasy",
+    "message": "Recommend fantasy for my seven-year-old.",
+    "history": [],
+    "status": 200,
+    "reply": "I found 2 appropriate distinct works.\n- [Harry Potter and the Sorcerer's Stone](/catalog-detail.html?id=CAT-0096) — J.K. Rowling. Print Book; audience: Children/Teen; genre: Fantasy. Why it fits: the catalog describes fantasy; An orphan discovers he is a wizard and enters a hidden world.\n- [Percy Jackson and the Olympians: The Lightning Thief](/catalog-detail.html?id=CAT-0097) — Rick Riordan. Ebook; audience: Children/Teen; genre: Fantasy. Why it fits: the catalog describes fantasy; A modern boy learns he is the son of a Greek god.\nThese are demonstration-catalog records, not confirmed circulation availability. Generated copies and editions do not represent distinct works."
+  },
+  {
+    "scenario": "Adult audio with exclusion",
+    "message": "Recommend adult science fiction, no horror, only audiobooks.",
+    "history": [],
+    "status": 200,
+    "reply": "Here are three matching distinct works.\n- [Project Hail Mary](/catalog-detail.html?id=CAT-0014) — Andy Weir. Audiobook; audience: Adult; genre: Science Fiction. Why it fits: the catalog describes science fiction; A lone astronaut wakes with a mission to save Earth.\n- [1984](/catalog-detail.html?id=CAT-0105) — George Orwell. Audiobook; audience: Adult; genre: Science Fiction. Why it fits: the catalog describes science fiction; A bleak portrait of authoritarian control and resistance.\n- [Dune](/catalog-detail.html?id=CAT-0113) — Frank Herbert. Audiobook; audience: Adult; genre: Science Fiction. Why it fits: the catalog describes science fiction; Paul Atreides confronts destiny on the desert planet Arrakis.\nThese are demonstration-catalog records, not confirmed circulation availability. Generated copies and editions do not represent distinct works."
+  },
+  {
+    "scenario": "One appropriate work",
+    "message": "Recommend books about robots for children.",
+    "history": [],
+    "status": 200,
+    "reply": "I found 1 appropriate distinct work.\n- [The Wild Robot](/catalog-detail.html?id=CAT-0094) — Peter Brown. Print Book; audience: Children; genre: Children. Why it fits: the catalog describes robots; A robot learns to live among animals on a remote island.\nThese are demonstration-catalog records, not confirmed circulation availability. Generated copies and editions do not represent distinct works."
+  },
+  {
+    "scenario": "No matching holdings",
+    "message": "Recommend adult nonfiction about quantum archaeology.",
+    "history": [],
+    "status": 200,
+    "reply": "I found no appropriate works matching all of those preferences in the demonstration catalog. These are demonstration-catalog records, not confirmed circulation availability. Generated copies and editions do not represent distinct works."
+  },
+  {
+    "scenario": "Interview",
+    "message": "Recommend fiction for my seven-year-old.",
+    "history": [],
+    "status": 200,
+    "reply": "What reading preferences should I use—for example, adventure, friendship, or a favorite genre?"
+  },
+  {
+    "scenario": "Interview follow-up",
+    "message": "Fantasy, no horror.",
+    "history": [
+      {
+        "role": "user",
+        "content": "Recommend fiction for my seven-year-old."
+      }
+    ],
+    "status": 200,
+    "reply": "I found 2 appropriate distinct works.\n- [Harry Potter and the Sorcerer's Stone](/catalog-detail.html?id=CAT-0096) — J.K. Rowling. Print Book; audience: Children/Teen; genre: Fantasy. Why it fits: the catalog describes fantasy; An orphan discovers he is a wizard and enters a hidden world.\n- [Percy Jackson and the Olympians: The Lightning Thief](/catalog-detail.html?id=CAT-0097) — Rick Riordan. Ebook; audience: Children/Teen; genre: Fantasy. Why it fits: the catalog describes fantasy; A modern boy learns he is the son of a Greek god.\nThese are demonstration-catalog records, not confirmed circulation availability. Generated copies and editions do not represent distinct works."
+  },
+  {
+    "scenario": "Nonfiction",
+    "message": "Recommend nonfiction about cooking for adults.",
+    "history": [],
+    "status": 200,
+    "reply": "Here are three matching distinct works.\n- [The Joy of Cooking](/catalog-detail.html?id=CAT-0051) — Irma S. Rombauer. Print Book; audience: Adult; genre: Cooking. Why it fits: the catalog describes cooking; A foundational cookbook with broad recipes and kitchen guidance.\n- [Salt, Fat, Acid, Heat](/catalog-detail.html?id=CAT-0052) — Samin Nosrat. Print Book; audience: Adult; genre: Cooking. Why it fits: the catalog describes cooking; A practical framework for understanding taste and texture.\n- [Half Baked Harvest Super Simple](/catalog-detail.html?id=CAT-0053) — Tieghan Gerard. Ebook; audience: Adult; genre: Cooking. Why it fits: the catalog describes cooking; Approachable recipes designed for busy schedules.\nThese are demonstration-catalog records, not confirmed circulation availability. Generated copies and editions do not represent distinct works."
+  }
+]
