@@ -15,6 +15,16 @@ const PAGE_SIZE = 50;
 let currentPage = 1;
 let latestRenderToken = 0;
 let selectedRecordId = null;
+let hostedResults = [];
+let hostedQuery = null;
+const recordsById = new Map(CATALOG_ENTRIES.map(entry => [entry.recordId, entry]));
+
+function escapeCatalogText(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+}
+function safeCatalogEntry(entry) {
+  return { ...Object.fromEntries(Object.entries(entry).map(([key, value]) => [key, typeof value === 'string' ? escapeCatalogText(value) : value])), subjects: (entry.subjects || []).map(escapeCatalogText) };
+}
 
 function uniqueValues(entries, key) {
   return [...new Set(entries.map((entry) => entry[key]).filter(Boolean))].sort();
@@ -57,6 +67,7 @@ function matchesFilter(entry, query, genre, format) {
 }
 
 function renderDetail(entry) {
+  entry = safeCatalogEntry(entry);
   const subjects = (entry.subjects || []).join(' • ');
 
   catalogDetail.innerHTML = `
@@ -83,10 +94,11 @@ function buildIndexItem(entry, isSelected, onClick) {
   button.className = `catalog-index-item${isSelected ? ' selected' : ''}`;
   button.title = `${entry.title} by ${entry.author} (${entry.year}) — ${entry.callNumber}. Click to view full card details.`;
   button.setAttribute('aria-label', `Open catalog card for ${entry.title} by ${entry.author}`);
+  const safe = safeCatalogEntry(entry);
   button.innerHTML = `
-    <p class="index-title">${entry.title}</p>
-    <p class="index-meta">${entry.author} · ${entry.year}</p>
-    <p class="index-meta">${entry.callNumber} · ${entry.format}</p>
+    <p class="index-title">${safe.title}</p>
+    <p class="index-meta">${safe.author} · ${safe.year}</p>
+    <p class="index-meta">${safe.callNumber} · ${safe.format}</p>
   `;
   button.addEventListener('click', onClick);
   return button;
@@ -119,7 +131,7 @@ function getFilteredEntries() {
   const genre = genreFilter.value;
   const format = formatFilter.value;
 
-  return CATALOG_ENTRIES.filter((entry) => matchesFilter(entry, query, genre, format));
+  return hostedResults.filter(entry => (!genre || entry.genre === genre) && (!format || entry.format === format));
 }
 
 function updatePaginationControls(totalItems, totalPages, startIndex, endIndex) {
@@ -199,7 +211,7 @@ function renderCatalog() {
   }
 
   const label = filtered.length === 1 ? 'title' : 'titles';
-  catalogCount.textContent = `${filtered.length} ${label}`;
+  catalogCount.textContent = `${filtered.length} ${label} (from up to 50 API records)`;
   updatePaginationControls(filtered.length, totalPages, startIndex, endIndex);
 
   return filtered.length;
@@ -210,15 +222,39 @@ function scheduleRender() {
   latestRenderToken = token;
   updateFilterFeedback(true);
 
-  requestAnimationFrame(() => {
+  requestAnimationFrame(async () => {
     if (token !== latestRenderToken) {
       return;
     }
 
     const startedAt = performance.now();
+    const query = catalogSearch.value.trim().toLowerCase();
+    try {
+      if (query && query !== hostedQuery) {
+        const response = await window.PericlesApi.fetch(`/api/catalog/search?q=${encodeURIComponent(query)}&limit=50`);
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || 'Catalog search is unavailable.');
+        if (token !== latestRenderToken) return;
+        hostedResults = payload.results.map(record => ({ ...recordsById.get(record.recordId), ...record }));
+        hostedQuery = query;
+      }
+    } catch (error) {
+      if (token !== latestRenderToken) return;
+      hostedQuery = null;
+      hostedResults = [];
+      catalogIndex.replaceChildren();
+      catalogDetail.textContent = error.message;
+      catalogCount.textContent = 'Search unavailable';
+      pageStatus.textContent = 'Search unavailable';
+      prevPageButton.disabled = true;
+      nextPageButton.disabled = true;
+      updateFilterFeedback(false);
+      filterStatus.textContent = 'Search unavailable';
+      return;
+    }
     const matchedCount = renderCatalog();
     const elapsedMs = performance.now() - startedAt;
-    const scannedCount = CATALOG_ENTRIES.length;
+    const scannedCount = hostedResults.length;
 
     if (token === latestRenderToken) {
       updateFilterFeedback(false, elapsedMs, scannedCount, matchedCount);

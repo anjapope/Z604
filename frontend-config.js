@@ -1,3 +1,5 @@
-// Public configuration only. Set this to the HTTPS Render origin before building Pages.
-// Empty uses the current origin for the local Express frontend.
-window.PERICLES_CONFIG = { backendUrl: '' };
+// Public URL only. Local Express remains same-origin; the student site uses Render.
+window.PERICLES_CONFIG = {
+  backendUrl: window.location.hostname === 'anjapope.github.io'
+    ? 'https://pericles-api.onrender.com' : ''
+};

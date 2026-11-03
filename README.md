@@ -1,5 +1,7 @@
 # Z604
 
+Pass 4B configures https://anjapope.github.io/Z604/ to use https://pericles-api.onrender.com. The manual `.github/workflows/pages.yml` workflow publishes only the browser artifact; GitHub Pages Source must be set to **GitHub Actions** before an authorized publication. See the Pass 4B section of [DEPLOYMENT.md](DEPLOYMENT.md) for exact steps and hosted verification results. The Pages workflow must be dispatched separately after review; no workflow run has been performed.
+
 Pass 4A deployment preparation is documented in [DEPLOYMENT.md](DEPLOYMENT.md). The app supports a Render backend, an allowlisted GitHub Pages frontend artifact, exact origin restrictions, cookie-independent fictional sessions, server-side request ceilings, and bounded AI calls. Nothing has been deployed. Supply the approved Pages origin and real backend URL before a later authorized deployment. Render classroom JSON data and in-memory counters are disposable, not durable cloud storage.
 
 A Stapleton Public Library portal demo with:

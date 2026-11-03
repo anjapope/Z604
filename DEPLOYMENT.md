@@ -1,6 +1,6 @@
 # Pass 4A — deployment preparation only
 
-No service, GitHub Pages publication, commit, or push was created by this pass. The actual GitHub Pages origin and Render URL must be supplied before deployment. The placeholders below are not configured destinations.
+Pass 4A prepared the deployment split; Pass 4B now configures the student frontend for https://pericles-api.onrender.com and https://anjapope.github.io/Z604/. Pass 4B publication remains a separate manual action. See the Pass 4B publication steps below before publishing.
 
 ## Render backend (perform only after deployment authorization)
 
@@ -82,9 +82,9 @@ This only writes `dist-frontend/`; it never commits, pushes, uploads, or deploys
 
 Publish **only the contents of this artifact**, never the source repository's root. Its shared allowlist contains HTML, CSS, browser JavaScript, the synthetic catalog, and `.nojekyll`. Backend modules, `.env`, local state, package files, tests, and diagnostic reports are excluded. The generated `frontend-config.js` contains only a public URL, never credentials. The entire artifact should be reviewed before authorizing publication.
 
-After authorization, choose GitHub Pages' **GitHub Actions** publishing source and use a reviewed workflow to: check out the repository, select Node 22, run `npm ci`, set the public `PUBLIC_BACKEND_URL` build variable, run `npm run build:frontend`, upload **only `dist-frontend`** with `actions/upload-pages-artifact`, and deploy that artifact with `actions/deploy-pages`. Grant only the documented Pages/OIDC permissions and protect the deployment environment. No publishing workflow is installed or activated by this pass. Alternatively publish the artifact alone on a dedicated Pages publishing branch after an explicit commit/push authorization. [GitHub publishing sources](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site), [custom Pages workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+After authorization, choose GitHub Pages' **GitHub Actions** publishing source and use a reviewed workflow to: check out the repository, select Node 22, run `npm ci`, set the public `PUBLIC_BACKEND_URL` build variable, run `npm run build:frontend`, upload **only `dist-frontend`** with `actions/upload-pages-artifact`, and deploy that artifact with `actions/deploy-pages`. Grant only the documented Pages/OIDC permissions and protect the deployment environment. Pass 4B adds `.github/workflows/pages.yml` with a manual `workflow_dispatch` trigger; it does not publish on push and has not been run. Alternatively publish the artifact alone on a dedicated Pages publishing branch after an explicit commit/push authorization. [GitHub publishing sources](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site), [custom Pages workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 
-The origin is `https://YOUR-USERNAME.github.io`; a project path such as `/Z604/` is not part of CORS configuration. Browser API calls for chat, account selection, summaries, previews, confirmations, and catalog hold search all go through `api-client.js` to the configured backend. The browser catalog itself can still browse the public synthetic dataset offline. Chat record links retain the Pages project path. Without a configured backend, Pages reports a useful configuration error rather than pretending to run a backend.
+The origin is `https://YOUR-USERNAME.github.io`; a project path such as `/Z604/` is not part of CORS configuration. Browser API calls for chat, account selection, summaries, previews, confirmations, and catalog hold search all go through `api-client.js` to the configured backend. The main catalog search now requests up to 50 backend records; genre/format filters apply to that returned set. The bundled synthetic dataset supplies filter choices and full card descriptions, not search authority. Catalog card pages retain the bundled demonstration metadata. Chat record links retain the Pages project path. Without a configured backend, Pages reports a useful configuration error rather than pretending to run a backend.
 
 ## Sessions and restricted origins
 
@@ -103,3 +103,34 @@ No persistent disk or database is configured. This is appropriate only for dispo
 Run `npm test`, JavaScript syntax checks, and `npm audit`. Review `pericles/evaluation/deployment.test.js`: it covers Render host/port configuration, minimal health, exact CORS and preflights, cookie-free cross-site circulation, general/IP/global/provider/concurrency limits, unavailable providers, safe JSON errors, frontend API URL routing, session propagation, Pages record paths, and the static artifact allowlist.
 
 After deployment is authorized, smoke-test both the Pages project URL and Render backend: health should return only `{ "ok": true }`; select each fictional patron, read checkouts, preview and confirm one eligible renewal, verify blocked items unchanged, and preview/confirm a hold. Repeat a yes and confirm no duplicate. Verify catalog APIs and a chat record link. A disallowed Origin must get 403; source/state/diagnostic URLs must get 404. Test throttling with reduced test ceilings without spending live AI credits. Preview in-browser before the class; this pass performs local HTTP and executable frontend tests only and does not claim a live Render/Pages verification.
+
+
+## Pass 4B: publish the configured student site
+
+Production frontend: **https://anjapope.github.io/Z604/**. Backend: **https://pericles-api.onrender.com**. Keep Render `FRONTEND_ORIGIN=https://anjapope.github.io` (no `/Z604/` path). Health and approved-origin preflights are verified against that hosted backend.
+
+`frontend-config.js` selects Render on `anjapope.github.io` and keeps local Express same-origin. The CLI build also defaults to the actual Render URL; `PUBLIC_BACKEND_URL` can override it. No API key is placed in the artifact. Local development still uses `npm start` and http://localhost:4000 from the source workspace. The production artifact deliberately uses Render even if served locally for a production preview.
+
+Exact local preparation commands (PowerShell), choosing a new empty artifact directory:
+
+```powershell
+npm.cmd test
+$env:PUBLIC_BACKEND_URL = 'https://pericles-api.onrender.com'
+npm.cmd run build:frontend -- --output dist-frontend-pass4b
+```
+
+The artifact is local only. The existing `dist-frontend/` from Pass 4A contains old configuration; do not publish it. The workflow builds a fresh `dist-frontend/` on a clean runner with the explicit Render URL.
+
+Before any publication, in **anjapope/Z604 ? Settings ? Pages ? Build and deployment ? Source**, choose **GitHub Actions**. Do not choose Deploy from a branch with the repository root. This setting must be switched before an authorized push if the existing branch publisher would otherwise republish the root. Allow GitHub Actions under Settings ? Actions ? General if repository policy currently disables it. Review the `github-pages` environment and permit the `main` branch; any configured required reviewer must approve publication.
+
+After explicit commit/push authorization, put the reviewed Pass 4B files and `.github/workflows/pages.yml` on `main`. Then open **Actions ? Publish classroom frontend ? Run workflow ? Branch: main ? Run workflow**. Publication is manual, not automatic on push. The workflow installs dependencies, runs regressions, builds with `PUBLIC_BACKEND_URL=https://pericles-api.onrender.com`, and uploads only `dist-frontend` before the Pages deploy job. Pages and OIDC write permissions are restricted to the deploy job. No GitHub settings change or workflow dispatch was performed; committing/pushing the reviewed code does not dispatch this manual workflow.
+
+Once the workflow completes, open https://anjapope.github.io/Z604/ and hard-refresh. In browser Network, API calls must target `https://pericles-api.onrender.com/api/...`, never GitHub Pages `/api/...` or localhost. Static navigation and assets must remain below `/Z604/`. Open My Account in the same tab to preserve its header session. Cross-site API fetch uses `credentials: omit`, stores only the opaque fictional selector token in sessionStorage, and returns it in X-Demo-Session; no third-party cookie setting or real sign-in is required.
+
+### Live verification and remaining publication issue
+
+The hosted API passed catalog search, local-service chat, child reader's advisory, all three account selections, a confirmed Patron B Educated renewal (due 2026-11-24), a confirmed Dune hold, repeated-confirmation rejection, duplicate-hold rejection, allowed-origin preflight (204), unapproved origin (403), and backend private-file probes (404). The executable production frontend API client performed these calls with cookies omitted. These were actual fictional mutations on the disposable shared backend, not mock success messages; no paid AI call or state reset was used. Exact local results are in `pericles/evaluation/pages-render-live-result.json` (generated and git-ignored; rerun the live verifier to recreate them).
+
+The current public Pages URL returns 200 but still serves the old empty backend configuration. Its `server.js` and `pericles/evaluation/provenance-live-result.json` URLs also return 200; backend local state was 404. This is a frontend publication-source issue, not a Render route exposure. Public API inspection shows an active GitHub-generated `pages-build-deployment` workflow and no repository-authored Pages workflow yet. The administrator-only Pages settings endpoint was unavailable without authentication, so its precise branch/source setting was not changed or confirmed. The new manual artifact workflow and the required Source setting correct publication for the next authorized release; the existing live site remains unchanged until then.
+
+Local regression suite: 93/93 passed. This includes source configuration for production/localhost, main catalog API execution and escaping, project-relative links/assets in every artifact HTML file, private-file exclusion, and manual-only workflow behavior. Browser-pixel behavior and the new Pages release are not claimed as verified; the actual hosted API and executable frontend routing were verified. Shared demo JSON remains disposable on Render resets, and catalog search displays only the first 50 API records before genre/format filtering. Advanced research retrieval is unchanged.

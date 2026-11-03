@@ -23,6 +23,6 @@ function buildFrontend({ output = path.join(root, 'dist-frontend'), backendUrl =
 if (require.main === module) {
   const outputIndex = process.argv.indexOf('--output');
   const output = outputIndex >= 0 ? path.resolve(process.argv[outputIndex + 1]) : undefined;
-  console.log(`Prepared frontend only: ${buildFrontend({ output, backendUrl: process.env.PUBLIC_BACKEND_URL || '' })}. Nothing was deployed.`);
+  console.log(`Prepared frontend only: ${buildFrontend({ output, backendUrl: process.env.PUBLIC_BACKEND_URL || 'https://pericles-api.onrender.com' })}. Nothing was deployed.`);
 }
 module.exports = { buildFrontend };
