@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "revised": "2026-11-03",
+  "institution": "Stapleton Public Library",
+  "fictional": true,
+  "precedence": "Previously established hours, recurring programs, and circulation restrictions take precedence over Pass 4C suggested defaults. This file describes a fictional classroom institution, not verified facts about a real library.",
+  "timezone": "America/Indiana/Indianapolis",
+  "hours": {
+    "display": [
+      "Monday-Friday: 8:00 AM-8:00 PM",
+      "Saturday: 8:00 AM-5:00 PM",
+      "Sunday: 12:00 PM-4:00 PM"
+    ],
+    "week": {
+      "Sunday": {
+        "open": 720,
+        "close": 960
+      },
+      "Monday": {
+        "open": 480,
+        "close": 1200
+      },
+      "Tuesday": {
+        "open": 480,
+        "close": 1200
+      },
+      "Wednesday": {
+        "open": 480,
+        "close": 1200
+      },
+      "Thursday": {
+        "open": 480,
+        "close": 1200
+      },
+      "Friday": {
+        "open": 480,
+        "close": 1200
+      },
+      "Saturday": {
+        "open": 480,
+        "close": 1020
+      }
+    },
+    "exceptions": "Holiday exceptions and exceptional closures are not established; confirm with library staff."
+  },
+  "membership": {
+    "known": "Library cards are free to local residents.",
+    "unknown": "Specific identification, residency-verification documents, nonresident eligibility, and application procedures are not established. Ask library staff; the demonstration does not issue cards or request real credentials."
+  },
+  "circulation": {
+    "loanDays": {
+      "Print Book": 21,
+      "Large Print": 21,
+      "Ebook": 14,
+      "Audiobook": 14,
+      "DVD": 7,
+      "Blu-ray": 7
+    },
+    "renewalLimit": 2,
+    "holdLimit": 5,
+    "fines": "No overdue fines are charged. Replacement charges may apply for lost or damaged materials; amounts and assessment procedures are not established. The fictional account service does not assess or collect replacement charges or payments.",
+    "renewalRule": "Renew from the later of today or the current due date, for one format-specific loan period. Overdue loans may be renewed. Another patron's active work-level hold or two prior renewals blocks renewal.",
+    "holdRule": "One active hold per work per account; at most five active holds. No holds on a work already checked out to this account. Child account C may hold Children or All Ages works only. Holds are simulated requests, not reservations of real stock."
+  },
+  "rights": [
+    "Equitable access to library resources and services",
+    "Intellectual freedom and freedom of inquiry",
+    "Confidentiality of library records and reasonable privacy protections",
+    "Respectful and nondiscriminatory service",
+    "Reasonable accommodations for accessibility",
+    "Information about applicable policies and procedures"
+  ],
+  "responsibilities": [
+    "Treat staff and other patrons respectfully",
+    "Handle library materials and equipment responsibly",
+    "Respect shared spaces and other patrons' access",
+    "Follow applicable library policies",
+    "Protect library account credentials",
+    "Accept responsibility for lost or damaged materials under established policies"
+  ],
+  "privacy": "The library is committed to confidentiality of library records, freedom of inquiry, and equitable information access. This is a commitment, not a promise of absolute confidentiality or a legal guarantee. Record retention and disclosure procedures are not established. The classroom accounts are fictional and shared; their demonstration histories are visible to anyone selecting the same patron. Do not enter real credentials or private borrowing information in chat.",
+  "accessibility": "Patrons are entitled to reasonable accommodations for accessibility. Specific equipment, accommodations, and request procedures are not established; ask library staff about the accommodation needed.",
+  "services": [
+    "Reference and research assistance",
+    "Reader's advisory",
+    "Public computers and internet access",
+    "Wi-Fi",
+    "Community programming",
+    "Catalog searching, holds, and circulation assistance"
+  ],
+  "technology": "Public computers, internet access, and Wi-Fi are offered. Computer time limits, reservations, specific equipment, and current availability are not established; ask staff for those details.",
+  "rooms": "Meeting-room availability, booking procedures, and rules are not established; ask library staff. Pericles cannot reserve a room.",
+  "contact": {
+    "address": null,
+    "phone": null,
+    "email": null,
+    "unknown": "Official street address, telephone number, email, and service-desk locations are not established for this fictional library. Ask library staff for confirmation."
+  },
+  "challenges": "The library supports intellectual freedom and equitable access to lawful information. Specific challenge or reconsideration procedures are not established; ask library staff for the applicable policy.",
+  "events": [
+    "Storytime: Tuesdays and Fridays, 10:00-11:00 AM (weekly).",
+    "Tech Team Training Seminars: Mondays at 11:00 AM (open to the public).",
+    "Adult Book Club: Wednesdays at 6:30 PM.",
+    "Fiction Convention Showcase: Fridays at 6:30 PM.",
+    "Teen Game and Craft Days/Tournaments: Saturdays, 12:00-4:00 PM.",
+    "Lego Lab: 4th Thursday monthly, 5:30-7:30 PM (families, kids, enthusiasts).",
+    "Board Meeting: 4th Thursday monthly at 8:00 PM (open to the public).",
+    "Digital Citizenship Workshop: Tuesdays at 7:30 PM in alternating months (all ages).",
+    "Summer Reading Program: June 1-July 31; prizes; families can sign up in BeanStack.",
+    "Frontiers and Folktales: runs through Fall with Youth Services, Special Collections, and Mercer Park.",
+    "Monster Prom: Youth Services event on the weekend before Halloween, 8:00-10:30 PM."
+  ]
+}

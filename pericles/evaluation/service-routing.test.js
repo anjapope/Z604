@@ -74,7 +74,7 @@ const cases = [
   ['Search the catalog for Dune', 'catalog', /Dune.*Frank Herbert/s],
   ['Search the catalogue for Dune', 'catalog', /Dune.*Frank Herbert/s],
   ['Do you have books by Harper Lee?', 'catalog', /To Kill a Mockingbird.*Harper Lee/s],
-  ['How long can I borrow an ebook?', 'policies', /loan periods.*not established/is],
+  ['How long can I borrow an ebook?', 'policies', /fictional.*loan periods.*14 days/is],
   ['What accessible resources do you have?', 'library_information', /accessibility.*not established/is],
   ['I do not want fiction', 'readers_advisory', /leave fiction out.*nonfiction topic/is],
   ['Can I renew my books?', 'account', /cannot.*renew.*fictional/is],
@@ -118,7 +118,8 @@ test('routine answers are based on facts and do not invent unavailable details',
   for (const line of LIBRARY_HOURS) assert.ok(hours.includes(line));
   const events = await chat('What programs are available?');
   for (const line of EVENTS_CONTEXT) assert.ok(events.includes(line));
-  for (const question of ['How long can I borrow an ebook?', 'Where is the library?', 'How do I get a library card?']) {
+  assert.match(await chat('How long can I borrow an ebook?'), /fictional.*14 days/is);
+  for (const question of ['Where is the library?', 'How do I get a library card?']) {
     const reply = await chat(question);
     assert.match(reply, /not established/i);
     assert.doesNotMatch(reply, /\b\d+ (?:days|weeks)|555-|https?:\/\//);

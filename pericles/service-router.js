@@ -1,8 +1,9 @@
 'use strict';
 
-const { LIBRARY_HOURS, EVENTS_CONTEXT, SERVICES_CONTEXT, POLICY_CONTEXT } = require('./knowledge/library-facts');
+const { LIBRARY_HOURS, EVENTS_CONTEXT, SERVICES_CONTEXT } = require('./knowledge/library-facts');
 const { isAdvisoryRequest, answerAdvisory } = require('./readers-advisory');
 const { isCatalogQuestion, isCollectionQuestion } = require('./catalog-service');
+const { institutionalTopic, answerInstitutional } = require('./institutional-service');
 
 function isHoursQuestion(text) {
   return /\bhours?\b/i.test(text) || (/\b(?:open(?:ing)?|clos(?:e|es|ing|ed))\b/i.test(text)
@@ -16,6 +17,8 @@ function classifyServiceIntent(message) {
   if (/\b(?:do|can|could) you (?:help|assist)\b.*\b(?:citat|research|sources?|reference)|\b(?:citation help|research help|reference help|start (?:my |a )?research)\b/i.test(text)) return 'reference';
   if (/\b(?:genealog\w*|family history|grandfather|grandmother|ancestor|ancestry|census)\b/i.test(text)) return 'advanced_research';
   if (/\b(?:sources?|citations?|evidence)\b/i.test(text) && /\b(?:find|give|provide|need|identify|locate|research|support|opposing|credible|primary)\b/i.test(text)) return 'advanced_research';
+  const topic = institutionalTopic(text);
+  if (topic) return ['hours', 'holidays', 'contact', 'technology', 'accessibility', 'rooms', 'services'].includes(topic) ? 'library_information' : 'policies';
   if (isHoursQuestion(text)) return 'library_information';
   if (/\b(?:policy|policies|circulation policies|borrowing rules|loan (?:periods?|lengths?|limits?)|renewal (?:rules|limits?)|how long|how many (?:books|items)|library card|overdue (?:policy|fees?)|book challenges?)\b/i.test(text)) return 'policies';
   if (/\b(?:my account|my (?:books|loans)|patron [ABC]|transaction history|account (?:status|balance|summary)|checked[- ]out|due dates?|renew\w*|holds?|fines?|fees?|pay(?:ments?)?|card number|pin|password|sign[- ]?in|log[- ]?in)\b/i.test(text)) return 'account';
@@ -47,8 +50,10 @@ function routeServiceRequest(message, history = []) {
     }
   }
   const advisoryFollowup = previous === 'readers_advisory' && !/\b(?:search|browse)\s+(?:the\s+)?catalog|\b(?:do you have|books? by|new topic|start over|recommend\w*|suggest\w*)\b/i.test(message) && (!current || ['readers_advisory', 'catalog'].includes(current));
-  const continuing = previous && (isContextualFollowup(message) || advisoryFollowup) && (!current || current === previous
-    || (previous === 'readers_advisory' && current === 'catalog'));
+  const policyFollowup = previous === 'policies' && /^(?:and |what about )?(?:audio(?:books?)?|ebooks?|digital|video|print|large print)[?.!]*$/i.test(message.trim());
+  const continuing = previous && (isContextualFollowup(message) || advisoryFollowup || policyFollowup) && (!current || current === previous
+    || (previous === 'readers_advisory' && current === 'catalog')
+    || (policyFollowup && current === 'catalog'));
   if (!continuing) return { intent: current || 'general', history: [], userContext: message };
 
   // Keep only the contiguous same-service conversation, stopping at a topic switch.
@@ -65,6 +70,14 @@ function routeServiceRequest(message, history = []) {
 }
 
 function answerLocalService(intent, message, userContext = message) {
+  if (['library_information', 'policies'].includes(intent)) {
+    const institutional = answerInstitutional(message, userContext);
+    if (institutional) return institutional;
+    if (intent === 'library_information' && !classifyServiceIntent(message) && isHoursQuestion(userContext)) {
+      const hours = answerInstitutional(`${message} hours`);
+      if (hours) return hours;
+    }
+  }
   if (intent === 'library_information') {
     if (isHoursQuestion(message) || (!classifyServiceIntent(message) && isHoursQuestion(userContext))) {
       const days = message.match(/\b(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/gi) || [];
@@ -78,16 +91,13 @@ function answerLocalService(intent, message, userContext = message) {
     return 'SPL’s street address, public contact details, and service-desk locations are not established in the supplied library information. Please consult library staff for confirmation. You can browse the About and Programs pages for the established service information.';
   }
   if (intent === 'policies') {
-    if (/\b(?:book challenges?|intellectual freedom)\b/i.test(message)) return `${POLICY_CONTEXT[2]} Specific challenge or reconsideration procedures are not established here; please ask library staff for the applicable policy.`;
-    if (/\blibrary card\b/i.test(message)) return 'Library-card eligibility, required documents, application procedures, and fees are not established in the supplied SPL information. Please ask library staff. The fictional demonstration account does not issue a library card or accept real credentials.';
-    if (/\bprivacy|retention\b/i.test(message)) return `${POLICY_CONTEXT[3]} Please avoid sharing card numbers, passwords, or other sensitive information in chat.`;
-    return 'SPL loan periods, borrowing limits, renewal rules, and fees—including ebook borrowing rules—are not established in the supplied library information. Please ask library staff for the applicable policy. Demonstration catalog records do not establish borrowing eligibility or availability.';
+    return answerInstitutional('What policies?');
   }
   if (intent === 'account') return `${SERVICES_CONTEXT[5]} Choose a fictional patron in My Account for the classroom simulation. No sign-in or real library credentials are needed. For actual loans, due dates, renewals, holds, or balances, please contact library staff; do not share card numbers or passwords here.`;
   if (intent === 'events') {
     const terms = message.toLowerCase().match(/storytime|teen|children|youth|adult|book club|lego|board meeting|tech|digital citizenship|summer reading|monster prom|frontiers|folktales/g) || [];
     const matches = EVENTS_CONTEXT.filter(event => terms.some(term => event.toLowerCase().includes(term)));
-    return `${(matches.length ? matches : EVENTS_CONTEXT).join('\n')}\nThese are recurring program descriptions, not confirmed dated bookings. See the Events calendar and confirm cancellations or registration details with library staff.`;
+    return `For fictional Stapleton Public Library:\n${(matches.length ? matches : EVENTS_CONTEXT).join('\n')}\nThese are recurring program descriptions, not confirmed dated bookings. See the Events calendar and confirm cancellations or registration details with library staff.`;
   }
   if (intent === 'readers_advisory') {
     return answerAdvisory(userContext);

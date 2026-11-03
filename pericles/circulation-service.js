@@ -5,13 +5,14 @@ const path = require('node:path');
 const { randomUUID, randomBytes } = require('node:crypto');
 const { CATALOG_ENTRIES, CATALOG_SEED } = require('./catalog-service');
 const { workKey } = require('./readers-advisory');
+const { KNOWLEDGE, institutionalTopic } = require('./institutional-service');
 
 const POLICIES = Object.freeze({
-  fictional: true, timezone: 'America/Indiana/Indianapolis',
-  loanDays: Object.freeze({ 'Print Book': 21, 'Large Print': 21, Ebook: 14, Audiobook: 14, DVD: 7, 'Blu-ray': 7 }),
-  renewalLimit: 2, holdLimit: 5, confirmationMinutes: 5,
-  renewalRule: 'Renew from the later of today or the current due date, for one format-specific loan period. Overdue loans may be renewed. Another patron’s active work-level hold or two prior renewals blocks renewal.',
-  holdRule: 'One active hold per work per account; at most five active holds. No holds on a work already checked out to this account. Child account C may hold Children or All Ages works only. Holds are simulated requests, not reservations of real stock.',
+  fictional: true, timezone: KNOWLEDGE.timezone,
+  loanDays: Object.freeze(KNOWLEDGE.circulation.loanDays),
+  renewalLimit: KNOWLEDGE.circulation.renewalLimit, holdLimit: KNOWLEDGE.circulation.holdLimit, confirmationMinutes: 5,
+  renewalRule: KNOWLEDGE.circulation.renewalRule,
+  holdRule: KNOWLEDGE.circulation.holdRule,
   restrictions: 'Only the three fictional accounts are supported. No real sign-in, checkout, return, payment, fines, automatic fulfillment, or real library integration. Confirmations expire after five minutes and are cancelled by an account switch, another chat topic, or cancellation.'
 });
 
@@ -218,7 +219,7 @@ function createCirculationService({ filePath = path.join(__dirname, 'data', 'cir
     const hadPending = Boolean(session.pending);
     session.pending = null;
     if ((hadPending || intent === 'account' || session.lastWasCirculation) && /^(?:no|no thanks|cancel|cancel (?:it|that|the (?:renewal|hold)))[.!]?$/i.test(text)) return `Fictional demonstration: ${hadPending ? 'the pending action was cancelled; no changes were made.' : 'there is no pending action; no changes were made.'}`;
-    if (intent === 'policies' && (/\b(?:fictional|demo|circulation)\b/i.test(text) ||
+    if (!institutionalTopic(text) && intent === 'policies' && (/\b(?:fictional|demo|circulation)\b/i.test(text) ||
       (session.accountId && /\b(?:loan|renewal|hold|borrowing|borrow|how many (?:books|items))\b/i.test(text)))) return policyText();
     if (intent !== 'account' && !/\b(?:my books|my loans|patron [ABC]|transaction history)\b/i.test(text)) return null;
     if (!session.accountId) return 'I cannot access real accounts or renew real loans. Choose a fictional demonstration patron A, B, or C in the account selector first. No sign-in is required; never share real card numbers, PINs, or passwords.';

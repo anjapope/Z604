@@ -27,6 +27,7 @@ const {
 const { enrichSources } = require('./pericles/source-inspection');
 const { routeServiceRequest, answerLocalService } = require('./pericles/service-router');
 const { createCirculationService } = require('./pericles/circulation-service');
+const { answerInstitutional, splitInstitutionalRequest } = require('./pericles/institutional-service');
 
 dotenv.config();
 
@@ -365,6 +366,45 @@ app.post('/api/chat', async (req, res) => {
 
   const service = routeServiceRequest(message, history);
   const { userContext } = service;
+  // Policy explanations never pass through transaction parsing. Explicit action
+  // clauses still use the selected account's existing preview/confirmation flow.
+  if (service.intent !== 'advanced_research') {
+    const clauses = splitInstitutionalRequest(message);
+    if (clauses) {
+      req.demoSession.pending = null;
+      req.demoSession.lastWasCirculation = false;
+      const answers = [];
+      let accountReply = false;
+      try {
+        for (const clause of clauses) {
+          const context = routeServiceRequest(clause, history);
+          const institutional = answerInstitutional(clause, context.userContext);
+          if (institutional) { answers.push(institutional); continue; }
+          if (context.intent === 'account') {
+            const reply = app.locals.circulation.chat(req.demoSession, clause, context.intent);
+            if (reply) { answers.push(reply); accountReply = true; }
+          } else {
+            answers.push(answerLocalService(context.intent, clause, context.userContext)
+              || (context.intent === 'catalog' ? answerCatalogQuestion(clause, context.userContext) : null)
+              || 'Which library service would you like help with for that part of your question?');
+          }
+        }
+        req.demoSession.lastWasCirculation = accountReply;
+        return res.json({ reply: answers.join('\n\n'), sources: [], ...(accountReply ? { fictionalCirculation: true } : {}) });
+      } catch (_error) {
+        req.demoSession.pending = null;
+        return res.status(503).json({ error: 'Fictional circulation is unavailable. No transaction success is confirmed.' });
+      }
+    }
+    if (['policies', 'library_information'].includes(service.intent)) {
+      const reply = answerInstitutional(message, userContext);
+      if (reply) {
+        req.demoSession.pending = null;
+        req.demoSession.lastWasCirculation = false;
+        return res.json({ reply, sources: [] });
+      }
+    }
+  }
   try {
     const reply = app.locals.circulation.chat(req.demoSession, message, service.intent);
     req.demoSession.lastWasCirculation = Boolean(reply);

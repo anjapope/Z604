@@ -6,3 +6,4 @@ pericles/data/
 dist-frontend/
 dist-frontend-*/
 pericles/evaluation/pages-render-live-result.json
+pericles/evaluation/institutional-http-result.json
