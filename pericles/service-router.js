@@ -4,6 +4,7 @@ const { LIBRARY_HOURS, EVENTS_CONTEXT, SERVICES_CONTEXT } = require('./knowledge
 const { isAdvisoryRequest, answerAdvisory } = require('./readers-advisory');
 const { isCatalogQuestion, isCollectionQuestion } = require('./catalog-service');
 const { institutionalTopic, answerInstitutional } = require('./institutional-service');
+const { circulationIntent, accountFollowup } = require('./circulation-intent');
 
 function isHoursQuestion(text) {
   return /\bhours?\b/i.test(text) || (/\b(?:open(?:ing)?|clos(?:e|es|ing|ed))\b/i.test(text)
@@ -14,13 +15,14 @@ function isHoursQuestion(text) {
 // This dispatcher selects a service; research retrieval and evaluation remain separate.
 function classifyServiceIntent(message) {
   const text = String(message).trim();
+  if (circulationIntent(text)) return 'account';
   if (/\b(?:do|can|could) you (?:help|assist)\b.*\b(?:citat|research|sources?|reference)|\b(?:citation help|research help|reference help|start (?:my |a )?research)\b/i.test(text)) return 'reference';
   if (/\b(?:genealog\w*|family history|grandfather|grandmother|ancestor|ancestry|census)\b/i.test(text)) return 'advanced_research';
   if (/\b(?:sources?|citations?|evidence)\b/i.test(text) && /\b(?:find|give|provide|need|identify|locate|research|support|opposing|credible|primary)\b/i.test(text)) return 'advanced_research';
   const topic = institutionalTopic(text);
   if (topic) return ['hours', 'holidays', 'contact', 'technology', 'accessibility', 'rooms', 'services'].includes(topic) ? 'library_information' : 'policies';
   if (isHoursQuestion(text)) return 'library_information';
-  if (/\b(?:policy|policies|circulation policies|borrowing rules|loan (?:periods?|lengths?|limits?)|renewal (?:rules|limits?)|how long|how many (?:books|items)|library card|overdue (?:policy|fees?)|book challenges?)\b/i.test(text)) return 'policies';
+  if (/\b(?:policy|policies|circulation policies|borrowing rules|loan (?:periods?|lengths?|limits?)|renewal (?:rules|limits?)|how long|library card|overdue (?:policy|fees?)|book challenges?)\b/i.test(text)) return 'policies';
   if (/\b(?:my account|my (?:books|loans)|patron [ABC]|transaction history|account (?:status|balance|summary)|checked[- ]out|due dates?|renew\w*|holds?|fines?|fees?|pay(?:ments?)?|card number|pin|password|sign[- ]?in|log[- ]?in)\b/i.test(text)) return 'account';
   if (/\b(?:accessib\w*|wheelchair|assistive|screen reader|contact|address|phone|email|location|where (?:is|are) (?:the )?(?:library|reference desk|archive room)|meeting rooms?|public computers?|internet|wi-?fi|technology (?:help|assistance)|tech (?:help|support)|device (?:help|support))\b/i.test(text)) return 'library_information';
   if (isAdvisoryRequest(text)) return 'readers_advisory';
@@ -51,9 +53,10 @@ function routeServiceRequest(message, history = []) {
   }
   const advisoryFollowup = previous === 'readers_advisory' && !/\b(?:search|browse)\s+(?:the\s+)?catalog|\b(?:do you have|books? by|new topic|start over|recommend\w*|suggest\w*)\b/i.test(message) && (!current || ['readers_advisory', 'catalog'].includes(current));
   const policyFollowup = previous === 'policies' && /^(?:and |what about )?(?:audio(?:books?)?|ebooks?|digital|video|print|large print)[?.!]*$/i.test(message.trim());
-  const continuing = previous && (isContextualFollowup(message) || advisoryFollowup || policyFollowup) && (!current || current === previous
+  const accountContinuation = previous === 'account' && accountFollowup(message);
+  const continuing = previous && (isContextualFollowup(message) || advisoryFollowup || policyFollowup || accountContinuation) && (!current || current === previous
     || (previous === 'readers_advisory' && current === 'catalog')
-    || (policyFollowup && current === 'catalog'));
+    || (policyFollowup && current === 'catalog') || (accountContinuation && current === 'catalog'));
   if (!continuing) return { intent: current || 'general', history: [], userContext: message };
 
   // Keep only the contiguous same-service conversation, stopping at a topic switch.

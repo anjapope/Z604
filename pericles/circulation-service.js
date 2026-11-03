@@ -5,7 +5,8 @@ const path = require('node:path');
 const { randomUUID, randomBytes } = require('node:crypto');
 const { CATALOG_ENTRIES, CATALOG_SEED } = require('./catalog-service');
 const { workKey } = require('./readers-advisory');
-const { KNOWLEDGE, institutionalTopic } = require('./institutional-service');
+const { KNOWLEDGE } = require('./institutional-service');
+const { circulationIntent, accountFollowup } = require('./circulation-intent');
 
 const POLICIES = Object.freeze({
   fictional: true, timezone: KNOWLEDGE.timezone,
@@ -219,14 +220,17 @@ function createCirculationService({ filePath = path.join(__dirname, 'data', 'cir
     const hadPending = Boolean(session.pending);
     session.pending = null;
     if ((hadPending || intent === 'account' || session.lastWasCirculation) && /^(?:no|no thanks|cancel|cancel (?:it|that|the (?:renewal|hold)))[.!]?$/i.test(text)) return `Fictional demonstration: ${hadPending ? 'the pending action was cancelled; no changes were made.' : 'there is no pending action; no changes were made.'}`;
-    if (!institutionalTopic(text) && intent === 'policies' && (/\b(?:fictional|demo|circulation)\b/i.test(text) ||
-      (session.accountId && /\b(?:loan|renewal|hold|borrowing|borrow|how many (?:books|items))\b/i.test(text)))) return policyText();
+    const request = circulationIntent(text) || (intent === 'account' ? accountFollowup(text) : null);
     if (intent !== 'account' && !/\b(?:my books|my loans|patron [ABC]|transaction history)\b/i.test(text)) return null;
-    if (!session.accountId) return 'I cannot access real accounts or renew real loans. Choose a fictional demonstration patron A, B, or C in the account selector first. No sign-in is required; never share real card numbers, PINs, or passwords.';
+    if (!session.accountId) {
+      if (request?.kind === 'information' && ['count', 'loans', 'due', 'holds'].includes(request.question)) return 'Please select a fictional patron in My Account first so I can check that for you.';
+      return 'I cannot access real accounts or renew real loans. Choose a fictional demonstration patron A, B, or C in the account selector first. No sign-in is required; never share real card numbers, PINs, or passwords.';
+    }
     if (/\b(?:pin|password|card number|pay|payment|fines?|fees?|sign[- ]?in)\b/i.test(text)) return 'This fictional demonstration accepts no credentials or payments and assesses no fines. Never share real card numbers, PINs, or passwords.';
     const account = summary(session);
     try {
-      if (/\brenew\w*\b/i.test(text) && !/\b(?:why|why not|can.?t|cannot|unable|blocked|eligibility|eligible)\b/i.test(text)) {
+      if (request?.operation === 'cancel_hold') return 'Cancelling an existing hold is not supported in this demonstration. No hold was changed.';
+      if (request?.operation === 'renew') {
         let ids;
         if (/\b(?:all|everything|my books|my loans)\b/i.test(text)) ids = 'all';
         else {
@@ -236,17 +240,26 @@ function createCirculationService({ filePath = path.join(__dirname, 'data', 'cir
         }
         return previewText(prepare(session, 'renew', { loanIds: ids }));
       }
-      if (/\b(?:place|put|request|add)\b.*\bhold\b/i.test(text)) {
+      if (request?.operation === 'hold') {
         const id = text.match(/\bCAT-\d+\b/i)?.[0]?.toUpperCase();
         const title = text.match(/\bhold\s+(?:on|for)\s+(.+?)[.!?]*$/i)?.[1]?.replace(/^[“"']|[”"']$/g, '').trim();
         const entry = id ? records.get(id) : title ? works.find(e => e.title.toLowerCase() === title.toLowerCase()) : null;
         if (!entry) return 'I cannot identify an exact demonstration-catalog work for that hold. Give the title or a CAT record ID; nothing was changed.';
         return previewText(prepare(session, 'hold', { recordId: entry.recordId }));
       }
-      if (/\b(?:why|renew|eligib|blocked)\w*\b/i.test(text)) return `Fictional Patron ${session.accountId} renewal eligibility:\n${account.loans.map(l => `- ${l.title} (${l.id}): ${l.eligible ? `eligible; renewals ${l.renewals}/${l.renewalLimit}` : l.reasons.join('; ')}`).join('\n')}\nNo changes were made. Ask to renew a named loan or everything for a confirmation preview.`;
+      if (request?.question === 'count') {
+        const total = account.loans.length;
+        if (!request.books) return `Fictional Patron ${session.accountId}: You have ${total} ${total === 1 ? 'loan' : 'loans'} checked out.`;
+        const books = account.loans.filter(loan => ['Print Book', 'Large Print', 'Ebook'].includes(loan.format)).length;
+        const audio = account.loans.filter(loan => loan.format === 'Audiobook').length;
+        return `Fictional Patron ${session.accountId}: You have ${books} ${books === 1 ? 'book' : 'books'} checked out (print, large print, or ebooks), and ${total} ${total === 1 ? 'loan' : 'loans'} in total.${audio ? ` That includes ${audio} ${audio === 1 ? 'audiobook' : 'audiobooks'}, counted separately from books.` : ''}`;
+      }
+      if (request?.question === 'eligibility' || /\b(?:why|renew|eligib|blocked)\w*\b/i.test(text)) return `Fictional Patron ${session.accountId} renewal eligibility:\n${account.loans.map(l => `- ${l.title}: ${l.eligible ? `eligible; renewals ${l.renewals}/${l.renewalLimit}` : l.reasons.join('; ')}`).join('\n')}\nNo changes were made.`;
       if (/\b(?:transaction|history)\b/i.test(text)) return `Fictional Patron ${session.accountId} transaction history:\n${account.transactions.length ? account.transactions.map(t => `- ${t.timestamp}: ${t.action} — ${t.completed.map(i => i.title).join('; ')}`).join('\n') : 'No completed transactions.'}`;
-      if (/\bholds?\b/i.test(text)) return `Fictional Patron ${session.accountId} existing holds:\n${account.holds.length ? account.holds.map(h => `- ${h.title}: placed ${h.placedOn}; ${h.status}`).join('\n') : 'No active holds.'}`;
-      return `Fictional demonstration — Patron ${session.accountId}, ${account.patron.name}.\nCurrent checkouts:\n${account.loans.map(l => `- ${l.title} (${l.id}): due ${l.dueDate}${l.overdue ? ' (overdue)' : ''}; renewals ${l.renewals}/${l.renewalLimit}; ${l.eligible ? 'eligible for renewal' : `blocked: ${l.reasons.join('; ')}`}`).join('\n')}\nActive holds: ${account.holds.length}. These are fictional records; no real account is connected.`;
+      if (request?.question === 'holds' || /\bholds?\b/i.test(text)) return `Fictional Patron ${session.accountId}: ${account.holds.length ? `You have ${account.holds.length} active ${account.holds.length === 1 ? 'hold' : 'holds'}: ${account.holds.map(h => h.title).join('; ')}.` : 'You have no active holds.'}`;
+      if (request?.question === 'loans') return `Fictional Patron ${session.accountId}: ${account.loans.length ? `You have ${account.loans.length} loans checked out:\n${account.loans.map(loan => `- ${loan.title} (${loan.format})`).join('\n')}` : 'You have no loans checked out.'}`;
+      if (request?.question === 'due') return `Fictional Patron ${session.accountId}:\n${account.loans.map(loan => `- ${loan.title}: due ${loan.dueDate}${loan.overdue ? ' (overdue)' : ''}${loan.eligible ? '' : `; renewal blocked: ${loan.reasons.join('; ')}`}`).join('\n') || 'You have no loans checked out.'}`;
+      return `Fictional Patron ${session.accountId}: You have ${account.loans.length} current loans and ${account.holds.length} active ${account.holds.length === 1 ? 'hold' : 'holds'}. Would you like the titles or due dates?`;
     } catch (error) { if (error.status) return `Fictional demonstration: ${error.message}`; throw error; }
   }
   return { session, select, summary, prepare, confirm, chat, policyText, patrons: PATRONS, policies: POLICIES };

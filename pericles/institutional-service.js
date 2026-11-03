@@ -1,8 +1,10 @@
 'use strict';
 const KNOWLEDGE = require('./knowledge/library-knowledge.json');
+const { circulationIntent } = require('./circulation-intent');
 const PREFIX = 'For fictional Stapleton Public Library: ';
 
 function institutionalTopic(text) {
+  if (circulationIntent(text)) return null;
   // Library-related words in a requested book/topic are not policy questions.
   if (/\b(?:recommend\w*|suggest\w*|looking for|books? (?:about|by|on))\b|\b(?:search|browse)\b.*\bcatalog(?:ue)?\b/i.test(text)) return null;
   if (/\b(?:holiday|holidays|exceptional closures?)\b/i.test(text)) return 'holidays';
@@ -14,7 +16,8 @@ function institutionalTopic(text) {
   if (/\b(?:overdue fines?|replacement charges?|lost or damaged|lost (?:a |my )?book|damaged (?:a |my )?book)\b/i.test(text) && !/\b(?:pay|my (?:fine|balance))\b/i.test(text)) return 'fees';
   if (/\b(?:renewal (?:policy|policies|rules?|limits?)|renew\w*.*(?:another patron|someone else|on hold)|how many (?:times|renewals))\b/i.test(text) || /\bcan i renew (?:a book|an item|something|materials?)[?.!]*$/i.test(text)) return 'renewals';
   if (/\b(?:loan periods?|loan lengths?|how long.*(?:borrow|check out|checkout|keep)|borrowing rules)\b/i.test(text)) return 'loans';
-  if (/\b(?:hold (?:policy|rules?|limits?)|how many.*holds)\b/i.test(text)) return 'holds';
+  if (/\bhow many (?:books|items|materials)\b.*\b(?:can|may|allowed)\b/i.test(text)) return 'checkoutLimit';
+  if (/\b(?:hold (?:policy|rules?|limits?)|how many.*holds|how (?:do|can) i.*(?:place|request).*hold)\b/i.test(text)) return 'holds';
   if (/\b(?:circulation polic\w*)\b/i.test(text)) return 'circulation';
   if (/\b(?:phone|telephone|email|street address|contact|where is (?:the )?library|where (?:is|are) (?:the )?(?:archive room|reference desk))\b/i.test(text)) return 'contact';
   if (/\b(?:computer|computers|internet|wi-?fi|technology (?:help|assistance)|tech (?:help|support)|device (?:help|support))\b/i.test(text)) return 'technology';
@@ -70,10 +73,11 @@ function answerInstitutional(message, context = message, { now = new Date() } = 
     case 'responsibilities': answer = `${KNOWLEDGE.responsibilities.join('; ')}. Never share real credentials here; this is a classroom demonstration.`; break;
     case 'privacy': answer = KNOWLEDGE.privacy; break;
     case 'fees': answer = c.fines; break;
-    case 'renewals': answer = `Maximum ${c.renewalLimit} renewals per eligible item. ${c.renewalRule} This explains the policy only; no renewal was initiated. To inspect your own loans, select fictional patron A, B, or C and ask about renewal eligibility.`; break;
-    case 'holds': answer = `${c.holdRule} This explains policy only; no hold was initiated.`; break;
+    case 'renewals': answer = `You can renew eligible items up to ${c.renewalLimit} times. A hold from another patron blocks renewal. No renewal was initiated.`; break;
+    case 'holds': answer = `You can have up to ${c.holdLimit} active holds, one per title. You cannot place a hold on a title you already have checked out. No hold was initiated.`; break;
     case 'loans': answer = `Loan periods: print and large print ${c.loanDays['Print Book']} days; ebooks and audiobooks ${c.loanDays.Ebook} days; DVD and Blu-ray ${c.loanDays.DVD} days. These are general policies; eligibility for a particular loan depends on the selected fictional account. No transaction was initiated.`; break;
-    case 'circulation': answer = `Loan periods: print and large print ${c.loanDays['Print Book']} days; ebooks and audiobooks ${c.loanDays.Ebook} days; DVD and Blu-ray ${c.loanDays.DVD} days. Maximum ${c.renewalLimit} renewals; another patron's active hold blocks renewal. Maximum ${c.holdLimit} active holds. ${c.holdRule} ${c.fines} Account-specific eligibility requires the selected fictional account; no transaction was initiated.`; break;
+    case 'checkoutLimit': answer = 'A maximum number of simultaneous checkouts has not been established. Ask library staff about that limit.'; break;
+    case 'circulation': answer = `Books are loaned for ${c.loanDays['Print Book']} days, digital materials for ${c.loanDays.Ebook} days, and videos for ${c.loanDays.DVD} days. Eligible items can be renewed up to ${c.renewalLimit} times unless another patron has a hold. You may have up to ${c.holdLimit} active holds. Which part would you like to know more about?`; break;
     case 'contact': answer = KNOWLEDGE.contact.unknown; break;
     case 'technology': answer = KNOWLEDGE.technology; break;
     case 'accessibility': answer = KNOWLEDGE.accessibility; break;
@@ -82,6 +86,7 @@ function answerInstitutional(message, context = message, { now = new Date() } = 
     case 'challenges': answer = KNOWLEDGE.challenges; break;
     default: answer = 'Which policy or procedure would you like to know about: membership, borrowing, privacy, or patron rights?';
   }
+  if (topic === 'renewals' && /\b(?:details?|more|explain|calculat\w*)\b/i.test(message)) answer += ' A renewal adds the normal loan period to the later of today or the current due date. Overdue items may still be eligible.';
   return PREFIX + answer;
 }
 function splitInstitutionalRequest(message) {

@@ -37,7 +37,7 @@ const cases = [
   ['What are my rights as a library patron?', /equitable.*intellectual freedom.*privacy.*nondiscriminatory.*accommodations/is],
   ['What responsibilities do I have?', /respectfully.*materials.*shared spaces.*credentials/is],
   ['How long can I check out a book?', /print.*21 days.*audiobooks 14 days.*Blu-ray 7 days/is],
-  ['Can I renew something another patron has on hold?', /Maximum 2 renewals.*active work-level hold.*blocks renewal.*no renewal was initiated/is],
+  ['Can I renew something another patron has on hold?', /up to 2 times.*hold from another patron blocks renewal.*no renewal was initiated/is],
   ['How do I get a library card?', /free to local residents.*identification.*not established/is],
   ['Do you charge overdue fines?', /No overdue fines.*Replacement charges may apply.*not established/is],
   ['Is my borrowing history private?', /confidentiality.*not a promise of absolute confidentiality.*shared/is],
@@ -45,7 +45,7 @@ const cases = [
   ["What's the library's phone number?", /telephone number.*not established/is],
   ['What holidays are you closed?', /Holiday exceptions.*not established/],
   ['What are your hours? And can you recommend a mystery novel?', /Monday-Friday: 8:00 AM-8:00 PM.*Why it fits.*mystery/is],
-  ['What is your renewal policy? Please renew my current book.', /Maximum 2 renewals.*Choose a fictional demonstration patron/is]
+  ['What is your renewal policy? Please renew my current book.', /up to 2 times.*Choose a fictional demonstration patron/is]
 ];
 for (const [message, expected] of cases) {
   test(`institutional HTTP: ${message}`, async () => {
@@ -96,10 +96,10 @@ test('mixed policy/action asks for a loan when ambiguous, then uses the existing
   const patron = client();
   await patron.select('B');
   const ambiguous = await patron.chat('What is your renewal policy? Please renew my current book.');
-  assert.match(ambiguous.payload.reply, /Maximum 2 renewals.*which loan should I renew/is);
+  assert.match(ambiguous.payload.reply, /up to 2 times.*which loan should I renew/is);
   assert.equal((await patron.account()).transactions.length, 0);
   const preview = await patron.chat('What is your renewal policy? Please renew B-1.');
-  assert.match(preview.payload.reply, /Maximum 2 renewals.*Confirm renewal/is);
+  assert.match(preview.payload.reply, /up to 2 times.*Confirm renewal/is);
   assert.equal((await patron.account()).transactions.length, 0);
   const confirmed = await patron.chat('Yes');
   assert.match(confirmed.payload.reply, /Server confirmed renewal/);

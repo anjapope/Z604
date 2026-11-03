@@ -378,7 +378,7 @@ app.post('/api/chat', async (req, res) => {
       try {
         for (const clause of clauses) {
           const context = routeServiceRequest(clause, history);
-          const institutional = answerInstitutional(clause, context.userContext);
+          const institutional = context.intent === 'account' ? null : answerInstitutional(clause, context.userContext);
           if (institutional) { answers.push(institutional); continue; }
           if (context.intent === 'account') {
             const reply = app.locals.circulation.chat(req.demoSession, clause, context.intent);

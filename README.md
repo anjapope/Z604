@@ -1,5 +1,7 @@
 # Z604
 
+Pass 4D separates explicit circulation actions, personal account questions, and general policies through `pericles/circulation-intent.js`. Loan counts use current server state and distinguish print/ebook books from audiobooks. General policy questions cannot emit the internal circulation specification or start a transaction. Account questions remain read-only; explicit changes retain preview and confirmation.
+
 Pass 4C institutional policies live in [library-knowledge.json](pericles/knowledge/library-knowledge.json), with [maintenance and precedence notes](pericles/knowledge/README.md). Institutional answers use deterministic backend routing, local-time regular hours, and explicit unknowns. Policy explanations do not initiate circulation actions; explicit action requests retain account selection and confirmation.
 
 Pass 4B configures https://anjapope.github.io/Z604/ to use https://pericles-api.onrender.com. The manual `.github/workflows/pages.yml` workflow publishes only the browser artifact; GitHub Pages Source must be set to **GitHub Actions** before an authorized publication. See the Pass 4B section of [DEPLOYMENT.md](DEPLOYMENT.md) for exact steps and hosted verification results. The Pages workflow must be dispatched separately after review; no workflow run has been performed.
