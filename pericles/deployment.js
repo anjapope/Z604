@@ -5,6 +5,12 @@ function integer(env, name, fallback, max = 100000) {
   if (!Number.isInteger(value) || value < 1 || value > max) throw new Error(`Invalid ${name}.`);
   return value;
 }
+function lifetimeCeiling(env, name, fallback) {
+  // Only these two ceilings accept the explicit sentinel; other protections
+  // continue to require bounded positive integers. Null means no lifetime cap.
+  if (typeof env[name] === 'string' && env[name].trim().toLowerCase() === 'unlimited') return null;
+  return integer(env, name, fallback);
+}
 function exactOrigin(value) {
   const url = new URL(value);
   if (url.origin !== value || !['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error('Origins must be exact scheme://host[:port] values, with no paths or trailing slash.');
@@ -32,8 +38,8 @@ function configuration(env = process.env) {
     apiLimit: integer(env, 'API_REQUESTS_PER_MINUTE', 300),
     aiLimit: integer(env, 'AI_REQUESTS_PER_CLIENT', publicMode ? 3 : 30),
     aiWindowMs: integer(env, 'AI_CLIENT_WINDOW_SECONDS', 600, 86400) * 1000,
-    classroomLimit: integer(env, 'CLASSROOM_AI_REQUEST_LIMIT', 50),
-    providerLimit: integer(env, 'CLASSROOM_PROVIDER_CALL_LIMIT', 200),
+    classroomLimit: lifetimeCeiling(env, 'CLASSROOM_AI_REQUEST_LIMIT', 50),
+    providerLimit: lifetimeCeiling(env, 'CLASSROOM_PROVIDER_CALL_LIMIT', 200),
     concurrentLimit: integer(env, 'AI_MAX_CONCURRENT', 2, 20),
     providerTimeoutMs: integer(env, 'AI_PROVIDER_TIMEOUT_MS', 45000, 60000),
     responseTimeoutMs: integer(env, 'AI_RESPONSE_TIMEOUT_MS', 180000, 300000)
@@ -87,16 +93,20 @@ function createGuard(config, now = Date.now) {
   }
   function acquireAI(req, res) {
     const value = client(req);
-    if (jobs >= config.classroomLimit || providerCalls >= config.providerLimit) return reject(res, 'The classroom AI allowance has been reached. Catalog and fictional account services remain available.', 600);
+    if ((config.classroomLimit !== null && jobs >= config.classroomLimit) || (config.providerLimit !== null && providerCalls >= config.providerLimit)) return reject(res, 'The classroom AI allowance has been reached. Catalog and fictional account services remain available.', 600);
     if (!value || value.ai >= config.aiLimit) return reject(res, 'Please pause before another AI research request. Catalog and fictional account services remain available.', Math.ceil(config.aiWindowMs / 1000));
     if (active >= config.concurrentLimit) return reject(res, 'The AI service is busy. Please try again shortly.', 15);
-    value.ai++; jobs++; active++;
+    value.ai++;
+    if (config.classroomLimit !== null) jobs++;
+    active++;
     let released = false;
     return () => { if (!released) { released = true; active--; } };
   }
   function admitProviderCall() {
-    if (providerCalls >= config.providerLimit) return false;
-    providerCalls++;
+    if (config.providerLimit !== null) {
+      if (providerCalls >= config.providerLimit) return false;
+      providerCalls++;
+    }
     return true;
   }
   return { middleware, acquireAI, admitProviderCall };

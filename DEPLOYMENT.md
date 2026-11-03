@@ -28,8 +28,8 @@ Set these backend environment variables in Render, never in browser files:
 | `OPENAI_MODEL` | Existing default `gpt-4o-mini`; must support the existing research pipeline if changed |
 | `AI_REQUESTS_PER_CLIENT` | `3` public requests per client IP per window |
 | `AI_CLIENT_WINDOW_SECONDS` | `600` |
-| `CLASSROOM_AI_REQUEST_LIMIT` | `50` admitted AI submissions per process lifetime |
-| `CLASSROOM_PROVIDER_CALL_LIMIT` | `200` outbound OpenAI calls per process lifetime, including research review/recovery calls |
+| `CLASSROOM_AI_REQUEST_LIMIT` | Default `50` admitted AI submissions per process lifetime; set `unlimited` to disable this lifetime ceiling |
+| `CLASSROOM_PROVIDER_CALL_LIMIT` | Default `200` outbound OpenAI calls per process lifetime, including research review/recovery calls; set `unlimited` to disable this lifetime ceiling |
 | `AI_MAX_CONCURRENT` | `2` active AI submissions |
 | `API_REQUESTS_PER_MINUTE` | `300` API requests per IP; covers catalog/account/health as well as chat |
 | `AI_PROVIDER_TIMEOUT_MS` | `45000` per provider call, maximum 60000 |
@@ -37,6 +37,25 @@ Set these backend environment variables in Render, never in browser files:
 | `LOCAL_DEV_ORIGINS` | Optional comma-separated extra loopback origins, e.g. `http://localhost:8080` |
 
 Only `NODE_ENV`, `FRONTEND_ORIGIN`, and the platform's assigned `PORT` are needed for a public non-AI demonstration. Render provides `RENDER=true`; that enables one trusted proxy hop so client IP limits use the platform's forwarded client address and HTTPS cookies can be Secure. Do not use this trust setting behind an arbitrary proxy chain or expose a second ingress that bypasses the trusted Render proxy. Local development ignores forwarded IP headers. All numeric settings reject invalid/zero values. Development's default AI client allowance is 30 to accommodate offline research regression runs; production's default is 3. The `.env.example` explicitly uses the conservative value of 3.
+
+### No lifetime classroom quota
+
+To remove both lifetime ceilings in Render, use these exact values while retaining the abuse and timeout protections:
+
+```text
+CLASSROOM_AI_REQUEST_LIMIT=unlimited
+CLASSROOM_PROVIDER_CALL_LIMIT=unlimited
+AI_REQUESTS_PER_CLIENT=3
+AI_CLIENT_WINDOW_SECONDS=600
+API_REQUESTS_PER_MINUTE=300
+AI_MAX_CONCURRENT=2
+AI_PROVIDER_TIMEOUT_MS=45000
+AI_RESPONSE_TIMEOUT_MS=180000
+```
+
+`unlimited` is accepted only for the two lifetime ceilings (case-insensitive, surrounding whitespace ignored). Each ceiling can also be disabled independently. Omitted/empty values retain the finite defaults of 50 and 200. Finite values remain positive integers from 1 through 100000: `1000000` fails because both settings use the shared integer validator's maximum of 100000. Use the explicit sentinel instead of a large integer; `0`, negative numbers, `Infinity`, and other invalid values remain errors. Other protections do not accept `unlimited`.
+
+Disabling these ceilings skips only lifetime job/provider counting and rejection. Per-IP API and AI window limits, concurrent-request limits, origin checks, request validation, and provider/response timeouts remain active. This allows continued classroom use over time without a fixed total number of requests; it does not allow an unrestricted request rate. No Render settings are changed by this documentation or the local code edit.
 
 AI admission is checked only after local services and research interview clarification, before any provider request. Account operations, catalog search, and reader's advisory do not consume AI allowances. Each outbound provider call also consumes the separate provider ceiling. A research submission can include several provider operations; the retrieval algorithm, relevance rules, provenance, inspection, and recovery behavior are unchanged. Ceiling or provider failures fail closed rather than inventing research. HTTP 429 replies include Retry-After. Transport requests have bounded header/body timeouts; total AI deadlines abort provider calls and return a graceful unavailable message.
 

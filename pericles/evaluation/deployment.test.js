@@ -137,6 +137,70 @@ test('classroom job ceiling and provider-call ceiling fail closed', async () => 
   assert.equal(guard.admitProviderCall(), false);
 });
 
+test('only lifetime ceilings accept unlimited; finite defaults and validation remain intact', () => {
+  const names = ['CLASSROOM_AI_REQUEST_LIMIT', 'CLASSROOM_PROVIDER_CALL_LIMIT'];
+  const config = configuration(Object.fromEntries(names.map(name => [name, ' unlimited '])));
+  assert.equal(config.classroomLimit, null);
+  assert.equal(config.providerLimit, null);
+  assert.equal(configuration({ CLASSROOM_AI_REQUEST_LIMIT: 'UNLIMITED' }).classroomLimit, null);
+  assert.equal(configuration({}).classroomLimit, 50);
+  assert.equal(configuration({ CLASSROOM_PROVIDER_CALL_LIMIT: '' }).providerLimit, 200);
+  for (const name of names) {
+    assert.doesNotThrow(() => configuration({ [name]: '100000' }));
+    for (const value of ['1000000', '0', '-1', '1.5', 'Infinity', 'NaN', 'disabled']) assert.throws(() => configuration({ [name]: value }), new RegExp(name));
+  }
+  for (const name of ['AI_REQUESTS_PER_CLIENT', 'AI_CLIENT_WINDOW_SECONDS', 'API_REQUESTS_PER_MINUTE', 'AI_MAX_CONCURRENT', 'AI_PROVIDER_TIMEOUT_MS', 'AI_RESPONSE_TIMEOUT_MS']) assert.throws(() => configuration({ [name]: 'unlimited' }), new RegExp(name));
+  assert.equal(config.concurrentLimit, 2);
+  assert.equal(config.providerTimeoutMs, 45000);
+  assert.equal(config.responseTimeoutMs, 180000);
+});
+
+test('unlimited ceilings allow continued use beyond defaults while concurrency remains enforced', () => {
+  let time = 0;
+  const config = configuration({ CLASSROOM_AI_REQUEST_LIMIT: 'unlimited', CLASSROOM_PROVIDER_CALL_LIMIT: 'unlimited', AI_MAX_CONCURRENT: '1' });
+  const guard = createGuard(config, () => time);
+  const res = { setHeader() {}, status(code) { this.code = code; return this; }, json(body) { this.body = body; } };
+  for (let i = 0; i < 60; i++) {
+    const release = guard.acquireAI({ ip: 'client' }, res);
+    assert.equal(typeof release, 'function');
+    assert.equal(guard.acquireAI({ ip: 'other-client' }, res), null);
+    assert.match(res.body.error, /busy/);
+    for (let j = 0; j < 5; j++) assert.equal(guard.admitProviderCall(), true);
+    release();
+    time += config.aiWindowMs + 1;
+  }
+});
+
+test('each lifetime ceiling can be disabled independently without bypassing the other', () => {
+  const res = { setHeader() {}, status() { return this; }, json() {} };
+  let config = configuration({ CLASSROOM_AI_REQUEST_LIMIT: 'unlimited', CLASSROOM_PROVIDER_CALL_LIMIT: '1' });
+  let guard = createGuard(config);
+  guard.acquireAI({ ip: 'client' }, res)();
+  assert.equal(guard.admitProviderCall(), true);
+  assert.equal(guard.admitProviderCall(), false);
+  assert.equal(guard.acquireAI({ ip: 'client' }, res), null);
+  config = configuration({ CLASSROOM_AI_REQUEST_LIMIT: '1', CLASSROOM_PROVIDER_CALL_LIMIT: 'unlimited' });
+  guard = createGuard(config);
+  for (let i = 0; i < 250; i++) assert.equal(guard.admitProviderCall(), true);
+  guard.acquireAI({ ip: 'client' }, res)();
+  assert.equal(guard.acquireAI({ ip: 'other-client' }, res), null);
+});
+
+test('unlimited lifetime ceilings retain HTTP IP throttles, origin checks and provider timeout handling', async () => {
+  const config = configuration({ FRONTEND_ORIGIN: approved, CLASSROOM_AI_REQUEST_LIMIT: 'unlimited', CLASSROOM_PROVIDER_CALL_LIMIT: 'unlimited', AI_REQUESTS_PER_CLIENT: '1' });
+  app.locals.deploymentGuard = createGuard(config);
+  global.fetch = async () => { const error = new Error('offline timeout'); error.name = 'TimeoutError'; throw error; };
+  assert.equal((await request('/api/chat', { message: 'Hello there.' })).status, 502);
+  const limited = await request('/api/chat', { message: 'Hello again.' });
+  assert.equal(limited.status, 429);
+  assert.match((await limited.json()).error, /pause/);
+  assert.equal((await request('/api/health', undefined, { Origin: 'https://evil.example' })).status, 403);
+  assert.equal((await request('/api/chat', { message: 'When is Storytime?' })).status, 200);
+  app.locals.deploymentGuard = createGuard({ ...config, apiLimit: 1 });
+  assert.equal((await request('/api/health')).status, 200);
+  assert.equal((await request('/api/health')).status, 429);
+});
+
 test('concurrency slots are released once and client limits reset after their window', () => {
   let time = 0;
   const guard = createGuard({ ...defaults(), aiLimit: 1, concurrentLimit: 1, aiWindowMs: 1000 }, () => time);
