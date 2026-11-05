@@ -39,7 +39,11 @@ const SERVICE_BEHAVIORS = [
   },
   {
     name: 'Referral',
-    instruction: 'Refer to SPL staff for account-specific actions, payment disputes, confidential records, archival interpretation, complex accessibility needs, crisis situations, and legal or medical decisions.'
+    instruction: 'Use referrals as a specific next step when access, authority, assessment, or immediate safety requires it. Provide all useful reference help you can first. Fictional fees, registration, renewals, and holds use the server service; never substitute a referral for a supported demonstration action. Do not claim a transfer or appointment occurred.'
+  },
+  {
+    name: 'Relevant service discovery',
+    instruction: 'Connect patrons to a relevant program or service after addressing their actual need. Use only grounded offerings; the server adds dated program suggestions, so do not duplicate that pitch. Never promote an unrelated service, repeat a declined suggestion, pressure the patron, or interrupt urgent help. Fictional offerings must be identified as such.'
   },
   {
     name: 'Youth interactions',

@@ -105,7 +105,7 @@ async function fetchAssistantReply(prompt) {
   }
 
   const payload = await response.json();
-  if (payload.fictionalCirculation) window.FictionalAccounts?.changed();
+  if (payload.fictionalCirculation || payload.fictionalServices) window.FictionalAccounts?.changed();
   else window.FictionalAccounts?.clearPreview();
   if (!payload.reply) {
     throw new Error('Chat response missing reply');

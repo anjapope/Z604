@@ -5,6 +5,7 @@ const { isAdvisoryRequest, answerAdvisory } = require('./readers-advisory');
 const { isCatalogQuestion, isCollectionQuestion } = require('./catalog-service');
 const { institutionalTopic, answerInstitutional } = require('./institutional-service');
 const { circulationIntent, accountFollowup } = require('./circulation-intent');
+const { isSubstantiveReference } = require('./reference-intent');
 
 function isHoursQuestion(text) {
   return /\bhours?\b/i.test(text) || (/\b(?:open(?:ing)?|clos(?:e|es|ing|ed))\b/i.test(text)
@@ -16,6 +17,9 @@ function isHoursQuestion(text) {
 function classifyServiceIntent(message) {
   const text = String(message).trim();
   if (circulationIntent(text)) return 'account';
+  // Explicit source discovery retains the evidence-checked research pipeline.
+  if (/\b(?:sources?|citations?|evidence)\b/i.test(text) && /\b(?:find|give|provide|need|identify|locate|research|support|opposing|credible|primary)\b/i.test(text)) return 'advanced_research';
+  if (isSubstantiveReference(text)) return 'reference';
   if (/\b(?:do|can|could) you (?:help|assist)\b.*\b(?:citat|research|sources?|reference)|\b(?:citation help|research help|reference help|start (?:my |a )?research)\b/i.test(text)) return 'reference';
   if (/\b(?:genealog\w*|family history|grandfather|grandmother|ancestor|ancestry|census)\b/i.test(text)) return 'advanced_research';
   if (/\b(?:sources?|citations?|evidence)\b/i.test(text) && /\b(?:find|give|provide|need|identify|locate|research|support|opposing|credible|primary)\b/i.test(text)) return 'advanced_research';
@@ -42,7 +46,7 @@ function routeServiceRequest(message, history = []) {
   const prior = history.filter((item, index) => !(index === history.length - 1 && item.role === 'user' && item.content === message));
   const current = classifyServiceIntent(message);
   const previousIndex = prior.findLastIndex(item => item.role === 'user');
-  let previous = prior.slice(0, previousIndex + 1).filter(item => item.role === 'user').map(item => classifyServiceIntent(item.content)).filter(Boolean).at(-1) || null;
+  let previous = previousIndex >= 0 ? (prior.slice(0, previousIndex + 1).filter(item => item.role === 'user').map(item => classifyServiceIntent(item.content)).filter(Boolean).at(-1) || 'general') : null;
   if (previous === 'catalog') {
     for (const turn of prior.filter(item => item.role === 'user').reverse()) {
       const intent = classifyServiceIntent(turn.content);
@@ -54,7 +58,8 @@ function routeServiceRequest(message, history = []) {
   const advisoryFollowup = previous === 'readers_advisory' && !/\b(?:search|browse)\s+(?:the\s+)?catalog|\b(?:do you have|books? by|new topic|start over|recommend\w*|suggest\w*)\b/i.test(message) && (!current || ['readers_advisory', 'catalog'].includes(current));
   const policyFollowup = previous === 'policies' && /^(?:and |what about )?(?:audio(?:books?)?|ebooks?|digital|video|print|large print)[?.!]*$/i.test(message.trim());
   const accountContinuation = previous === 'account' && accountFollowup(message);
-  const continuing = previous && (isContextualFollowup(message) || advisoryFollowup || policyFollowup || accountContinuation) && (!current || current === previous
+  const referenceFollowup = ['reference', 'general'].includes(previous) && (!current || current === previous) && !/\b(?:new topic|start over|unrelated question)\b/i.test(message);
+  const continuing = previous && (referenceFollowup || isContextualFollowup(message) || advisoryFollowup || policyFollowup || accountContinuation) && (!current || current === previous
     || (previous === 'readers_advisory' && current === 'catalog')
     || (policyFollowup && current === 'catalog') || (accountContinuation && current === 'catalog'));
   if (!continuing) return { intent: current || 'general', history: [], userContext: message };
@@ -107,9 +112,10 @@ function answerLocalService(intent, message, userContext = message) {
   }
   if (intent === 'reference') {
     const citationStyle = message.match(/\b(?:APA|MLA|Chicago)\b/i)?.[0];
-    if (citationStyle && /\bcitat/i.test(userContext)) return `What source do you need to cite in ${citationStyle}? I can help identify the details needed for the citation.`;
-    if (/\bcitat/i.test(message)) return `${SERVICES_CONTEXT[2]} Which citation style or citation question would you like help with?`;
-    return `${SERVICES_CONTEXT[2]} What topic or task would you like help with? For specialized local-history material, library staff can refer you to the appropriate specialist.`;
+    if (citationStyle && /^(?:APA|MLA|Chicago)[.!?]*$/i.test(message.trim()) && /\bcitat/i.test(userContext)) return `What source do you need to cite in ${citationStyle}? I can help identify the details needed for the citation.`;
+    if (/^(?:(?:do|can|could) you (?:help|assist)(?: me)? with )?(?:citations?|citation help)[.!?]*$/i.test(message.trim())) return `${SERVICES_CONTEXT[2]} Which citation style or citation question would you like help with?`;
+    if (/^(?:Help me develop a research topic|research help|reference help|start (?:my |a )?research)[.!?]*$/i.test(message.trim())) return `${SERVICES_CONTEXT[2]} What topic or task would you like help with?`;
+    return null;
   }
   return null;
 }

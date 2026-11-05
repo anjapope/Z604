@@ -28,6 +28,9 @@ const { enrichSources } = require('./pericles/source-inspection');
 const { routeServiceRequest, answerLocalService } = require('./pericles/service-router');
 const { createCirculationService } = require('./pericles/circulation-service');
 const { answerInstitutional, splitInstitutionalRequest } = require('./pericles/institutional-service');
+const { createPatronServices } = require('./pericles/patron-services');
+const { answerReadingLevel, readingMetadata } = require('./pericles/learning-service');
+const { isSubstantiveReference } = require('./pericles/reference-intent');
 
 dotenv.config();
 
@@ -38,6 +41,7 @@ app.disable('x-powered-by');
 app.locals.deploymentGuard = createGuard(deployment);
 const aiRequestScope = new AsyncLocalStorage();
 app.locals.circulation = createCirculationService();
+app.locals.patronServices = createPatronServices();
 const PORT = deployment.port;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
@@ -112,7 +116,9 @@ function formatCatalogRecord(entry) {
     format: entry.format,
     callNumber: entry.callNumber,
     location: entry.location,
-    subjects: entry.subjects
+    subjects: entry.subjects,
+    audience: entry.audience,
+    readingLevel: readingMetadata(entry)
   };
 }
 
@@ -340,9 +346,18 @@ function circulationBody(req, keys) {
 app.get('/api/circulation/patrons', circulationRoute(service => ({ fictional: true, patrons: service.patrons })));
 app.get('/api/circulation/policies', circulationRoute(service => ({ ...service.policies, explanation: service.policyText() })));
 app.get('/api/circulation/account', circulationRoute((service, req) => service.summary(req.demoSession)));
-app.post('/api/circulation/selection', circulationRoute((service, req) => service.select(req.demoSession, circulationBody(req, ['accountId']).accountId)));
+app.post('/api/circulation/selection', circulationRoute((service, req) => {
+  req.demoSession.servicePending = null;
+  req.demoSession.suggestedProgram = null;
+  req.demoSession.programAction = null;
+  req.demoSession.lastProgramRecommendation = false;
+  req.demoSession.programProfile = null;
+  req.demoSession.programRecommendations = null;
+  return service.select(req.demoSession, circulationBody(req, ['accountId']).accountId);
+}));
 app.post('/api/circulation/preview', circulationRoute((service, req) => {
   const body = circulationBody(req, ['action', 'loanIds', 'recordId']);
+  req.demoSession.servicePending = null;
   if ((body.action === 'renew' && body.recordId !== undefined) || (body.action === 'hold' && body.loanIds !== undefined)) {
     const error = new Error('Parameters do not match the requested action.'); error.status = 400; throw error;
   }
@@ -352,6 +367,33 @@ app.post('/api/circulation/confirm', circulationRoute((service, req) => service.
 app.post('/api/circulation/cancel', circulationRoute((_service, req) => {
   circulationBody(req, []);
   req.demoSession.pending = null;
+  req.demoSession.servicePending = null;
+  return { fictional: true, cancelled: true };
+}));
+
+// Services share the same fictional selection, origin controls, and session token.
+app.use('/api/services', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  if (req.method === 'POST' && !req.is('application/json')) return res.status(415).json({ error: 'Use application/json.' });
+  req.demoSession = app.locals.circulation.session(req, res);
+  next();
+});
+function serviceRoute(handler) {
+  return (req, res) => {
+    try { res.json(handler(app.locals.patronServices, req)); }
+    catch (error) { res.status(error.status || 503).json({ error: error.status ? error.message : 'Demonstration services storage is unavailable. No success is confirmed.' }); }
+  };
+}
+app.get('/api/services/programs', serviceRoute(service => ({ fictional: true, programs: service.events() })));
+app.get('/api/services/account', serviceRoute((service, req) => service.summary(req.demoSession)));
+app.post('/api/services/preview', serviceRoute((service, req) => {
+  const body = circulationBody(req, ['action', 'eventId']);
+  return service.prepare(req.demoSession, body.action, { eventId: body.eventId });
+}));
+app.post('/api/services/confirm', serviceRoute((service, req) => service.confirm(req.demoSession, circulationBody(req, ['confirmationToken']).confirmationToken)));
+app.post('/api/services/cancel', serviceRoute((_service, req) => {
+  circulationBody(req, []);
+  req.demoSession.servicePending = null;
   return { fictional: true, cancelled: true };
 }));
 
@@ -366,9 +408,22 @@ app.post('/api/chat', async (req, res) => {
 
   const service = routeServiceRequest(message, history);
   const { userContext } = service;
+  // Handle authoritative simulations before policy/general-language routing.
+  try {
+    const reply = app.locals.patronServices.chat(req.demoSession, message);
+    if (reply) return res.json({ reply, sources: [], fictionalServices: true });
+  } catch (error) {
+    if (error.status) return res.json({ reply: `Fictional demonstration: ${error.message}`, sources: [], fictionalServices: true });
+    return res.status(503).json({ error: 'Demonstration services storage is unavailable. No success is confirmed.' });
+  }
+  const learningReply = answerReadingLevel(message);
+  if (learningReply && !/\b(?:practice|plan|teach|struggl\w*|phonics|learn\w*|dyslex\w*|homework)\b/i.test(message)) {
+    req.demoSession.pending = null;
+    return res.json({ reply: learningReply + app.locals.patronServices.suggestion(req.demoSession, message, history), sources: [] });
+  }
   // Policy explanations never pass through transaction parsing. Explicit action
   // clauses still use the selected account's existing preview/confirmation flow.
-  if (service.intent !== 'advanced_research') {
+  if (!['advanced_research', 'reference', 'general'].includes(service.intent)) {
     const clauses = splitInstitutionalRequest(message);
     if (clauses) {
       req.demoSession.pending = null;
@@ -412,7 +467,8 @@ app.post('/api/chat', async (req, res) => {
   } catch (_error) {
     return res.status(503).json({ error: 'Fictional circulation storage is unavailable. No success is confirmed; reload the account before retrying.' });
   }
-  const localReply = answerLocalService(service.intent, message, userContext);
+  const localReply = service.intent === 'reference' && isSubstantiveReference(userContext) && service.history.length
+    ? null : answerLocalService(service.intent, message, userContext);
   if (localReply) return res.json({ reply: localReply, sources: [] });
 
   if (service.intent === 'catalog') {
@@ -436,6 +492,9 @@ app.post('/api/chat', async (req, res) => {
   const messages = [
     { role: 'system', content: buildSystemPrompt() },
     { role: 'system', content: `# Verified SPL Grounding Context\n\n${groundingContext}` },
+    { role: 'system', content: `# Current classroom service context\nLibrary date: ${new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Indiana/Indianapolis' }).format(new Date())}.\n${JSON.stringify(require('./pericles/knowledge/service-offerings.json'))}\nOnly the separate server service can confirm balances, registrations, credits, renewals, and holds. You have no transaction tools in this response. Never assert that an action or referral occurred. Provide practical topic assistance first; when relevant the server appends one dated program suggestion.` },
+    { role: 'system', content: 'Curated official external resource: IRS free tax return preparation programs, https://www.irs.gov/individuals/irs-free-tax-return-preparation-programs (reviewed 2026-11-04). VITA/TCE offer free preparation to qualifying taxpayers. Use its current site locator and eligibility details; no local provider or current threshold is verified in this chat. The fictional Tax Preparation Readiness program is educational, not tax filing or VITA affiliation.' },
+    ...(learningReply ? [{ role: 'system', content: `Sourced reading context for this question:\n${learningReply}\nUse this metadata while answering the patron’s substantive learning/practice question. Do not just repeat the book list.` }] : []),
     ...(useWebSearch ? [{ role: 'system', content: buildResearchInstructions(userContext) }] : []),
     ...service.history,
     { role: 'user', content: message }
@@ -452,7 +511,7 @@ app.post('/api/chat', async (req, res) => {
     if (result.error) {
       return res.status(502).json({ error: 'The reference service could not return a verified response. Please try again.' });
     }
-    return res.json({ reply: result.reply, sources: result.sources || [] });
+    return res.json({ reply: result.reply + app.locals.patronServices.suggestion(req.demoSession, message, history), sources: result.sources || [] });
   } catch (error) {
     console.error(JSON.stringify({
       event: 'openai_request_failure',

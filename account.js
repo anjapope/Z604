@@ -51,6 +51,7 @@
     element('h3', 'Fictional circulation policies', details);
     element('p', `Print and large print: 21 days; ebooks and audiobooks: 14 days; DVD and Blu-ray: 7 days. ${account.policies.renewalRule} ${account.policies.holdRule} ${account.policies.restrictions}`, details);
     actions.hidden = false;
+    if (typeof window.dispatchEvent === 'function') window.dispatchEvent(new Event('fictional-account-updated'));
   }
   async function refresh() {
     const generation = ++refreshing;
@@ -64,6 +65,7 @@
       if (details) details.replaceChildren();
       if (actions) actions.hidden = true;
       clearPreview();
+      if (typeof window.dispatchEvent === 'function') window.dispatchEvent(new Event('fictional-account-updated'));
     }
   }
   function changed() {

@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "revised": "2026-11-03",
+  "version": 2,
+  "revised": "2026-11-04",
   "institution": "Stapleton Public Library",
   "fictional": true,
   "precedence": "Previously established hours, recurring programs, and circulation restrictions take precedence over Pass 4C suggested defaults. This file describes a fictional classroom institution, not verified facts about a real library.",
@@ -58,7 +58,7 @@
     },
     "renewalLimit": 2,
     "holdLimit": 5,
-    "fines": "No overdue fines are charged. Replacement charges may apply for lost or damaged materials; amounts and assessment procedures are not established. The fictional account service does not assess or collect replacement charges or payments.",
+    "fines": "No overdue fines are charged. Replacement charges may apply for lost or damaged materials; real amounts and assessment procedures are not established. Separately, the fictional classroom service can show seeded charges and preview a courtesy credit or simulated settlement. It never collects real money or establishes real SPL charges.",
     "renewalRule": "Renew from the later of today or the current due date, for one format-specific loan period. Overdue loans may be renewed. Another patron's active work-level hold or two prior renewals blocks renewal.",
     "holdRule": "One active hold per work per account; at most five active holds. No holds on a work already checked out to this account. Child account C may hold Children or All Ages works only. Holds are simulated requests, not reservations of real stock."
   },

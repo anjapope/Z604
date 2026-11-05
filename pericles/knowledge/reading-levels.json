@@ -1,0 +1,27 @@
+{
+  "reviewedOn": "2026-11-04",
+  "scope": "Title/text measures reported by publishers or MetaMetrics. Demo records have no ISBN: a record match is not verification of its edition. Unlisted titles have unknown measures.",
+  "guidanceSource": "https://hub.lexile.com/faqs/",
+  "titles": [
+    {
+      "title": "Matilda", "author": "Roald Dahl", "lexile": 840,
+      "source": "https://shop.scholastic.co.uk/products/Matilda-9780141365466",
+      "sourceLabel": "Scholastic", "editionIsbn": "9780141365466"
+    },
+    {
+      "title": "The Wild Robot", "author": "Peter Brown", "lexile": 740,
+      "source": "https://www.gale.com/binaries/content/assets/gale-us-en/campaigns/perpetual-campagins/thorndike-press/thorndike-press-youth-large-print-titles-summer-2021.pdf",
+      "sourceLabel": "Gale / Thorndike Press publisher catalog", "editionIsbn": "9781432859893"
+    },
+    {
+      "title": "Charlotte's Web", "author": "E.B. White", "lexile": 680,
+      "source": "https://clubs.scholastic.com/charlotte%E2%80%99s-web/9780590302715-rco-us.html",
+      "sourceLabel": "Scholastic", "editionIsbn": "9780590302715"
+    },
+    {
+      "title": "Wonder", "author": "R.J. Palacio", "lexile": 790,
+      "source": "https://hub.lexile.com/find-a-book/details/9780375869020/",
+      "sourceLabel": "MetaMetrics Lexile Hub", "editionIsbn": "9780375869020"
+    }
+  ]
+}

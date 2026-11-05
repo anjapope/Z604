@@ -84,7 +84,7 @@ const cases = [
   ['Where is the library?', 'library_information', /street address.*not established/is],
   ['Where is the archive room?', 'library_information', /locations.*not established/is],
   ['Can I reserve a meeting room?', 'library_information', /cannot reserve a room/i],
-  ['When is Storytime?', 'events', /Tuesdays and Fridays, 10:00-11:00 AM/],
+  ['When is Storytime?', 'events', /Storytime: \d{4}-\d{2}-\d{2}, 10:00/],
   ['What is your policy on book challenges?', 'policies', /intellectual freedom.*procedures.*not established/is],
   ['Help me develop a research topic.', 'reference', /topic development.*What topic/is],
   ['Recommend fiction for my seven-year-old.', 'readers_advisory', /reading preferences/i]
@@ -117,7 +117,10 @@ test('routine answers are based on facts and do not invent unavailable details',
   const hours = await chat('What are your hours?');
   for (const line of LIBRARY_HOURS) assert.ok(hours.includes(line));
   const events = await chat('What programs are available?');
-  for (const line of EVENTS_CONTEXT) assert.ok(events.includes(line));
+  assert.match(events, /Dates are generated from recurring demo schedules/);
+  assert.match(events, /Upcoming sessions/);
+  assert.match(events, /\d{4}-\d{2}-\d{2}/);
+  assert.match(events, /No sign-in or real contact information/);
   assert.match(await chat('How long can I borrow an ebook?'), /fictional.*14 days/is);
   for (const question of ['Where is the library?', 'How do I get a library card?']) {
     const reply = await chat(question);

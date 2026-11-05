@@ -1,5 +1,11 @@
 # Z604
 
+## Expanded reference and classroom services — November 4, 2026
+
+The new local revision routes substantive topic questions to the AI, preserves reference follow-ups, and adds practical instructions for tax preparation navigation, 3D printing, youth learning, and focused referrals. Dated fictional programs, confirmed registration/cancellation, courtesy fee credits, and simulated settlement use server-owned state. My Account shows the same balances and program receipts. Contextual suggestions are optional, spaced out, and can be declined. Four collection titles have sourced Lexile metadata; unknown scores and edition mismatches are explicit. See [the implementation and verification handoff](pericles/evaluation/expanded-services-handoff.md) for examples, limits, API details, and the required live-model rehearsal. The GitHub Pages frontend still requires its existing manual publication workflow; pushing main is not proof of a hosted update.
+
+The older pass notes below document earlier stages; the expanded-services handoff describes the new service capabilities and supersedes earlier statements that the demonstration has no fee or registration workflow.
+
 Pass 4D separates explicit circulation actions, personal account questions, and general policies through `pericles/circulation-intent.js`. Loan counts use current server state and distinguish print/ebook books from audiobooks. General policy questions cannot emit the internal circulation specification or start a transaction. Account questions remain read-only; explicit changes retain preview and confirmation.
 
 Pass 4C institutional policies live in [library-knowledge.json](pericles/knowledge/library-knowledge.json), with [maintenance and precedence notes](pericles/knowledge/README.md). Institutional answers use deterministic backend routing, local-time regular hours, and explicit unknowns. Policy explanations do not initiate circulation actions; explicit action requests retain account selection and confirmation.

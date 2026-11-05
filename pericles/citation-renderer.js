@@ -13,7 +13,7 @@
   }
 
   function appendLinkedText(container, text, documentRef) {
-    const urlPattern = /\[([^\]\n]+)\]\((\/catalog-detail\.html\?id=CAT-\d+)\)|https?:\/\/[^\s<>"']+/gi;
+    const urlPattern = /\[([^\]\n]+)\]\((\/catalog-detail\.html\?id=CAT-\d+|https?:\/\/[^\s<>"')]+)\)|https?:\/\/[^\s<>"']+/gi;
     let currentIndex = 0;
     let match;
 
@@ -21,7 +21,11 @@
       if (match[2]) {
         container.appendChild(documentRef.createTextNode(text.slice(currentIndex, match.index)));
         const link = documentRef.createElement('a');
-        link.href = root.PericlesApi?.catalogUrl ? root.PericlesApi.catalogUrl(match[2]) : match[2];
+        const external = /^https?:/i.test(match[2]);
+        const href = external ? safeHttpUrl(match[2]) : root.PericlesApi?.catalogUrl ? root.PericlesApi.catalogUrl(match[2]) : match[2];
+        if (!href) { container.appendChild(documentRef.createTextNode(match[1])); currentIndex = match.index + match[0].length; continue; }
+        link.href = href;
+        if (external) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
         link.textContent = match[1];
         container.appendChild(link);
         currentIndex = match.index + match[0].length;

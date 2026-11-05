@@ -1,0 +1,183 @@
+{
+  "fictional": true,
+  "timezone": "America/Indiana/Indianapolis",
+  "notice": "Classroom simulation only. Dates are generated from recurring demo schedules; no real place, appointment, volunteer, or equipment is reserved.",
+  "programs": [
+    {
+      "id": "storytime",
+      "title": "Storytime",
+      "days": [
+        2,
+        5
+      ],
+      "time": "10:00",
+      "durationMinutes": 60,
+      "capacity": 20,
+      "audience": "Children ages 3\u20137 with caregivers",
+      "tags": [
+        "early reading",
+        "family",
+        "youth"
+      ],
+      "description": "Shared stories, songs, and playful vocabulary practice; caregivers attend with children.",
+      "minAge": 3,
+      "maxAge": 7,
+      "caregiverRequired": true,
+      "aliases": [
+        "story time"
+      ],
+      "activities": [
+        "An interactive read-aloud, with chances to notice pictures and talk about the story.",
+        "Songs, rhymes, and movement that invite children to participate.",
+        "Playful vocabulary practice through naming, predicting, and discussing what happens."
+      ],
+      "preparation": "For this demo, no reading ability or supplies are required; caregivers participate alongside children."
+    },
+    {
+      "id": "tech-team",
+      "title": "Tech Team Training Seminars",
+      "days": [
+        1
+      ],
+      "time": "11:00",
+      "durationMinutes": 60,
+      "capacity": 12,
+      "audience": "Ages 12 and up",
+      "tags": [
+        "computers",
+        "technology",
+        "digital skills"
+      ],
+      "description": "Practice everyday device and software skills at a public computer.",
+      "minAge": 12,
+      "maxAge": 99,
+      "caregiverRequired": false
+    },
+    {
+      "id": "book-club",
+      "title": "Adult Book Club",
+      "days": [
+        3
+      ],
+      "time": "18:30",
+      "durationMinutes": 60,
+      "capacity": 16,
+      "audience": "Adults",
+      "tags": [
+        "reading",
+        "discussion"
+      ],
+      "description": "Talk about a selected work and compare reading experiences.",
+      "minAge": 18,
+      "maxAge": 99,
+      "caregiverRequired": false
+    },
+    {
+      "id": "reading-lab",
+      "title": "Reading Confidence Lab",
+      "days": [
+        6
+      ],
+      "time": "10:00",
+      "durationMinutes": 45,
+      "capacity": 8,
+      "audience": "Children ages 6\u201310 with caregivers",
+      "tags": [
+        "reading",
+        "phonics",
+        "comprehension",
+        "learning support",
+        "youth"
+      ],
+      "description": "Small-group reading practice with word-building, repeated reading, and discussion. Supplemental practice, not assessment, therapy, or a special-education service.",
+      "minAge": 6,
+      "maxAge": 10,
+      "caregiverRequired": true
+    },
+    {
+      "id": "homework-studio",
+      "title": "Homework and Study Studio",
+      "days": [
+        4
+      ],
+      "time": "16:00",
+      "durationMinutes": 60,
+      "capacity": 10,
+      "audience": "Youth ages 6\u201314",
+      "tags": [
+        "homework",
+        "math",
+        "writing",
+        "study",
+        "youth"
+      ],
+      "description": "Guided practice with a chosen school task, planning, and source evaluation. No school records or identifying information are needed.",
+      "minAge": 6,
+      "maxAge": 14,
+      "caregiverRequired": false
+    },
+    {
+      "id": "maker-start",
+      "title": "3D Printing: First Design",
+      "days": [
+        6
+      ],
+      "time": "14:00",
+      "durationMinutes": 60,
+      "capacity": 6,
+      "audience": "Ages 8 and up; under-18s with caregiver",
+      "tags": [
+        "3d printing",
+        "design",
+        "makerspace",
+        "STEM"
+      ],
+      "description": "Demo makerspace orientation: choose a simple object, understand millimeters, export an STL, and inspect a sliced preview. No real machine, material, or print job is booked.",
+      "minAge": 8,
+      "maxAge": 99,
+      "caregiverRequired": true
+    },
+    {
+      "id": "tax-ready",
+      "title": "Tax Preparation Readiness",
+      "days": [
+        2
+      ],
+      "time": "17:00",
+      "durationMinutes": 60,
+      "capacity": 10,
+      "audience": "Adults",
+      "tags": [
+        "tax",
+        "forms",
+        "financial literacy"
+      ],
+      "description": "Practice organizing a fictional document checklist and finding IRS tax-help resources. This is not a tax-return preparation appointment or a claim of VITA/TCE affiliation.",
+      "minAge": 18,
+      "maxAge": 99,
+      "caregiverRequired": false
+    },
+    {
+      "id": "maker-play",
+      "title": "Build and Explore",
+      "days": [
+        6
+      ],
+      "time": "11:00",
+      "durationMinutes": 45,
+      "capacity": 8,
+      "audience": "Children ages 5\u20137 with caregivers",
+      "minAge": 5,
+      "maxAge": 7,
+      "caregiverRequired": true,
+      "tags": [
+        "making",
+        "building",
+        "STEM",
+        "games",
+        "youth"
+      ],
+      "description": "Build with blocks and cardboard, try a simple design challenge, and talk about what worked. Caregivers join in; no 3D printer is used."
+    }
+  ]
+}
