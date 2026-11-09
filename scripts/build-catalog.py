@@ -10,6 +10,9 @@ entries=[];seen_keys=set();seen_pairs=set();seen_titles=set();queries=[]
 for e in core:
  e.pop('searchIndex',None)
  e['provenance']='SPL established collection'
+ if e['format'] in ['Print Book','Large Print'] and 'Children' in e['audience']:
+  if e['callNumber'].startswith('E '):e['callNumber']='J PIC '+e['callNumber'][2:];e['location']='Juvenile Picture Books'
+  elif e['callNumber'].startswith('J ') and not e['callNumber'].startswith(('J FIC ','J PIC ')):e['callNumber']='J FIC '+e['callNumber'][2:];e['location']='Juvenile Fiction'
  entries.append(e);seen_pairs.add((titlekey(e['title']),norm(e['author'])));seen_titles.add(titlekey(e['title']))
 # Preserve import order independently of download completion order.
 for p in sorted(CACHE.glob('*.json')):
@@ -27,13 +30,14 @@ for p in sorted(CACHE.glob('*.json')):
    continue
   subjects=[str(x).strip() for x in d.get('subject',[]) if isinstance(x,str) and 1<len(x)<90 and not re.search(r'^(?:open_|in:|nyt:|reading level|collection|accessible|protected|overdrive|large type|translations)',x,re.I)]
   metadata=' '.join(subjects).lower()
-  juvenile=bool(re.search(r'juvenile|children.s (?:fiction|literature|stories)|picture books',metadata))
+  juvenile=data['audience']=='Children' or bool(re.search(r'juvenile|children.s (?:fiction|literature|stories)|picture books',metadata))
+  picture=juvenile and bool(re.search(r'picture books|picturebooks|picture-books',metadata))
   teen=bool(re.search(r'young adult|teenage',metadata))
   isfiction=bool(re.search(r'\bfiction\b|novels|fairy tales|short stories',metadata))
   section=data['section'];shelf=data['shelf'];audience=data['audience']
-  if juvenile:audience='Children';section='Children' if isfiction else 'Children’s Nonfiction';shelf='J FIC' if isfiction else 'J'
+  if juvenile:audience='Children';section='Children' if isfiction or picture else 'Children’s Nonfiction';shelf='J PIC' if picture else 'J FIC' if isfiction else 'JNF'
   elif teen:audience='Teen';section='Young Adult' if isfiction else 'Young Adult Nonfiction';shelf='YA FIC' if isfiction else 'YA'
-  elif isfiction and shelf not in ['FIC','E','J FIC','YA FIC']:
+  elif isfiction and shelf not in ['FIC','E','J FIC','J PIC','YA FIC']:
    section='Literary Fiction';shelf='FIC'
   elif section in ['Fantasy','Science Fiction','Mystery/Thriller','Romance','Historical Fiction','Horror','Literary Fiction','Classic Fiction'] and not isfiction:
    # Subject search can return criticism, reference books, and unrelated records.
@@ -43,7 +47,7 @@ for p in sorted(CACHE.glob('*.json')):
   elif shelf=='FIC' and re.search(r'detective|mystery fiction',metadata):section='Mystery/Thriller'
   elif shelf=='FIC' and 'historical fiction' in metadata:section='Historical Fiction'
   last=norm(authors[0].split()[-1])[:3].upper() or 'UNK'
-  location="Children's Room" if shelf=='E' else 'Juvenile Fiction' if shelf=='J FIC' else 'Juvenile Nonfiction' if shelf=='J' else 'Young Adult' if audience=='Teen' else 'Fiction Stacks' if shelf=='FIC' else 'Nonfiction'
+  location='Juvenile Picture Books' if shelf=='J PIC' else 'Juvenile Fiction' if shelf=='J FIC' else 'Juvenile Nonfiction' if shelf=='JNF' else 'Young Adult' if audience=='Teen' else 'Fiction Stacks' if shelf=='FIC' else 'Nonfiction'
   # A selected local print holding; no claim of a specific edition/ISBN or digital license.
   work_number = int(re.search(r'OL(\d+)W', key).group(1))
   e={'recordId':f"CAT-{100000 + work_number}",'title':title,'author':author,'year':year,'genre':section,'format':'Print Book','isFiction':isfiction,'callNumber':f'{shelf} {last}','location':location,'audience':audience,'subjects':subjects[:18],'description':'Subjects: '+('; '.join(subjects[:5]) if subjects else section)+'.','sourceUrl':'https://openlibrary.org'+key,'sourceWorkId':key,'publicationYearType':'First publication year reported by Open Library','provenance':'Open Library work metadata; SPL local selection and shelving'}

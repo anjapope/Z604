@@ -1,13 +1,13 @@
 {
   "circulation": {
     "asOf": "2026-11-08",
-    "loans": 114692,
-    "zeroTitles": 3276,
+    "loans": 111494,
+    "zeroTitles": 3318,
     "demandTiers": {
       "high": 27,
       "none": 976,
-      "regular": 2068,
-      "low": 6052,
+      "regular": 1970,
+      "low": 6150,
       "very high": 8
     }
   },
@@ -86,8 +86,8 @@
     "Biography": 117,
     "Business": 162,
     "Careers": 184,
-    "Children": 1355,
-    "Children’s Nonfiction": 443,
+    "Children": 1249,
+    "Children’s Nonfiction": 550,
     "Classic Fiction": 42,
     "Computing": 268,
     "Contemporary Fiction": 8,
@@ -134,15 +134,15 @@
     "Tax and Government": 153,
     "Travel": 33,
     "Veterans and Military Life": 19,
-    "Young Adult": 129,
+    "Young Adult": 128,
     "Young Adult Nonfiction": 64
   },
   "audiences": {
     "Adult": 7056,
     "Teen/Adult": 80,
-    "Children": 1797,
+    "Children": 1798,
     "Children/Teen": 4,
-    "Teen": 193,
+    "Teen": 192,
     "All Ages": 1
   },
   "inventoryAsOf": "2026-11-08",

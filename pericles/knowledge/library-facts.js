@@ -5,6 +5,7 @@ const LIBRARY_HOURS = KNOWLEDGE.hours.display;
 const EVENTS_CONTEXT = KNOWLEDGE.events;
 
 const SERVICES_CONTEXT = [
+  'Children’s physical-book shelf labels use J FIC for juvenile fiction, JNF for juvenile nonfiction, and J PIC for picture books, followed by an author label. These are local shelf codes.',
   'Public computers and in-library internet access are available.',
   'Technology assistance and public training seminars are offered.',
   `In-person research help is offered through ${KNOWLEDGE.researchHelp.department} by ${KNOWLEDGE.researchHelp.librarian}, ${KNOWLEDGE.researchHelp.title}. ${KNOWLEDGE.researchHelp.availability} Times use ${KNOWLEDGE.researchHelp.timezone}. Research help includes genealogy, local history, topic development, source selection, citation guidance, and source evaluation.`,
