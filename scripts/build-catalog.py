@@ -45,7 +45,8 @@ for p in sorted(CACHE.glob('*.json')):
   last=norm(authors[0].split()[-1])[:3].upper() or 'UNK'
   location="Children's Room" if shelf=='E' else 'Juvenile Fiction' if shelf=='J FIC' else 'Juvenile Nonfiction' if shelf=='J' else 'Young Adult' if audience=='Teen' else 'Fiction Stacks' if shelf=='FIC' else 'Nonfiction'
   # A selected local print holding; no claim of a specific edition/ISBN or digital license.
-  e={'recordId':f"CAT-{100000+int(re.search(r'OL(\d+)W',key).group(1))}",'title':title,'author':author,'year':year,'genre':section,'format':'Print Book','isFiction':isfiction,'callNumber':f'{shelf} {last}','location':location,'audience':audience,'subjects':subjects[:18],'description':'Subjects: '+('; '.join(subjects[:5]) if subjects else section)+'.','sourceUrl':'https://openlibrary.org'+key,'sourceWorkId':key,'publicationYearType':'First publication year reported by Open Library','provenance':'Open Library work metadata; SPL local selection and shelving'}
+  work_number = int(re.search(r'OL(\d+)W', key).group(1))
+  e={'recordId':f"CAT-{100000 + work_number}",'title':title,'author':author,'year':year,'genre':section,'format':'Print Book','isFiction':isfiction,'callNumber':f'{shelf} {last}','location':location,'audience':audience,'subjects':subjects[:18],'description':'Subjects: '+('; '.join(subjects[:5]) if subjects else section)+'.','sourceUrl':'https://openlibrary.org'+key,'sourceWorkId':key,'publicationYearType':'First publication year reported by Open Library','provenance':'Open Library work metadata; SPL local selection and shelving'}
   entries.append(e);seen_keys.add(key);seen_pairs.add(pair);seen_titles.add(tk)
 # Retain enriched core records in the resulting array.
 entries[:len(core)]=core
