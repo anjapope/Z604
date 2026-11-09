@@ -1,0 +1,58 @@
+{
+  "cityOverview": "Stapleton is a former manufacturing city in Indiana. Its public identity was shaped by staple production, steady industrial employment, and the expectation that local institutions would serve working families. Today, redevelopment and technology investment coexist with industrial job losses, uneven internet access, and concern about who benefits from economic change.",
+  "cityHistory": [
+    {
+      "period": "Industrial growth",
+      "text": "Staple manufacturing anchored the city’s economy. Factory employment supported nearby shops, working-class neighborhoods, and civic organizations. The industry also concentrated economic influence among a small group of employers."
+    },
+    {
+      "period": "Late 1990s: industrial decline",
+      "text": "Factory contraction and closures reduced stable employment. Some residents retrained or left; others remained in neighborhoods with fewer jobs and less investment. Former workers and their families continue to shape local arguments about economic development."
+    },
+    {
+      "period": "Mid-2010s onward: downtown redevelopment",
+      "text": "New businesses, property investment, and downtown improvements brought visible renewal. Rising property values and taxes also created pressure on longtime residents, renters, and small organizations. Residents disagree about whether revitalization is broadly shared."
+    },
+    {
+      "period": "The present: technology investment",
+      "text": "A data center is planned, and prospective owners have received major tax incentives. Supporters anticipate investment, construction activity, and a stronger technology economy. Critics question lasting local employment, public revenue forgone, environmental demands, and the distribution of benefits. Megalogos Enterprise Technologies supplies the library’s Pericles product; that does not establish that it owns the proposed data center."
+    }
+  ],
+  "libraryHistory": [
+    {
+      "period": "1894: a community reading room",
+      "text": "A workers’ mutual-aid society and a local women’s reading club organized a small lending collection and reading room. Donations came from residents and local businesses, including manufacturing interests. Practical education, recreation, and access to newspapers were central to its early purpose."
+    },
+    {
+      "period": "1912: a municipal public library",
+      "text": "The reading-room effort became a publicly supported municipal library in a permanent downtown building. Public funding broadened its responsibility beyond donors and membership groups: the library was to serve the city as a whole."
+    },
+    {
+      "period": "1976: expanded public space",
+      "text": "An expansion added room for children’s services, public meetings, and a larger collection. The downtown library became a place for civic gatherings as well as individual reading and study."
+    },
+    {
+      "period": "Late 1990s–2000s: responding to job losses",
+      "text": "As manufacturing declined, demand grew for job-search help, applications, practical learning, and access to computers. Staff increasingly helped residents navigate services whose forms and information were moving online."
+    },
+    {
+      "period": "2008: public technology access grows",
+      "text": "The library expanded public computer and internet access. Technology help became part of everyday reference work, particularly for residents without dependable home access or confidence using online systems."
+    },
+    {
+      "period": "2015 onward: redevelopment and community memory",
+      "text": "Downtown changes brought new audiences and new expectations, while increasing concern about displacement and access. Special Collections became an important starting point for researching the city’s industrial past, neighborhood change, and the experiences preserved in local records."
+    },
+    {
+      "period": "2026: Pericles joins the service desk",
+      "text": "SPL introduced Pericles, an AI reference client supplied by Megalogos Enterprise Technologies, a major international company. The product sits alongside catalog discovery, account services, programs, and human research help. Its introduction has renewed questions about public service, privacy, accessibility, commercial influence, and the role of library staff."
+    }
+  ],
+  "communityConditions": [
+    "Internet access is uneven. Some outlying neighborhoods depend on the library for connectivity, devices, and assistance with online tasks.",
+    "The city includes former industrial workers, retirees, veterans, families with young children, students, newer residents, and people experiencing housing or financial insecurity. These groups have overlapping needs and do not hold uniform political or technological views.",
+    "People use SPL for learning and leisure, but also for practical needs such as employment research, benefits information, family learning, local history, and finding community support.",
+    "The library works with schools on digital literacy, technology exposure, and workforce preparation. Programs include storytime, reading practice, homework support, and introductory making activities."
+  ],
+  "libraryPrinciples": "SPL’s stated mission is to connect residents with information, technology, learning opportunities, and one another while protecting intellectual freedom, equitable access, privacy, and public trust. Its service philosophy treats technology as an extension of human expertise, with continuing responsibility for accuracy, accessibility, professional judgment, and community trust."
+}

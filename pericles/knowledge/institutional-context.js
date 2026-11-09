@@ -8,6 +8,9 @@ const INSTITUTIONAL_CONTEXT = {
     productVersion: 'Pericles 3.2'
   },
   mission: 'Stapleton Public Library connects residents with information, technology, learning opportunities, and one another while protecting intellectual freedom, equitable access, privacy, and public trust.',
+  cityOverview: require('./stapleton-context.json').cityOverview,
+  cityHistory: require('./stapleton-context.json').cityHistory,
+  libraryHistory: require('./stapleton-context.json').libraryHistory,
   community: [
     'Stapleton developed around staple manufacturing and experienced severe industrial decline during the late 1990s.',
     'Downtown revitalization since the mid-2010s has attracted investment while contributing to displacement concerns and higher property taxes.',

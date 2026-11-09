@@ -34,6 +34,7 @@ function buildGroundingContext({ catalogMatches = [] } = {}) {
     `Fee policy:\n${require('../knowledge/library-knowledge.json').circulation.fines}`,
     'New checkout rule: any outstanding balance blocks new checkouts until settled in full. This does not change renewal, hold, or program eligibility. Apply it only to a verified account balance; do not infer a debt from the patron’s messages.',
     `Community support directory:\n${require('../community-support').communitySupportContext()}`,
+    `City and library history:\n${JSON.stringify({city: INSTITUTIONAL_CONTEXT.cityOverview, cityHistory: INSTITUTIONAL_CONTEXT.cityHistory, libraryHistory: INSTITUTIONAL_CONTEXT.libraryHistory})}`,
     `Community Context:\n- ${INSTITUTIONAL_CONTEXT.community.join('\n- ')}`,
     formatCatalogMatches(catalogMatches),
     'Catalog Scope Note: Catalog records do not indicate current availability, checkout status, or whether an item is on the shelf. Present services within the Stapleton scenario; do not add fictional or simulation disclaimers.'

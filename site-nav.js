@@ -1,12 +1,13 @@
 'use strict';
 // One navigation definition for every page. Versioned page URLs avoid stale headers.
 (function renderSiteNavigation() {
-  const version = '20261109-2';
+  const version = '20261109-3';
   const items = [
     ['index.html', 'Home'], ['catalog.html', 'Card Catalog'],
     ['account.html', 'My Account'], ['events.html', 'Events'],
     ['programs.html', 'Programs'], ['research-help.html', 'Research Help'],
-    ['community-support.html', 'Community Support'], ['about.html', 'About'],
+    ['community-support.html', 'Community Support'], ['stapleton-context.html', 'Stapleton Context'],
+    ['about.html', 'About'],
     ['instructions.html', 'Instructions']
   ];
   const page = location.pathname.split('/').pop() || 'index.html';
