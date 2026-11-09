@@ -2,7 +2,7 @@
 const KNOWLEDGE = require('./knowledge/library-knowledge.json');
 const { circulationIntent } = require('./circulation-intent');
 const { lendingLimitsText } = require('./lending-policy');
-const PREFIX = 'For fictional Stapleton Public Library: ';
+const PREFIX = 'For Stapleton Public Library: ';
 
 function institutionalTopic(text) {
   if (circulationIntent(text)) return null;
@@ -72,12 +72,12 @@ function answerInstitutional(message, context = message, { now = new Date() } = 
     case 'holidays': answer = KNOWLEDGE.hours.exceptions; break;
     case 'membership': answer = `${KNOWLEDGE.membership.known} ${KNOWLEDGE.membership.unknown}`; break;
     case 'rights': answer = `Patron rights include: ${KNOWLEDGE.rights.join('; ')}. Privacy is a commitment, not absolute confidentiality or a legal guarantee. Specific accommodation and policy procedures are not established.`; break;
-    case 'responsibilities': answer = `${KNOWLEDGE.responsibilities.join('; ')}. Never share real credentials here; this is a classroom demonstration.`; break;
+    case 'responsibilities': answer = `${KNOWLEDGE.responsibilities.join('; ')}.`; break;
     case 'privacy': answer = KNOWLEDGE.privacy; break;
     case 'fees': answer = c.fines; break;
     case 'renewals': answer = `You can renew eligible items up to ${c.renewalLimit} times. A hold from another patron blocks renewal. No renewal was initiated.`; break;
     case 'holds': answer = `You can have up to ${c.holdLimit} active holds, one per title. You cannot place a hold on a title you already have checked out. No hold was initiated.`; break;
-    case 'loans': answer = `Loan periods: print and large print ${c.loanDays['Print Book']} days; ebooks and audiobooks ${c.loanDays.Ebook} days; DVD and Blu-ray ${c.loanDays.DVD} days. These are general policies; eligibility for a particular loan depends on the selected fictional account. No transaction was initiated.`; break;
+    case 'loans': answer = `Loan periods: print and large print ${c.loanDays['Print Book']} days; ebooks and audiobooks ${c.loanDays.Ebook} days; DVD and Blu-ray ${c.loanDays.DVD} days. These are general policies; eligibility for a particular loan depends on the selected account. No transaction was initiated.`; break;
     case 'checkoutLimit': answer = `${lendingLimitsText()} Outstanding balances block new checkouts until settled in full. This does not change renewal, hold, or program eligibility.`; break;
     case 'circulation': answer = `At once, per account: ${c.checkoutLimits.books} books, ${c.checkoutLimits.dvds} DVDs, and ${c.checkoutLimits.videoGames} video games. Print/large print: ${c.loanDays['Print Book']} days; ebooks/audio: ${c.loanDays.Ebook} days; DVD/Blu-ray: ${c.loanDays.DVD} days. Up to ${c.renewalLimit} renewals if eligible; another patron’s hold blocks renewal. Up to ${c.holdLimit} active holds. No overdue fines; replacement charges may apply.`; break;
     case 'contact': answer = KNOWLEDGE.contact.unknown; break;

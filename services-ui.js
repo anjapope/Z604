@@ -12,7 +12,7 @@
   async function read(route) {
     const response = await (window.PericlesApi?.fetch || fetch)(route, { cache: 'no-store' });
     const body = await response.json();
-    if (!response.ok) throw new Error(body.error || 'Demonstration services are unavailable.');
+    if (!response.ok) throw new Error(body.error || 'Services are unavailable.');
     return body;
   }
   let generation = 0;
@@ -23,18 +23,18 @@
       const a = await read('/api/services/account');
       if (current !== generation) return;
       accountPanel.replaceChildren();
-      element('h2', 'Fictional fees and program registrations', accountPanel);
-      element('p', `Patron ${a.accountId} — simulated balance $${(a.balanceCents / 100).toFixed(2)}. No overdue fines or real payments.`, accountPanel);
+      element('h2', 'Fees and program registrations', accountPanel);
+      element('p', `Patron ${a.accountId} — balance $${(a.balanceCents / 100).toFixed(2)}. No overdue fines.`, accountPanel);
       if (a.feePolicy?.newCheckoutBlocked) element('p', 'New checkouts are blocked until the full balance is settled. Unused category capacity does not override this block. Renewals, holds, and program access retain their separate rules.', accountPanel);
       const fees = element('ul', '', accountPanel);
-      for (const charge of a.charges) element('li', `${charge.label}: $${(charge.cents / 100).toFixed(2)}`, fees);
+      for (const charge of a.charges) element('li', `${charge.label.replace(/^Fictional /i, '')}: $${(charge.cents / 100).toFixed(2)}`, fees);
       if (!a.charges.length) element('li', 'No charges.', fees);
-      element('p', `${a.feePolicy?.description || 'Ask Pericles about the current fee settlement policy.'} Never enter real payment information.`, accountPanel);
-      element('h3', 'Registered demonstration sessions', accountPanel);
+      element('p', `${(a.feePolicy?.description || 'Ask Pericles about the current fee settlement policy.').replace(/in this classroom scenario/g, 'under this policy').replace(/simulated /g, '').replace(/In this demo /g, '')}`, accountPanel);
+      element('h3', 'Registered sessions', accountPanel);
       const registrations = element('ul', '', accountPanel);
       for (const r of a.registrations) element('li', `${r.title}: ${r.date} at ${r.time} (America/Indiana/Indianapolis). ID: ${r.eventId}`, registrations);
       if (!a.registrations.length) element('li', 'No registrations yet.', registrations);
-      element('p', 'Ask Pericles to register or cancel a place by program title and date. Youth programs may require a caregiver; each registration reserves one simulated place.', accountPanel);
+      element('p', 'Ask Pericles to register or cancel a place by program title and date. Youth programs may require a caregiver; each registration reserves one place.', accountPanel);
       element('h3', 'Service receipts', accountPanel);
       const receipts = element('ul', '', accountPanel);
       for (const r of a.history.slice(-10).reverse()) element('li', `${r.timestamp}: ${r.action.replace(/_/g, ' ')} — ${r.title || `$${(r.creditedCents / 100).toFixed(2)} credit; $${(r.remainingCents / 100).toFixed(2)} remaining`}. Receipt ${r.id}`, receipts);
@@ -50,8 +50,8 @@
     try {
       const { programs } = await read('/api/services/programs');
       programsPanel.replaceChildren();
-      element('h2', 'Upcoming demonstration sessions', programsPanel);
-      element('p', 'Next sessions in the fictional two-week schedule (America/Indiana/Indianapolis). Pericles can show more dates and register one simulated place. These sessions supplement the recurring program descriptions below.', programsPanel);
+      element('h2', 'Upcoming sessions', programsPanel);
+      element('p', 'Upcoming sessions (America/Indiana/Indianapolis). Pericles can show more dates and register a place. These sessions supplement the recurring program descriptions below.', programsPanel);
       const list = element('ul', '', programsPanel);
       list.className = 'demo-program-grid';
       const seen = new Set();

@@ -9,8 +9,8 @@ const { childAge, recommendPrograms } = require('./program-advisory');
 const knowledge = require('./knowledge/library-knowledge.json');
 const waiversAllowed = () => knowledge.circulation.feeWaiversAllowed !== false;
 const feeOptions = () => waiversAllowed()
-  ? 'In this demo you may request a one-time courtesy credit up to $15 or a simulated payment. Ask “waive my fees” or “pay my fees” for a preview.'
-  : 'The full outstanding balance must be settled. Waivers, reductions, courtesy credits, and installment plans are not available in this classroom scenario. Ask “pay my fees” for a simulated settlement preview; confirmation is required.';
+  ? 'You may request a one-time courtesy credit up to $15 or a payment. Ask “waive my fees” or “pay my fees” for a preview.'
+  : 'The full outstanding balance must be settled. Waivers, reductions, courtesy credits, and installment plans are not available under this policy. Ask “pay my fees” for a settlement preview; confirmation is required.';
 
 function fail(message, status = 409) { const error = new Error(message); error.status = status; throw error; }
 function localMinute(now) {
@@ -84,7 +84,7 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
   function load() {
     if (state) return state;
     if (!fs.existsSync(filePath)) save({ version: 1, accounts: Object.fromEntries(['A', 'B', 'C'].map(id => [id, {
-      charges: id === 'B' ? [{ id: 'B-F1', label: 'Fictional lost-material replacement', cents: 1200 }, { id: 'B-F2', label: 'Fictional damaged-material charge', cents: 400 }] : [],
+      charges: id === 'B' ? [{ id: 'B-F1', label: 'Lost-material replacement', cents: 1200 }, { id: 'B-F2', label: 'Damaged-material charge', cents: 400 }] : [],
       courtesyUsed: false, registrations: [], history: []
     }])) });
     else {
@@ -100,7 +100,7 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
   }
   const money = cents => `$${(cents / 100).toFixed(2)}`;
   function account(session) {
-    if (!['A', 'B', 'C'].includes(session.accountId)) fail('Choose fictional patron A, B, or C first. No sign-in is needed.');
+    if (!['A', 'B', 'C'].includes(session.accountId)) fail('Choose patron A, B, or C first. No sign-in is needed.');
     return load().accounts[session.accountId];
   }
   function events() {
@@ -120,23 +120,23 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
     if (action === 'register') {
       const event = events().find(e => e.eventId === parameters.eventId);
       if (!event) fail('That session is no longer upcoming. Ask for the current program list.');
-      if (a.registrations.some(r => r.eventId === event.eventId)) fail('This fictional patron is already registered for that session.');
-      if (session.accountId === 'C' && event.audience === 'Adults') fail('This adult session is not available on fictional child account C.');
+      if (a.registrations.some(r => r.eventId === event.eventId)) fail('This patron is already registered for that session.');
+      if (session.accountId === 'C' && event.audience === 'Adults') fail('This adult session is not available on child account C.');
       if (event.remaining <= 0) fail('That session is full; choose another date.');
       payload = { eventId: event.eventId, title: event.title, date: event.date, time: event.time };
     } else if (action === 'cancel_registration') {
       const registration = a.registrations.find(r => r.eventId === parameters.eventId);
-      if (!registration) fail('There is no matching registration on this fictional account.');
+      if (!registration) fail('There is no matching registration on this account.');
       payload = { ...registration };
     } else if (action === 'waive_fees') {
       const balance = a.charges.reduce((sum, c) => sum + c.cents, 0);
-      if (!balance) fail('Your fictional balance is already $0.00. No adjustment is needed.');
-      if (!waiversAllowed()) fail(`The full balance of ${money(balance)} remains due. I cannot waive or reduce it. ${feeOptions()} No real money is accepted.`);
-      if (a.courtesyUsed) fail('The one-time simulated courtesy credit has already been used. The remaining balance can be settled with a simulated payment; no real money is accepted.');
+      if (!balance) fail('Your balance is already $0.00. No adjustment is needed.');
+      if (!waiversAllowed()) fail(`The full balance of ${money(balance)} remains due. I cannot waive or reduce it. ${feeOptions()} `);
+      if (a.courtesyUsed) fail('The one-time courtesy credit has already been used. The remaining balance can be settled with a payment; ');
       payload = { balance, creditCents: Math.min(balance, 1500), remainingCents: Math.max(0, balance - 1500) };
     } else if (action === 'settle_fees') {
       const balance = a.charges.reduce((sum, c) => sum + c.cents, 0);
-      if (!balance) fail('Your fictional balance is already $0.00. No payment is needed.');
+      if (!balance) fail('Your balance is already $0.00. No payment is needed.');
       payload = { balance, creditCents: balance, remainingCents: 0 };
     } else fail('Unknown demonstration service action.', 400);
     const preview = { fictional: true, action, accountId: session.accountId, ...payload, token: randomUUID(), expiresAt: now().getTime() + 300000 };
@@ -155,7 +155,7 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
     if (p.action === 'cancel_registration' && !a.registrations.some(r => r.eventId === p.eventId)) fail('The registration has already changed. Ask for a fresh preview.');
     const balance = a.charges.reduce((sum, c) => sum + c.cents, 0);
     if (p.action.endsWith('_fees') && (balance !== p.balance || (p.action === 'waive_fees' && a.courtesyUsed))) fail('The balance changed; ask for a fresh preview.');
-    if (p.action === 'waive_fees' && !waiversAllowed()) fail('Waivers are not available under the current classroom policy. The balance was not changed.');
+    if (p.action === 'waive_fees' && !waiversAllowed()) fail('Waivers are not available under the current policy. The balance was not changed.');
     const next = structuredClone(load()), target = next.accounts[session.accountId];
     if (p.action === 'register') target.registrations.push({ eventId: p.eventId, title: p.title, date: p.date, time: p.time });
     else if (p.action === 'cancel_registration') target.registrations = target.registrations.filter(r => r.eventId !== p.eventId);
@@ -172,11 +172,11 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
   function previewText(p) {
     const detail = p.action === 'register' ? `Register one place for ${p.title} on ${p.date} at ${p.time} (${offerings.timezone})`
       : p.action === 'cancel_registration' ? `Cancel your place for ${p.title} on ${p.date} at ${p.time}`
-      : `${p.action === 'waive_fees' ? 'Apply the one-time courtesy credit' : 'Record a simulated payment'} of ${money(p.creditCents)}; balance ${money(p.balance)} → ${money(p.remainingCents)}`;
-    return `Fictional demonstration — Patron ${p.accountId}. ${detail}.\nConfirm with “yes” or say “cancel”. Expires in five minutes. No real registration, payment, or policy waiver occurs; do not enter payment details.`;
+      : `${p.action === 'waive_fees' ? 'Apply the one-time courtesy credit' : 'Record a payment'} of ${money(p.creditCents)}; balance ${money(p.balance)} → ${money(p.remainingCents)}`;
+    return `Patron ${p.accountId}. ${detail}.\nConfirm with “yes” or say “cancel”. Expires in five minutes. `;
   }
   function resultText(r) {
-    return `Fictional demonstration — Patron ${r.accountId}. Server confirmed ${r.action === 'register' ? `one program place: ${r.title}, ${r.date} at ${r.time}` : r.action === 'cancel_registration' ? `cancellation: ${r.title}, ${r.date}` : `a ${money(r.creditedCents)} simulated credit; remaining balance ${money(r.remainingCents)}`}. Receipt ${r.id}. No real transaction occurred.`;
+    return `Patron ${r.accountId}. Server confirmed ${r.action === 'register' ? `one program place: ${r.title}, ${r.date} at ${r.time}` : r.action === 'cancel_registration' ? `cancellation: ${r.title}, ${r.date}` : `a ${money(r.creditedCents)} credit; remaining balance ${money(r.remainingCents)}`}. Receipt ${r.id}. `;
   }
   function chat(session, message) {
     let text = message.trim();
@@ -216,14 +216,14 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
     }
     if (pending && /^(?:yes(?:,? please)?|confirm|confirm (?:registration|payment|waiver|cancellation))[.!]?$/i.test(text)) return resultText(confirm(session, pending.token));
     session.servicePending = null;
-    if (pending && /^(?:no|no thanks|cancel|cancel it)[.!]?$/i.test(text)) return 'Fictional demonstration: the service preview was cancelled; no change was made.';
+    if (pending && /^(?:no|no thanks|cancel|cancel it)[.!]?$/i.test(text)) return 'the service preview was cancelled; no change was made.';
     if (isFeeRequest(text)) {
       session.pending = null;
-      if (/\b(?:policy|policies|do you charge)\b/i.test(text) && !/\b(?:my|our)\b/i.test(text)) return `The fictional library charges no overdue fines. The demo seeds replacement/damage charges on Patron B. ${feeOptions()} No real money is taken.`;
+      if (/\b(?:policy|policies|do you charge)\b/i.test(text) && !/\b(?:my|our)\b/i.test(text)) return `The library charges no overdue fines. Replacement and damage charges may apply. ${feeOptions()} `;
       const a = summary(session);
       if (/\b(?:waiv\w*|resolv\w*|clear|appeal|disput\w*)\b/i.test(text) && !/\b(?:how|policy|policies|can i|do you)\b/i.test(text)) return previewText(prepare(session, 'waive_fees'));
       if (/\b(?:pay|settle)\b/i.test(text) && !/\b(?:how|policy|policies|can i|do you)\b/i.test(text)) return previewText(prepare(session, 'settle_fees'));
-      return `Fictional Patron ${session.accountId}: balance ${money(a.balanceCents)}.\n${a.charges.map(c => `- ${c.label}: ${money(c.cents)}`).join('\n') || 'No charges.'}\nNo overdue fines are charged. These are seeded replacement/damage charges, not charges computed from real borrowing. ${a.balanceCents ? feeOptions() : 'No payment or adjustment is needed.'} No card or payment details are needed.`;
+      return `Patron ${session.accountId}: balance ${money(a.balanceCents)}.\n${a.charges.map(c => `- ${c.label}: ${money(c.cents)}`).join('\n') || 'No charges.'}\nNo overdue fines are charged. ${a.balanceCents ? feeOptions() : 'No payment or adjustment is needed.'}`;
     }
     if (session.programAction && /^(?:\d{4}-\d{2}-\d{2}|[a-z-]+@\d{4}-\d{2}-\d{2}|the next one|next)[.!]?$/i.test(text)) {
       const choices = session.programAction;
@@ -237,7 +237,7 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
     session.pending = null;
     if (/\bmy (?:registrations|sign[- ]?ups|programs|bookings)\b/i.test(text)) {
       const a = summary(session);
-      return `Fictional Patron ${session.accountId} registrations:\n${a.registrations.map(r => `- ${r.title}: ${r.date} ${r.time}; ${r.eventId}`).join('\n') || 'None yet.'}\nNo real registrations exist.`;
+      return `Patron ${session.accountId} registrations:\n${a.registrations.map(r => `- ${r.title}: ${r.date} ${r.time}; ${r.eventId}`).join('\n') || 'None yet.'}\n`;
     }
     const wantsAction = /\b(?:sign me up|register me|enroll me|sign up for|register for|enroll in|book (?:me |a |one )?(?:place|spot)|cancel (?:my )?(?:registration|booking|place))\b/i.test(text)
       && !/\b(?:how (?:do|can)|can i|do you|policy|rules)\b/i.test(text);
@@ -273,19 +273,19 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
     }
     const legacy = require('./knowledge/library-facts').EVENTS_CONTEXT;
     const unmodeled = legacy.filter(line => text.toLowerCase().includes(line.split(':')[0].toLowerCase()) && !offerings.programs.some(p => line.startsWith(p.title + ':')));
-    if (unmodeled.length) return `${unmodeled.join('\n')}\nThese are recurring demonstration descriptions; no dated, bookable session for this program has been added to the simulation.`;
+    if (unmodeled.length) return `${unmodeled.join('\n')}\nThese programs recur regularly; registration dates are not yet available.`;
     const available = new Map(events().map(e => [e.eventId, e]));
-    return `${offerings.notice}\nUpcoming sessions (${offerings.timezone}):\n${chosen.slice(0, 8).map(e => `- ${e.title}: ${e.date}, ${e.time}; ${e.audience}; ${available.get(e.eventId).remaining} places. ${e.description} ID: ${e.eventId}`).join('\n') || 'No matching sessions in the next 14 days.'}\nSelect fictional patron A, B, or C, then ask “register me for [program] on [date]”. Each registration is one place; caregiver rules apply. No sign-in or real contact information is needed.`;
+    return `${offerings.notice}\nUpcoming sessions (${offerings.timezone}):\n${chosen.slice(0, 8).map(e => `- ${e.title}: ${e.date}, ${e.time}; ${e.audience}; ${available.get(e.eventId).remaining} places. ${e.description} ID: ${e.eventId}`).join('\n') || 'No matching sessions in the next 14 days.'}\nSelect patron A, B, or C, then ask “register me for [program] on [date]”. Each registration is one place; caregiver rules apply.`;
   }
   function suggestion(session, message, history = []) {
     if (/\b(?:suicid\w*|kill myself|emergency|immediate danger)\b/i.test(message)) return '';
     if (/\b(?:no (?:suggestions|programs)|don['’]t (?:suggest|promote|recommend)|stop suggesting)\b/i.test(message)) { session.suggestionsDisabled = true; return ''; }
     if (/\b(?:suggest programs again|turn on suggestions)\b/i.test(message)) session.suggestionsDisabled = false;
     const interest = serviceInterest(message);
-    if (session.suggestionsDisabled || !interest || history.slice(-4).some(h => h.role === 'assistant' && /You might also try the fictional/.test(h.content))) return '';
+    if (session.suggestionsDisabled || !interest || history.slice(-4).some(h => h.role === 'assistant' && /You might also try the (?:fictional )?/.test(h.content))) return '';
     const event = upcomingPrograms(now()).find(e => e.id === interest);
     if (event) session.suggestedProgram = event.title;
-    return event ? `\n\nYou might also try the fictional ${event.title} (${event.date}, ${event.time}). ${event.description} Want to see registration options?` : '';
+    return event ? `\n\nYou might also try the ${event.title} (${event.date}, ${event.time}). ${event.description} Want to see registration options?` : '';
   }
   return { chat, summary, prepare, confirm, events, suggestion };
 }

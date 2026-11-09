@@ -32,7 +32,7 @@ function client() {
   return { request, chat: (message, history = []) => request('/api/chat', { message, history }), select: id => request('/api/circulation/selection', { accountId: id }), account: async () => (await request('/api/circulation/account')).payload };
 }
 const cases = [
-  ['What time do you close tonight?', /fictional.*\d{4}-\d{2}-\d{2}.*America\/Indiana\/Indianapolis.*Holiday/is],
+  ['What time do you close tonight?', /\d{4}-\d{2}-\d{2}.*America\/Indiana\/Indianapolis.*Holiday/is],
   ['Are you open on Sundays?', /Sunday: 12:00 PM-4:00 PM/],
   ['What are my rights as a library patron?', /equitable.*intellectual freedom.*privacy.*nondiscriminatory.*accommodations/is],
   ['What responsibilities do I have?', /respectfully.*materials.*shared spaces.*credentials/is],
@@ -40,19 +40,19 @@ const cases = [
   ['Can I renew something another patron has on hold?', /up to 2 times.*hold from another patron blocks renewal.*no renewal was initiated/is],
   ['How do I get a library card?', /free to local residents.*identification.*not established/is],
   ['Do you charge overdue fines?', /No overdue fines.*Replacement charges may apply.*not established/is],
-  ['Is my borrowing history private?', /confidentiality.*not a promise of absolute confidentiality.*shared/is],
+  ['Is my borrowing history private?', /confidentiality.*Record retention and disclosure procedures are not established/is],
   ['Can I use a library computer?', /Public computers.*Wi-Fi.*limits.*not established/is],
   ["What's the library's phone number?", /telephone number.*not established/is],
   ['What holidays are you closed?', /Holiday exceptions.*not established/],
   ['What are your hours? And can you recommend a mystery novel?', /Monday-Friday: 8:00 AM-8:00 PM.*Why it fits.*mystery/is],
-  ['What is your renewal policy? Please renew my current book.', /up to 2 times.*Choose a fictional demonstration patron/is]
+  ['What is your renewal policy? Please renew my current book.', /up to 2 times.*Choose a patron/is]
 ];
 for (const [message, expected] of cases) {
   test(`institutional HTTP: ${message}`, async () => {
     const result = await client().chat(message);
     assert.equal(result.status, 200);
     assert.match(result.payload.reply, expected);
-    assert.match(result.payload.reply, /fictional/i);
+    assert.match(result.payload.reply, /For Stapleton Public Library/i);
     assert.deepEqual(result.payload.sources, []);
     transcripts.push({ message, status: result.status, reply: result.payload.reply });
   });
@@ -131,7 +131,7 @@ test('unknown details and generic policy ambiguity are acknowledged without fabr
     assert.match(result.payload.reply, /not established/);
     assert.doesNotMatch(result.payload.reply, /\$\d|\b\d+ minutes|555-|90210/);
   }
-  assert.match((await patron.chat('What are your privacy policies?')).payload.reply, /not a promise of absolute confidentiality/);
+  assert.match((await patron.chat('What are your privacy policies?')).payload.reply, /Record retention and disclosure procedures are not established/);
 });
 
 test('institutional source and transcripts are not public assets', async () => {
@@ -145,5 +145,5 @@ test('library words in advisory/catalog requests do not become policy questions'
   assert.equal(routeServiceRequest('Recommend books about privacy.').intent, 'readers_advisory');
   assert.equal(routeServiceRequest('Search the catalog for library computers.').intent, 'catalog');
   const answer = await patron.chat('What are your hours? And can you recommend a mystery novel?');
-  assert.match(answer.payload.reply, /fictional.*Monday-Friday.*Why it fits/is);
+  assert.match(answer.payload.reply, /Monday-Friday.*Why it fits/is);
 });

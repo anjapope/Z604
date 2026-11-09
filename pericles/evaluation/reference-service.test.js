@@ -123,7 +123,7 @@ test('catalog search API returns records matching title, author, subject and for
 
   for (const { response, payload } of responses) {
     assert.equal(response.status, 200);
-    assert.equal(payload.scope, 'Stapleton demonstration catalog');
+    assert.equal(payload.scope, 'Stapleton catalog');
     assert.equal(payload.availabilityTracked, false);
     assert.ok(payload.results.length > 0);
   }
@@ -434,7 +434,7 @@ test('Scenario D: collection description is computed from the actual demonstrati
 
   assert.equal(status, 200);
   assert.match(payload.reply, new RegExp(CATALOG_ENTRIES.length.toLocaleString().replace(',', '\\,')));
-  assert.match(payload.reply, /demonstration records/i);
+  assert.match(payload.reply, /catalog contains/i);
   assert.match(payload.reply, /does not track current circulation or availability/i);
 });
 

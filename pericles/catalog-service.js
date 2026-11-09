@@ -3,8 +3,12 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { isCirculationStatisticsQuestion, isRestrictedHistoryRequest, publicPopularityReply } = require('./catalog-circulation');
+const { inventorySummary, inventoryAnswer } = require('./inventory-service');
 
 function loadCatalog() {
+  const usagePath = path.join(__dirname, 'knowledge', 'circulation-summaries.json');
+  const privateUsage = fs.existsSync(usagePath) ? JSON.parse(fs.readFileSync(usagePath, 'utf8')).records : {};
   const filePath = path.resolve(__dirname, '..', 'catalog-data.js');
   const source = fs.readFileSync(filePath, 'utf8');
   const context = {};
@@ -22,6 +26,7 @@ function loadCatalog() {
     seed: context.__catalog.seed.map((entry) => ({ ...entry })),
     entries: context.__catalog.entries.map((entry) => ({
       ...entry,
+      circulation: privateUsage[entry.recordId] || null,
       subjects: [...(entry.subjects || [])]
     }))
   };
@@ -45,7 +50,7 @@ function tokenize(query) {
   return String(query)
     .toLowerCase()
     .split(/[^a-z0-9]+/)
-    .filter((token) => (token.length >= 3 || token === 'ai') && !STOPWORDS.has(token));
+    .filter((token) => (token.length >= 3 || token === 'ai' || token === '3d') && !STOPWORDS.has(token));
 }
 
 function resolveFormat(query) {
@@ -62,12 +67,15 @@ function resolveFictionFilter(query) {
 }
 
 function scoreEntry(entry, query, tokens) {
-  const normalizedQuery = query.toLowerCase().trim();
+  const normalizedQuery = tokens.length === 1 ? tokens[0] : query.toLowerCase().trim();
   const title = entry.title.toLowerCase();
   const author = entry.author.toLowerCase();
   const subjects = (entry.subjects || []).join(' ').toLowerCase();
-  const index = `${title} ${author} ${entry.genre} ${entry.format} ${entry.callNumber} ${entry.location} ${subjects}`.toLowerCase();
+  const index = `${title} ${author} ${entry.genre} ${entry.format} ${entry.callNumber} ${entry.location} ${subjects}`.toLowerCase().replace(/\b3[- ]d\b/g, '3d');
   let score = 0;
+  if (title === normalizedQuery) score += 100;
+  if ((entry.subjects || []).some(s => s.toLowerCase() === normalizedQuery)) score += 60;
+  if (tokens.length && tokens.every(token => index.includes(token))) score += 10;
 
   if (normalizedQuery && title.includes(normalizedQuery)) score += 20;
   if (normalizedQuery && author.includes(normalizedQuery)) score += 14;
@@ -113,14 +121,45 @@ function getCatalogSummary() {
 
   return {
     totalRecords: CATALOG_ENTRIES.length,
+    ...inventorySummary(CATALOG_ENTRIES),
     uniqueSeedTitles: uniqueSeedTitles.size,
     formats,
+    distinctWorks: new Set(CATALOG_ENTRIES.map(e => `${e.title.replace(/ \(Copy \d+\)$/i, '').replace(/^Percy Jackson and the Olympians: /, '')}|${e.author}`)).size,
     genres
   };
 }
 
 function isCollectionQuestion(message) {
-  return /\b(?:how broad|how large|how many (?:titles|records)|collection size|catalog(?:ue)? size|describe (?:the |your )?collection)\b/i.test(message) || /^(?:what do you have|tell me about (?:your |the )?(?:catalog(?:ue)?|collection|holdings))[?.!]*$/i.test(message.trim());
+  if (isCirculationStatisticsQuestion(message)) return true;
+  if (/\b(?:my|our|can i|may i|am i|have i|charges?|fees?|fines?|policy|policies)\b/i.test(message)) return false;
+  return /\b(?:oldest|newest|earliest|latest)\s+(?:(?:published|publication)\s+)?(?:books?|titles?|items?|records?|publication)|\b(?:how broad|how large|how big|how many (?:books|items|titles|records|works|dvds|audiobooks|ebooks)|copies|copy history|withdrawn|lost items|replaced|replacement|deaccession\w*|retired copies|inventory|collection size|catalog(?:ue)? size|publication (?:years|range)|date range|format breakdown|genre breakdown|describe (?:the |your )?collection)\b/i.test(message)
+    || /^(?:what do you have|tell me about (?:your |the )?(?:catalog(?:ue)?|collection|holdings))[?.!]*$/i.test(message.trim());
+}
+function answerCollectionQuestion(message) {
+  const summary = getCatalogSummary();
+  const formats = Object.entries(summary.formats).map(([format,count])=>`${format}: ${count.toLocaleString()}`).join('; ');
+  const genres = Object.entries(summary.genres).map(([genre,count])=>`${genre}: ${count.toLocaleString()}`).join('; ');
+  if (/\b(?:oldest|newest|earliest|latest|publication years|publication range|date range)\b/i.test(message)) {
+    const onlyBooks = /\bbooks?\b/i.test(message);
+    const entries = CATALOG_ENTRIES.filter(e=>Number.isFinite(Number(e.year)) && (!onlyBooks || ['Print Book','Large Print','Ebook'].includes(e.format)));
+    if (!entries.length) return 'The catalog has no publication years for that selection.';
+    const min = Math.min(...entries.map(e=>Number(e.year))), max = Math.max(...entries.map(e=>Number(e.year)));
+    const latest = /\b(?:newest|latest)\b/i.test(message);
+    const year = latest ? max : min;
+    const seen = new Set();
+    const records = entries.filter(e=>Number(e.year)===year).filter(e=>{const k=e.title.replace(/ \(Copy \d+\)$/i,'')+'|'+e.author;if(seen.has(k))return false;seen.add(k);return true;});
+    return `The ${latest ? 'latest' : 'earliest'} recorded publication year ${onlyBooks ? 'for books ' : ''}in SPL’s catalog is ${year}. Matching works:\n${records.map(e=>`- [${e.title}](/catalog-detail.html?id=${e.recordId}) — ${e.author}; ${e.year}; ${e.format}; call number ${e.callNumber}.`).join('\n')}\nThe recorded publication-year range is ${min}–${max}. These are the catalog’s publication years; they do not establish the age of a particular physical copy, its edition or printing date, or when SPL acquired it.`;
+  }
+  if (/\b(?:how many|number of)\b/i.test(message)) {
+    let count = /\brecords\b/i.test(message) ? summary.totalRecords : summary.activeCopies, label=/\brecords\b/i.test(message) ? 'bibliographic records' : 'active physical copies';
+    if (/\bbooks?\b/i.test(message)) { count=summary.activeBookCopies; label='active print and large-print copies (digital records counted separately)'; }
+    else if (/\bdvds?\b/i.test(message)) {count=summary.activeCopiesByFormat.DVD||0;label='active DVD copies';}
+    else if (/\baudiobooks?\b/i.test(message)) {count=summary.formats.Audiobook||0;label='audiobook records';}
+    else if (/\be-?books?\b/i.test(message)) {count=summary.formats.Ebook||0;label='ebook records';}
+    else if (/\b(?:titles|works)\b/i.test(message)) {count=summary.distinctWorks;label='distinct works (normalized title and author; copies grouped together)';}
+    return `SPL’s catalog contains ${count.toLocaleString()} ${label}. The full catalog has ${summary.totalRecords.toLocaleString()} records representing ${summary.distinctWorks.toLocaleString()} distinct works. Bibliographic records group copy-level items. ${summary.retiredCopies} retired copies are excluded from active holdings; ${summary.digitalRecords} digital-format records have no recorded license counts. Bibliographic format breakdown: ${formats}. Catalog counts do not establish current shelf availability.`;
+  }
+  return `SPL’s catalog contains ${summary.totalRecords.toLocaleString()} records representing ${summary.distinctWorks.toLocaleString()} distinct works, with ${summary.activeCopies.toLocaleString()} active physical copies and ${summary.retiredCopies} retired copies retained in item history. Formats: ${formats}. The genre categories represented include ${genres}. The catalog does not track current circulation or availability.`;
 }
 
 function isCatalogQuestion(message) {
@@ -144,21 +183,14 @@ function findExactTitle(title) {
 }
 
 function answerCatalogQuestion(message, searchQuery = message) {
-  if (isCollectionQuestion(message)) {
-    const summary = getCatalogSummary();
-    const formats = Object.entries(summary.formats)
-      .map(([format, count]) => `${format}: ${count.toLocaleString()}`)
-      .join('; ');
-    const genres = Object.entries(summary.genres)
-      .map(([genre, count]) => `${genre}: ${count.toLocaleString()}`)
-      .join('; ');
-
-    return `Stapleton's demonstration catalog contains ${summary.totalRecords.toLocaleString()} generated records based on ${summary.uniqueSeedTitles} seeded titles. Formats: ${formats}. The genre categories represented include ${genres}. These are demonstration records, not an inventory of Stapleton's complete real-world holdings; the catalog does not track current circulation or availability.`;
-  }
+  if (isCirculationStatisticsQuestion(message) || isRestrictedHistoryRequest(message)) return publicPopularityReply(message, CATALOG_ENTRIES);
+  const inventory = inventoryAnswer(message, CATALOG_ENTRIES);
+  if (inventory) return inventory;
+  if (isCollectionQuestion(message)) return answerCollectionQuestion(message);
 
   const requestedTitle = getRequestedTitle(message);
   if (requestedTitle && !findExactTitle(requestedTitle)) {
-    return `I cannot verify an exact match for “${requestedTitle}” in Stapleton’s demonstration catalog, so I cannot confirm that title as a holding or provide a call number. A missing demonstration-catalog record does not establish whether a real library owns the item.`;
+    return `I cannot verify an exact match for “${requestedTitle}” in Stapleton’s catalog, so I cannot confirm that title as a holding or provide a call number. `;
   }
 
   const authorRequest = message.match(/\bbooks?\s+by\s+(.+?)[?.!]*$/i)?.[1]?.trim();
@@ -169,13 +201,13 @@ function answerCatalogQuestion(message, searchQuery = message) {
       `- ${entry.title} — ${entry.author} (${entry.year}); ${entry.format}; call number ${entry.callNumber}; ${entry.location}.`
     );
     const availabilityNote = /\bavailable|availability|on the shelf|borrow\b/i.test(message)
-      ? ' These records are listed in the demonstration catalog, but it does not track current availability or circulation.'
+      ? ' These records are listed in the catalog, but it does not track current availability or circulation.'
       : '';
-    return `Verified demonstration-catalog records:\n${items.join('\n')}${availabilityNote}`;
+    return `Verified catalog records:\n${items.join('\n')}${availabilityNote}`;
   }
 
   if (/\b(book|title|copy|catalogue?|catalog|holding|have)\b/i.test(message)) {
-    return 'I cannot verify that title in Stapleton’s demonstration catalog, so I can’t confirm a holding or provide a call number. A missing demonstration-catalog record does not establish whether a real library owns the item.';
+    return 'I cannot verify that title in Stapleton’s catalog, so I can’t confirm a holding or provide a call number. ';
   }
 
   return null;

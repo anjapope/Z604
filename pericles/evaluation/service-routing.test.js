@@ -58,14 +58,16 @@ test('source, environment, tests, diagnostics, and reports cannot be retrieved t
   }
 });
 
-test('fictional account entry requests no credentials and does not submit a GET form', async () => {
+test('account entry requests no credentials and does not submit a GET form', async () => {
   const html = await (await fetch(`${origin()}/account.html`)).text();
-  assert.match(html, /fictional demonstration account/i);
-  assert.match(html, /href="account-summary.html"/);
-  assert.doesNotMatch(html, /<(?:form|input)\b/i);
+  assert.match(html, /library account/i);
+  assert.match(html, /id="demoAccountDetails"/);
+  assert.match(html, /id="demoServicesAccount"/);
+  assert.match(html, /src="services-ui.js"/);
+  assert.doesNotMatch(html, /<form\b|type="password"|name="(?:pin|password|cardNumber)"/i);
   const summary = await (await fetch(`${origin()}/account-summary.html`)).text();
-  assert.match(summary, /fictional account summary/i);
-  assert.match(summary, /No sign-in is required/);
+  assert.match(summary, /account summary/i);
+  assert.match(summary, /no sign-in/i);
 });
 
 const cases = [
@@ -74,12 +76,12 @@ const cases = [
   ['Search the catalog for Dune', 'catalog', /Dune.*Frank Herbert/s],
   ['Search the catalogue for Dune', 'catalog', /Dune.*Frank Herbert/s],
   ['Do you have books by Harper Lee?', 'catalog', /To Kill a Mockingbird.*Harper Lee/s],
-  ['How long can I borrow an ebook?', 'policies', /fictional.*loan periods.*14 days/is],
+  ['How long can I borrow an ebook?', 'policies', /loan periods.*14 days/is],
   ['What accessible resources do you have?', 'library_information', /accessibility.*not established/is],
   ['I do not want fiction', 'readers_advisory', /leave fiction out.*nonfiction topic/is],
-  ['Can I renew my books?', 'account', /cannot.*renew.*fictional/is],
-  ['What is my account status?', 'account', /cannot access.*fictional/is],
-  ['Open my account', 'account', /fictional.*No sign-in/is],
+  ['Can I renew my books?', 'account', /Choose a patron/is],
+  ['What is my account status?', 'account', /Choose a patron/is],
+  ['Open my account', 'account', /No sign-in/is],
   ['How do I get a library card?', 'policies', /eligibility.*not established/is],
   ['Where is the library?', 'library_information', /street address.*not established/is],
   ['Where is the archive room?', 'library_information', /locations.*not established/is],
@@ -117,11 +119,11 @@ test('routine answers are based on facts and do not invent unavailable details',
   const hours = await chat('What are your hours?');
   for (const line of LIBRARY_HOURS) assert.ok(hours.includes(line));
   const events = await chat('What programs are available?');
-  assert.match(events, /Dates are generated from recurring demo schedules/);
+  assert.match(events, /Times are local to the library/);
   assert.match(events, /Upcoming sessions/);
   assert.match(events, /\d{4}-\d{2}-\d{2}/);
-  assert.match(events, /No sign-in or real contact information/);
-  assert.match(await chat('How long can I borrow an ebook?'), /fictional.*14 days/is);
+  assert.match(events, /Each registration is one place/);
+  assert.match(await chat('How long can I borrow an ebook?'), /14 days/is);
   for (const question of ['Where is the library?', 'How do I get a library card?']) {
     const reply = await chat(question);
     assert.match(reply, /not established/i);

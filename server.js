@@ -1,6 +1,9 @@
 'use strict';
 
 const path = require('path');
+const { isCirculationStatisticsQuestion, isRestrictedHistoryRequest, publicPopularityReply } = require('./pericles/catalog-circulation');
+const { patronProfileReply } = require('./pericles/patron-profiles');
+const { communitySupportReply } = require('./pericles/community-support');
 const express = require('express');
 const dotenv = require('dotenv');
 const { AsyncLocalStorage } = require('node:async_hooks');
@@ -122,6 +125,10 @@ function formatCatalogRecord(entry) {
     location: entry.location,
     subjects: entry.subjects,
     audience: entry.audience,
+    copies: entry.copies || [],
+    copyAllocation: entry.copyAllocation || null,
+    sourceUrl: entry.sourceUrl || null,
+    publicationYearType: entry.publicationYearType || 'Catalog publication year',
     readingLevel: readingMetadata(entry)
   };
 }
@@ -332,7 +339,7 @@ app.get('/api/catalog/search', (req, res) => {
   const limitValue = Number(req.query.limit);
   const limit = Number.isInteger(limitValue) ? Math.min(50, Math.max(1, limitValue)) : 10;
   return res.json({
-    scope: 'Stapleton demonstration catalog',
+    scope: 'Stapleton catalog',
     availabilityTracked: false,
     results: searchCatalog(query, { limit }).map(formatCatalogRecord)
   });
@@ -340,13 +347,13 @@ app.get('/api/catalog/search', (req, res) => {
 
 app.get('/api/catalog/summary', (_req, res) => {
   res.json({
-    scope: 'Stapleton demonstration catalog',
+    scope: 'Stapleton catalog',
     availabilityTracked: false,
     ...getCatalogSummary()
   });
 });
 
-// Fictional account state is never a public static asset. A random browser session
+// Account state is never a public static asset. A random browser session
 // carries only a selected demo identity and a server-held, expiring action preview.
 app.use(['/api/circulation', '/api/chat'], (req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -359,7 +366,7 @@ app.use(['/api/circulation', '/api/chat'], (req, res, next) => {
 function circulationRoute(handler) {
   return (req, res) => {
     try { res.json(handler(app.locals.circulation, req)); }
-    catch (error) { res.status(error.status || 503).json({ error: error.status ? error.message : 'Fictional circulation storage is unavailable. No success is confirmed; reload the account before retrying.' }); }
+    catch (error) { res.status(error.status || 503).json({ error: error.status ? error.message : 'Circulation storage is unavailable. No success is confirmed; reload the account before retrying.' }); }
   };
 }
 function circulationBody(req, keys) {
@@ -409,7 +416,7 @@ app.use('/api/services', (req, res, next) => {
 function serviceRoute(handler) {
   return (req, res) => {
     try { res.json(handler(app.locals.patronServices, req)); }
-    catch (error) { res.status(error.status || 503).json({ error: error.status ? error.message : 'Demonstration services storage is unavailable. No success is confirmed.' }); }
+    catch (error) { res.status(error.status || 503).json({ error: error.status ? error.message : 'Services storage is unavailable. No success is confirmed.' }); }
   };
 }
 app.get('/api/services/programs', serviceRoute(service => ({ fictional: true, programs: service.events() })));
@@ -446,6 +453,35 @@ app.post('/api/chat', async (req, res) => {
     return res.status(413).json({ error: `Messages must be ${MAX_MESSAGE_LENGTH} characters or fewer.` });
   }
 
+  if (isCirculationStatisticsQuestion(message) || isRestrictedHistoryRequest(message)) {
+    req.demoSession.pending = null;
+    req.demoSession.servicePending = null;
+    req.demoSession.veteranClinicOffer = false;
+    return res.json({ reply: publicPopularityReply(message, CATALOG_ENTRIES), sources: [], responseMode: 'local' });
+  }
+
+  if (req.demoSession.veteranClinicOffer && req.demoSession.accountId === 'B' && /^(?:yes|yes please|please do|connect me|how do i contact them)[.!?]*$/i.test(message.trim())) {
+    req.demoSession.veteranClinicOffer = false;
+    return sendServiceReply({ reply: 'Start with the Stapleton VA Outpatient Clinic enrollment and patient-services desk, Monday–Friday, 8 AM–4:30 PM. Ask: “How do I check my eligibility and start enrollment? What documents should I bring? How do I request a first appointment?” A clinic phone number and street address are not listed in this directory. I can help prepare your questions, but cannot make a transfer, send your search history, or book a visit. [Clinic details](/community-support.html#va-clinic)', sources: [] });
+  }
+  if (!/^(?:yes|yes please|please do|connect me|how do i contact them)[.!?]*$/i.test(message.trim())) req.demoSession.veteranClinicOffer = false;
+  if (req.demoSession.accountId && /\b(?:violations?|conduct|disciplinary|infractions?|incident history|veterans?|VA clinic|my recent searches|my search history|my account|account status)\b/i.test(message)) {
+    const profileReply = patronProfileReply(message, app.locals.circulation.summary(req.demoSession));
+    if (profileReply) {
+      req.demoSession.veteranClinicOffer = req.demoSession.accountId === 'B';
+      req.demoSession.pending = null;
+      req.demoSession.servicePending = null;
+      return sendServiceReply(profileReply);
+    }
+  }
+  const supportReply = communitySupportReply(message, req.demoSession);
+  if (supportReply) {
+    req.demoSession.pending = null;
+    req.demoSession.servicePending = null;
+    req.demoSession.lastBorrowingQuestion = false;
+    req.demoSession.lastFeeTopic = false;
+    return res.json(await app.locals.composeServiceReply({ payload: supportReply, message, history, req }));
+  }
   const service = routeServiceRequest(message, history);
   const { userContext } = service;
   const borrowingFollowup = req.demoSession.lastBorrowingQuestion && /^(?:(?:and |what about )?(?:books?|dvds?|video games?|games)|how many more|what if i pay)[?.!]*$/i.test(message.trim());
@@ -468,8 +504,8 @@ app.post('/api/chat', async (req, res) => {
     const reply = app.locals.patronServices.chat(req.demoSession, message);
     if (reply) return sendServiceReply({ reply, sources: [], fictionalServices: true });
   } catch (error) {
-    if (error.status) return sendServiceReply({ reply: `Fictional demonstration: ${error.message}`, sources: [], fictionalServices: true });
-    return res.status(503).json({ error: 'Demonstration services storage is unavailable. No success is confirmed.' });
+    if (error.status) return sendServiceReply({ reply: `${error.message}`, sources: [], fictionalServices: true });
+    return res.status(503).json({ error: 'Services storage is unavailable. No success is confirmed.' });
   }
   const learningReply = answerReadingLevel(message);
   if (learningReply && !/\b(?:practice|plan|teach|struggl\w*|phonics|learn\w*|dyslex\w*|homework)\b/i.test(message)) {
@@ -503,7 +539,7 @@ app.post('/api/chat', async (req, res) => {
         return sendServiceReply({ reply: answers.join('\n\n'), sources: [], ...(accountReply ? { fictionalCirculation: true } : {}) });
       } catch (_error) {
         req.demoSession.pending = null;
-        return res.status(503).json({ error: 'Fictional circulation is unavailable. No transaction success is confirmed.' });
+        return res.status(503).json({ error: 'Circulation is unavailable. No transaction success is confirmed.' });
       }
     }
     if (['policies', 'library_information'].includes(service.intent)) {
@@ -520,7 +556,7 @@ app.post('/api/chat', async (req, res) => {
     req.demoSession.lastWasCirculation = Boolean(reply);
     if (reply) return sendServiceReply({ reply, sources: [], fictionalCirculation: true });
   } catch (_error) {
-    return res.status(503).json({ error: 'Fictional circulation storage is unavailable. No success is confirmed; reload the account before retrying.' });
+    return res.status(503).json({ error: 'Circulation storage is unavailable. No success is confirmed; reload the account before retrying.' });
   }
   const localReply = service.intent === 'reference' && isSubstantiveReference(userContext) && service.history.length
     ? null : answerLocalService(service.intent, message, userContext);
@@ -528,7 +564,7 @@ app.post('/api/chat', async (req, res) => {
 
   if (service.intent === 'catalog') {
     const reply = answerCatalogQuestion(message, userContext)
-      || 'I could not establish matching demonstration-catalog records. What title, author, or subject should I search?';
+      || 'I could not establish matching catalog records. What title, author, or subject should I search?';
     return sendServiceReply({ reply, sources: [] });
   }
   if (service.intent === 'advanced_research' && needsGenealogyClarification(userContext)) {
@@ -558,7 +594,7 @@ app.post('/api/chat', async (req, res) => {
 
   const deadline = AbortSignal.timeout(deployment.responseTimeoutMs);
   const responseTimer = setTimeout(() => {
-    if (!res.headersSent) res.status(503).json({ error: 'The AI service took too long. Please try again later; catalog and fictional accounts remain available.' });
+    if (!res.headersSent) res.status(503).json({ error: 'The AI service took too long. Please try again later; catalog and accounts remain available.' });
   }, deployment.responseTimeoutMs);
   responseTimer.unref();
   try {
@@ -577,7 +613,7 @@ app.post('/api/chat', async (req, res) => {
         : 'unexpected_error',
       errorName: safeProviderIdentifier(error?.name)
     }));
-    if (!res.headersSent) return res.status(502).json({ error: 'The reference service could not be reached. Please try again later; catalog and fictional accounts remain available.' });
+    if (!res.headersSent) return res.status(502).json({ error: 'The reference service could not be reached. Please try again later; catalog and accounts remain available.' });
   } finally {
     clearTimeout(responseTimer);
     releaseAI();

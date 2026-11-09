@@ -11,7 +11,7 @@
   try { token = root.sessionStorage.getItem(key); } catch (_error) { /* Memory-only fallback. */ }
   async function apiFetch(route, options = {}) {
     if (typeof route !== 'string' || !route.startsWith('/api/') || /[\\#]/.test(route) || !new URL(route, root.location.origin).pathname.startsWith('/api/')) throw new Error('Invalid API route.');
-    if (!configured && /\.github\.io$/.test(root.location.hostname)) throw new Error('The classroom backend URL has not been configured.');
+    if (!configured && /\.github\.io$/.test(root.location.hostname)) throw new Error('The service backend URL has not been configured.');
     const headers = new Headers(options.headers || {});
     if (token) headers.set('X-Demo-Session', token);
     const timeout = AbortSignal.timeout(route === '/api/chat' ? 195000 : 30000);
@@ -19,7 +19,7 @@
     try {
       response = await root.fetch(configured + route, { ...options, headers, credentials: configured && configured !== root.location.origin ? 'omit' : 'same-origin', signal: options.signal ? AbortSignal.any([options.signal, timeout]) : timeout });
     } catch (error) {
-      throw new Error(error.name === 'TimeoutError' || error.name === 'AbortError' ? 'The classroom service took too long. Please try again later.' : 'The classroom backend is unavailable. Please try again shortly; no transaction success is confirmed.');
+      throw new Error(error.name === 'TimeoutError' || error.name === 'AbortError' ? 'The service took too long. Please try again later.' : 'The service backend is unavailable. Please try again shortly; no transaction success is confirmed.');
     }
     const next = response.headers.get('X-Demo-Session');
     if (next && /^[a-f0-9]{64}$/.test(next)) {

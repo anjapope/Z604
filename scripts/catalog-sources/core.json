@@ -1,0 +1,1876 @@
+[
+  {
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "year": 1925,
+    "genre": "Classic Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC FIT C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "American fiction",
+      "1920s",
+      "Wealth"
+    ],
+    "description": "A Jazz Age novel about class, ambition, and longing on Long Island.",
+    "recordId": "CAT-0001",
+    "searchIndex": "the great gatsby f. scott fitzgerald fic fit c001 classic fiction print book adult fiction stacks american fiction 1920s wealth"
+  },
+  {
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "year": 1960,
+    "genre": "Classic Fiction",
+    "format": "Large Print",
+    "callNumber": "LP FIC LEE C001",
+    "location": "Large Print",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "Justice",
+      "Race",
+      "Southern United States"
+    ],
+    "description": "Scout Finch reflects on childhood and moral courage in Depression-era Alabama.",
+    "recordId": "CAT-0002",
+    "searchIndex": "to kill a mockingbird harper lee lp fic lee c001 classic fiction large print teen/adult large print justice race southern united states"
+  },
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "year": 1949,
+    "genre": "Science Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC ORW C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Dystopia",
+      "Surveillance",
+      "Political fiction"
+    ],
+    "description": "A bleak portrait of authoritarian control and resistance.",
+    "recordId": "CAT-0003",
+    "searchIndex": "1984 george orwell fic orw c001 science fiction print book adult fiction stacks dystopia surveillance political fiction"
+  },
+  {
+    "title": "Brave New World",
+    "author": "Aldous Huxley",
+    "year": 1932,
+    "genre": "Science Fiction",
+    "format": "Ebook",
+    "callNumber": "EBOOK FIC HUX C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Dystopia",
+      "Technology",
+      "Society"
+    ],
+    "description": "A genetically engineered future that trades freedom for stability.",
+    "recordId": "CAT-0004",
+    "searchIndex": "brave new world aldous huxley ebook fic hux c001 science fiction ebook adult digital library dystopia technology society"
+  },
+  {
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "year": 1813,
+    "genre": "Classic Fiction",
+    "format": "Audiobook",
+    "callNumber": "AUDIO FIC AUS C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Courtship",
+      "Social class",
+      "England"
+    ],
+    "description": "Elizabeth Bennet navigates family expectations and first impressions.",
+    "recordId": "CAT-0005",
+    "searchIndex": "pride and prejudice jane austen audio fic aus c001 classic fiction audiobook adult digital audio courtship social class england"
+  },
+  {
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "year": 1937,
+    "genre": "Fantasy",
+    "format": "Print Book",
+    "callNumber": "FIC TOL C001",
+    "location": "Fiction Stacks",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "Adventure",
+      "Dragons",
+      "Middle-earth"
+    ],
+    "description": "Bilbo Baggins leaves home for a quest full of danger and wonder.",
+    "recordId": "CAT-0006",
+    "searchIndex": "the hobbit j.r.r. tolkien fic tol c001 fantasy print book teen/adult fiction stacks adventure dragons middle-earth"
+  },
+  {
+    "title": "The Fellowship of the Ring",
+    "author": "J.R.R. Tolkien",
+    "year": 1954,
+    "genre": "Fantasy",
+    "format": "Print Book",
+    "callNumber": "FIC TOL C001",
+    "location": "Fiction Stacks",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "Epic fantasy",
+      "Quest",
+      "Friendship"
+    ],
+    "description": "The first volume of an epic journey to destroy a powerful ring.",
+    "recordId": "CAT-0007",
+    "searchIndex": "the fellowship of the ring j.r.r. tolkien fic tol c001 fantasy print book teen/adult fiction stacks epic fantasy quest friendship"
+  },
+  {
+    "title": "A Game of Thrones",
+    "author": "George R.R. Martin",
+    "year": 1996,
+    "genre": "Fantasy",
+    "format": "Ebook",
+    "callNumber": "EBOOK FIC MAR C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Political fantasy",
+      "Dynasties",
+      "War"
+    ],
+    "description": "Noble families compete for power in a brutal, unpredictable realm.",
+    "recordId": "CAT-0008",
+    "searchIndex": "a game of thrones george r.r. martin ebook fic mar c001 fantasy ebook adult digital library political fantasy dynasties war"
+  },
+  {
+    "title": "The Name of the Wind",
+    "author": "Patrick Rothfuss",
+    "year": 2007,
+    "genre": "Fantasy",
+    "format": "Audiobook",
+    "callNumber": "AUDIO FIC ROT C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Magic school",
+      "Coming of age",
+      "Legends"
+    ],
+    "description": "A gifted musician and magician recounts the making of his legend.",
+    "recordId": "CAT-0009",
+    "searchIndex": "the name of the wind patrick rothfuss audio fic rot c001 fantasy audiobook adult digital audio magic school coming of age legends"
+  },
+  {
+    "title": "The Way of Kings",
+    "author": "Brandon Sanderson",
+    "year": 2010,
+    "genre": "Fantasy",
+    "format": "Print Book",
+    "callNumber": "FIC SAN C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Epic fantasy",
+      "War",
+      "Worldbuilding"
+    ],
+    "description": "Multiple lives converge on a storm-ravaged world in crisis.",
+    "recordId": "CAT-0010",
+    "searchIndex": "the way of kings brandon sanderson fic san c001 fantasy print book adult fiction stacks epic fantasy war worldbuilding"
+  },
+  {
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "year": 1965,
+    "genre": "Science Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC HER C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Space opera",
+      "Ecology",
+      "Politics"
+    ],
+    "description": "Paul Atreides confronts destiny on the desert planet Arrakis.",
+    "recordId": "CAT-0011",
+    "searchIndex": "dune frank herbert fic her c001 science fiction print book adult fiction stacks space opera ecology politics"
+  },
+  {
+    "title": "The Left Hand of Darkness",
+    "author": "Ursula K. Le Guin",
+    "year": 1969,
+    "genre": "Science Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC LEG C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Gender",
+      "Diplomacy",
+      "Alien worlds"
+    ],
+    "description": "An envoy navigates culture and trust on a frozen planet.",
+    "recordId": "CAT-0012",
+    "searchIndex": "the left hand of darkness ursula k. le guin fic leg c001 science fiction print book adult fiction stacks gender diplomacy alien worlds"
+  },
+  {
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "year": 2011,
+    "genre": "Science Fiction",
+    "format": "Large Print",
+    "callNumber": "LP FIC WEI C001",
+    "location": "Large Print",
+    "audience": "Adult",
+    "subjects": [
+      "Mars",
+      "Survival",
+      "Engineering"
+    ],
+    "description": "An astronaut stranded on Mars improvises to stay alive.",
+    "recordId": "CAT-0013",
+    "searchIndex": "the martian andy weir lp fic wei c001 science fiction large print adult large print mars survival engineering"
+  },
+  {
+    "title": "Project Hail Mary",
+    "author": "Andy Weir",
+    "year": 2021,
+    "genre": "Science Fiction",
+    "format": "Audiobook",
+    "callNumber": "AUDIO FIC WEI C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "First contact",
+      "Space mission",
+      "Problem solving"
+    ],
+    "description": "A lone astronaut wakes with a mission to save Earth.",
+    "recordId": "CAT-0014",
+    "searchIndex": "project hail mary andy weir audio fic wei c001 science fiction audiobook adult digital audio first contact space mission problem solving"
+  },
+  {
+    "title": "Neuromancer",
+    "author": "William Gibson",
+    "year": 1984,
+    "genre": "Science Fiction",
+    "format": "Ebook",
+    "callNumber": "EBOOK FIC GIB C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Cyberpunk",
+      "Artificial intelligence",
+      "Hacking"
+    ],
+    "description": "A washed-up hacker is hired for a dangerous cyberspace heist.",
+    "recordId": "CAT-0015",
+    "searchIndex": "neuromancer william gibson ebook fic gib c001 science fiction ebook adult digital library cyberpunk artificial intelligence hacking"
+  },
+  {
+    "title": "The Girl with the Dragon Tattoo",
+    "author": "Stieg Larsson",
+    "year": 2005,
+    "genre": "Mystery/Thriller",
+    "format": "Print Book",
+    "callNumber": "FIC LAR C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Crime",
+      "Investigation",
+      "Family secrets"
+    ],
+    "description": "A journalist and a hacker investigate a decades-old disappearance.",
+    "recordId": "CAT-0016",
+    "searchIndex": "the girl with the dragon tattoo stieg larsson fic lar c001 mystery/thriller print book adult fiction stacks crime investigation family secrets"
+  },
+  {
+    "title": "Gone Girl",
+    "author": "Gillian Flynn",
+    "year": 2012,
+    "genre": "Mystery/Thriller",
+    "format": "Ebook",
+    "callNumber": "EBOOK FIC FLY C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Marriage",
+      "Suspense",
+      "Unreliable narration"
+    ],
+    "description": "A missing-wife case spirals into a media-fueled psychological thriller.",
+    "recordId": "CAT-0017",
+    "searchIndex": "gone girl gillian flynn ebook fic fly c001 mystery/thriller ebook adult digital library marriage suspense unreliable narration"
+  },
+  {
+    "title": "The Da Vinci Code",
+    "author": "Dan Brown",
+    "year": 2003,
+    "genre": "Mystery/Thriller",
+    "format": "Audiobook",
+    "callNumber": "AUDIO FIC BRO C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Conspiracy",
+      "Art history",
+      "Puzzle"
+    ],
+    "description": "A symbologist races across Europe to decode a deadly secret.",
+    "recordId": "CAT-0018",
+    "searchIndex": "the da vinci code dan brown audio fic bro c001 mystery/thriller audiobook adult digital audio conspiracy art history puzzle"
+  },
+  {
+    "title": "Big Little Lies",
+    "author": "Liane Moriarty",
+    "year": 2014,
+    "genre": "Mystery/Thriller",
+    "format": "Print Book",
+    "callNumber": "FIC MOR C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Domestic suspense",
+      "Parenting",
+      "Secrets"
+    ],
+    "description": "Schoolyard rivalries and hidden trauma culminate in tragedy.",
+    "recordId": "CAT-0019",
+    "searchIndex": "big little lies liane moriarty fic mor c001 mystery/thriller print book adult fiction stacks domestic suspense parenting secrets"
+  },
+  {
+    "title": "The Silent Patient",
+    "author": "Alex Michaelides",
+    "year": 2019,
+    "genre": "Mystery/Thriller",
+    "format": "Print Book",
+    "callNumber": "FIC MIC C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Psychological thriller",
+      "Therapy",
+      "Murder"
+    ],
+    "description": "A therapist pursues the truth behind a famous silence.",
+    "recordId": "CAT-0020",
+    "searchIndex": "the silent patient alex michaelides fic mic c001 mystery/thriller print book adult fiction stacks psychological thriller therapy murder"
+  },
+  {
+    "title": "Educated",
+    "author": "Tara Westover",
+    "year": 2018,
+    "genre": "Memoir",
+    "format": "Print Book",
+    "callNumber": "BIO WESTOVER C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Education",
+      "Family",
+      "Resilience"
+    ],
+    "description": "A memoir about self-invention through learning and distance from home.",
+    "recordId": "CAT-0021",
+    "searchIndex": "educated tara westover bio westover c001 memoir print book adult nonfiction education family resilience"
+  },
+  {
+    "title": "Becoming",
+    "author": "Michelle Obama",
+    "year": 2018,
+    "genre": "Memoir",
+    "format": "Audiobook",
+    "callNumber": "AUDIO BIO OBAMA C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Public life",
+      "Leadership",
+      "Memoir"
+    ],
+    "description": "Michelle Obama reflects on identity, work, and life in public service.",
+    "recordId": "CAT-0022",
+    "searchIndex": "becoming michelle obama audio bio obama c001 memoir audiobook adult digital audio public life leadership memoir"
+  },
+  {
+    "title": "Born a Crime",
+    "author": "Trevor Noah",
+    "year": 2016,
+    "genre": "Memoir",
+    "format": "Ebook",
+    "callNumber": "EBOOK BIO NOAH C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "South Africa",
+      "Apartheid",
+      "Humor"
+    ],
+    "description": "Stories of growing up mixed-race under apartheid and beyond.",
+    "recordId": "CAT-0023",
+    "searchIndex": "born a crime trevor noah ebook bio noah c001 memoir ebook adult digital library south africa apartheid humor"
+  },
+  {
+    "title": "The Glass Castle",
+    "author": "Jeannette Walls",
+    "year": 2005,
+    "genre": "Memoir",
+    "format": "Print Book",
+    "callNumber": "BIO WALLS C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Family",
+      "Poverty",
+      "Perseverance"
+    ],
+    "description": "A vivid account of an unconventional and unstable childhood.",
+    "recordId": "CAT-0024",
+    "searchIndex": "the glass castle jeannette walls bio walls c001 memoir print book adult nonfiction family poverty perseverance"
+  },
+  {
+    "title": "Crying in H Mart",
+    "author": "Michelle Zauner",
+    "year": 2021,
+    "genre": "Memoir",
+    "format": "Print Book",
+    "callNumber": "BIO ZAUNER C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Grief",
+      "Food",
+      "Korean American"
+    ],
+    "description": "A daughter grieves her mother through memory, music, and cooking.",
+    "recordId": "CAT-0025",
+    "searchIndex": "crying in h mart michelle zauner bio zauner c001 memoir print book adult nonfiction grief food korean american"
+  },
+  {
+    "title": "Sapiens",
+    "author": "Yuval Noah Harari",
+    "year": 2014,
+    "genre": "History",
+    "format": "Print Book",
+    "callNumber": "909 HAR C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Human history",
+      "Anthropology",
+      "Civilization"
+    ],
+    "description": "A broad history of humankind from early foragers to modern systems.",
+    "recordId": "CAT-0026",
+    "searchIndex": "sapiens yuval noah harari 909 har c001 history print book adult nonfiction human history anthropology civilization"
+  },
+  {
+    "title": "The Guns of August",
+    "author": "Barbara W. Tuchman",
+    "year": 1962,
+    "genre": "History",
+    "format": "Print Book",
+    "callNumber": "940.3 TUC C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "World War I",
+      "Military history",
+      "Diplomacy"
+    ],
+    "description": "A narrative of the opening month of World War I.",
+    "recordId": "CAT-0027",
+    "searchIndex": "the guns of august barbara w. tuchman 940.3 tuc c001 history print book adult nonfiction world war i military history diplomacy"
+  },
+  {
+    "title": "The Wright Brothers",
+    "author": "David McCullough",
+    "year": 2015,
+    "genre": "History",
+    "format": "Large Print",
+    "callNumber": "LP 629.13 MCC C001",
+    "location": "Large Print",
+    "audience": "Adult",
+    "subjects": [
+      "Aviation",
+      "Innovation",
+      "Biography"
+    ],
+    "description": "The story of two brothers who changed transportation forever.",
+    "recordId": "CAT-0028",
+    "searchIndex": "the wright brothers david mccullough lp 629.13 mcc c001 history large print adult large print aviation innovation biography"
+  },
+  {
+    "title": "The Warmth of Other Suns",
+    "author": "Isabel Wilkerson",
+    "year": 2010,
+    "genre": "History",
+    "format": "Ebook",
+    "callNumber": "EBOOK 304.8 WIL C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Great Migration",
+      "United States",
+      "Social history"
+    ],
+    "description": "A sweeping account of Black Americans who moved north and west.",
+    "recordId": "CAT-0029",
+    "searchIndex": "the warmth of other suns isabel wilkerson ebook 304.8 wil c001 history ebook adult digital library great migration united states social history"
+  },
+  {
+    "title": "Killers of the Flower Moon",
+    "author": "David Grann",
+    "year": 2017,
+    "genre": "History",
+    "format": "Audiobook",
+    "callNumber": "AUDIO 976.6 GRA C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Osage Nation",
+      "True crime",
+      "FBI history"
+    ],
+    "description": "An investigation into murders tied to oil wealth in Oklahoma.",
+    "recordId": "CAT-0030",
+    "searchIndex": "killers of the flower moon david grann audio 976.6 gra c001 history audiobook adult digital audio osage nation true crime fbi history"
+  },
+  {
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "year": 2018,
+    "genre": "Self-Development",
+    "format": "Print Book",
+    "callNumber": "158.1 CLE C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Habits",
+      "Productivity",
+      "Behavior change"
+    ],
+    "description": "Practical methods for building sustainable routines and systems.",
+    "recordId": "CAT-0031",
+    "searchIndex": "atomic habits james clear 158.1 cle c001 self-development print book adult nonfiction habits productivity behavior change"
+  },
+  {
+    "title": "The 7 Habits of Highly Effective People",
+    "author": "Stephen R. Covey",
+    "year": 1989,
+    "genre": "Self-Development",
+    "format": "Ebook",
+    "callNumber": "EBOOK 158 COV C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Leadership",
+      "Personal effectiveness",
+      "Goal setting"
+    ],
+    "description": "A framework for values-based personal and professional growth.",
+    "recordId": "CAT-0032",
+    "searchIndex": "the 7 habits of highly effective people stephen r. covey ebook 158 cov c001 self-development ebook adult digital library leadership personal effectiveness goal setting"
+  },
+  {
+    "title": "Deep Work",
+    "author": "Cal Newport",
+    "year": 2016,
+    "genre": "Self-Development",
+    "format": "Print Book",
+    "callNumber": "158.1 NEW C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Focus",
+      "Work habits",
+      "Attention"
+    ],
+    "description": "Strategies for concentrated, high-value work in a distracted age.",
+    "recordId": "CAT-0033",
+    "searchIndex": "deep work cal newport 158.1 new c001 self-development print book adult nonfiction focus work habits attention"
+  },
+  {
+    "title": "Mindset",
+    "author": "Carol S. Dweck",
+    "year": 2006,
+    "genre": "Self-Development",
+    "format": "Audiobook",
+    "callNumber": "AUDIO 155.2 DWE C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Psychology",
+      "Learning",
+      "Motivation"
+    ],
+    "description": "How growth mindset principles influence achievement and resilience.",
+    "recordId": "CAT-0034",
+    "searchIndex": "mindset carol s. dweck audio 155.2 dwe c001 self-development audiobook adult digital audio psychology learning motivation"
+  },
+  {
+    "title": "Grit",
+    "author": "Angela Duckworth",
+    "year": 2016,
+    "genre": "Self-Development",
+    "format": "Print Book",
+    "callNumber": "158.1 DUC C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Perseverance",
+      "Success",
+      "Motivation"
+    ],
+    "description": "An exploration of passion and persistence over raw talent.",
+    "recordId": "CAT-0035",
+    "searchIndex": "grit angela duckworth 158.1 duc c001 self-development print book adult nonfiction perseverance success motivation"
+  },
+  {
+    "title": "The Very Hungry Caterpillar",
+    "author": "Eric Carle",
+    "year": 1969,
+    "genre": "Children",
+    "format": "Print Book",
+    "callNumber": "E CAR C001",
+    "location": "Children's Room",
+    "audience": "Children",
+    "subjects": [
+      "Picture books",
+      "Counting",
+      "Metamorphosis"
+    ],
+    "description": "A classic board-book journey from tiny egg to butterfly.",
+    "recordId": "CAT-0036",
+    "searchIndex": "the very hungry caterpillar eric carle e car c001 children print book children children's room picture books counting metamorphosis"
+  },
+  {
+    "title": "Where the Wild Things Are",
+    "author": "Maurice Sendak",
+    "year": 1963,
+    "genre": "Children",
+    "format": "Print Book",
+    "callNumber": "E SEN C001",
+    "location": "Children's Room",
+    "audience": "Children",
+    "subjects": [
+      "Imagination",
+      "Picture books",
+      "Emotions"
+    ],
+    "description": "Max sails to an island of wild creatures and returns home changed.",
+    "recordId": "CAT-0037",
+    "searchIndex": "where the wild things are maurice sendak e sen c001 children print book children children's room imagination picture books emotions"
+  },
+  {
+    "title": "Charlotte's Web",
+    "author": "E.B. White",
+    "year": 1952,
+    "genre": "Children",
+    "format": "Audiobook",
+    "callNumber": "AUDIO J WHI C001",
+    "location": "Digital Audio",
+    "audience": "Children",
+    "subjects": [
+      "Friendship",
+      "Farm life",
+      "Classics"
+    ],
+    "description": "Wilbur the pig is saved by the wit and love of Charlotte.",
+    "recordId": "CAT-0038",
+    "searchIndex": "charlotte's web e.b. white audio j whi c001 children audiobook children digital audio friendship farm life classics"
+  },
+  {
+    "title": "Matilda",
+    "author": "Roald Dahl",
+    "year": 1988,
+    "genre": "Children",
+    "format": "Print Book",
+    "callNumber": "J DAH C001",
+    "location": "Juvenile Fiction",
+    "audience": "Children",
+    "subjects": [
+      "School stories",
+      "Humor",
+      "Courage"
+    ],
+    "description": "A brilliant child pushes back against cruel adults.",
+    "recordId": "CAT-0039",
+    "searchIndex": "matilda roald dahl j dah c001 children print book children juvenile fiction school stories humor courage"
+  },
+  {
+    "title": "Wonder",
+    "author": "R.J. Palacio",
+    "year": 2012,
+    "genre": "Children",
+    "format": "Ebook",
+    "callNumber": "EBOOK J PAL C001",
+    "location": "Digital Library",
+    "audience": "Children/Teen",
+    "subjects": [
+      "Kindness",
+      "School",
+      "Inclusion"
+    ],
+    "description": "A boy with facial differences starts mainstream school.",
+    "recordId": "CAT-0040",
+    "searchIndex": "wonder r.j. palacio ebook j pal c001 children ebook children/teen digital library kindness school inclusion"
+  },
+  {
+    "title": "The Hate U Give",
+    "author": "Angie Thomas",
+    "year": 2017,
+    "genre": "Young Adult",
+    "format": "Print Book",
+    "callNumber": "YA THO C001",
+    "location": "Young Adult",
+    "audience": "Teen",
+    "subjects": [
+      "Activism",
+      "Identity",
+      "Community"
+    ],
+    "description": "A teen witnesses a police shooting and finds her voice.",
+    "recordId": "CAT-0041",
+    "searchIndex": "the hate u give angie thomas ya tho c001 young adult print book teen young adult activism identity community"
+  },
+  {
+    "title": "The Fault in Our Stars",
+    "author": "John Green",
+    "year": 2012,
+    "genre": "Young Adult",
+    "format": "Audiobook",
+    "callNumber": "AUDIO YA GRE C001",
+    "location": "Digital Audio",
+    "audience": "Teen",
+    "subjects": [
+      "Illness",
+      "Love",
+      "Coming of age"
+    ],
+    "description": "Two teens meet in support group and share a meaningful journey.",
+    "recordId": "CAT-0042",
+    "searchIndex": "the fault in our stars john green audio ya gre c001 young adult audiobook teen digital audio illness love coming of age"
+  },
+  {
+    "title": "The Hunger Games",
+    "author": "Suzanne Collins",
+    "year": 2008,
+    "genre": "Young Adult",
+    "format": "Print Book",
+    "callNumber": "YA COL C001",
+    "location": "Young Adult",
+    "audience": "Teen",
+    "subjects": [
+      "Dystopia",
+      "Survival",
+      "Resistance"
+    ],
+    "description": "Katniss volunteers for a televised fight to the death.",
+    "recordId": "CAT-0043",
+    "searchIndex": "the hunger games suzanne collins ya col c001 young adult print book teen young adult dystopia survival resistance"
+  },
+  {
+    "title": "Divergent",
+    "author": "Veronica Roth",
+    "year": 2011,
+    "genre": "Young Adult",
+    "format": "Ebook",
+    "callNumber": "EBOOK YA ROT C001",
+    "location": "Digital Library",
+    "audience": "Teen",
+    "subjects": [
+      "Dystopia",
+      "Identity",
+      "Faction system"
+    ],
+    "description": "A teen challenges a rigid social order built on categories.",
+    "recordId": "CAT-0044",
+    "searchIndex": "divergent veronica roth ebook ya rot c001 young adult ebook teen digital library dystopia identity faction system"
+  },
+  {
+    "title": "Aristotle and Dante Discover the Secrets of the Universe",
+    "author": "Benjamin Alire Sáenz",
+    "year": 2012,
+    "genre": "Young Adult",
+    "format": "Print Book",
+    "callNumber": "YA SAE C001",
+    "location": "Young Adult",
+    "audience": "Teen",
+    "subjects": [
+      "Friendship",
+      "Identity",
+      "Family"
+    ],
+    "description": "Two boys form a life-changing friendship in 1980s El Paso.",
+    "recordId": "CAT-0045",
+    "searchIndex": "aristotle and dante discover the secrets of the universe benjamin alire sáenz ya sae c001 young adult print book teen young adult friendship identity family"
+  },
+  {
+    "title": "The Immortal Life of Henrietta Lacks",
+    "author": "Rebecca Skloot",
+    "year": 2010,
+    "genre": "Science & Medicine",
+    "format": "Print Book",
+    "callNumber": "616.027 SKL C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Bioethics",
+      "Medical history",
+      "Cell biology"
+    ],
+    "description": "The story behind HeLa cells and the family they came from.",
+    "recordId": "CAT-0046",
+    "searchIndex": "the immortal life of henrietta lacks rebecca skloot 616.027 skl c001 science & medicine print book adult nonfiction bioethics medical history cell biology"
+  },
+  {
+    "title": "The Body",
+    "author": "Bill Bryson",
+    "year": 2019,
+    "genre": "Science & Medicine",
+    "format": "Ebook",
+    "callNumber": "EBOOK 612 BRY C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Human body",
+      "Popular science",
+      "Health"
+    ],
+    "description": "An accessible tour of anatomy, illness, and medical discovery.",
+    "recordId": "CAT-0047",
+    "searchIndex": "the body bill bryson ebook 612 bry c001 science & medicine ebook adult digital library human body popular science health"
+  },
+  {
+    "title": "Why We Sleep",
+    "author": "Matthew Walker",
+    "year": 2017,
+    "genre": "Science & Medicine",
+    "format": "Audiobook",
+    "callNumber": "AUDIO 613.79 WAL C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Sleep science",
+      "Wellness",
+      "Neuroscience"
+    ],
+    "description": "Research-backed insights on why sleep is central to health.",
+    "recordId": "CAT-0048",
+    "searchIndex": "why we sleep matthew walker audio 613.79 wal c001 science & medicine audiobook adult digital audio sleep science wellness neuroscience"
+  },
+  {
+    "title": "An Elegant Defense",
+    "author": "Matt Richtel",
+    "year": 2019,
+    "genre": "Science & Medicine",
+    "format": "Print Book",
+    "callNumber": "616.079 RIC C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Immunology",
+      "Medicine",
+      "Human biology"
+    ],
+    "description": "How the immune system works and what happens when it doesn't.",
+    "recordId": "CAT-0049",
+    "searchIndex": "an elegant defense matt richtel 616.079 ric c001 science & medicine print book adult nonfiction immunology medicine human biology"
+  },
+  {
+    "title": "Hidden Valley Road",
+    "author": "Robert Kolker",
+    "year": 2020,
+    "genre": "Science & Medicine",
+    "format": "Print Book",
+    "callNumber": "616.898 KOL C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Mental health",
+      "Family studies",
+      "Schizophrenia"
+    ],
+    "description": "A family story that intersects with psychiatric research history.",
+    "recordId": "CAT-0050",
+    "searchIndex": "hidden valley road robert kolker 616.898 kol c001 science & medicine print book adult nonfiction mental health family studies schizophrenia"
+  },
+  {
+    "title": "The Joy of Cooking",
+    "author": "Irma S. Rombauer",
+    "year": 1931,
+    "genre": "Cooking",
+    "format": "Print Book",
+    "callNumber": "641.5 ROM C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Cookbooks",
+      "Techniques",
+      "Home cooking"
+    ],
+    "description": "A foundational cookbook with broad recipes and kitchen guidance.",
+    "recordId": "CAT-0051",
+    "searchIndex": "the joy of cooking irma s. rombauer 641.5 rom c001 cooking print book adult nonfiction cookbooks techniques home cooking"
+  },
+  {
+    "title": "Salt, Fat, Acid, Heat",
+    "author": "Samin Nosrat",
+    "year": 2017,
+    "genre": "Cooking",
+    "format": "Print Book",
+    "callNumber": "641.5 NOS C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Cooking methods",
+      "Flavor",
+      "Technique"
+    ],
+    "description": "A practical framework for understanding taste and texture.",
+    "recordId": "CAT-0052",
+    "searchIndex": "salt, fat, acid, heat samin nosrat 641.5 nos c001 cooking print book adult nonfiction cooking methods flavor technique"
+  },
+  {
+    "title": "Half Baked Harvest Super Simple",
+    "author": "Tieghan Gerard",
+    "year": 2020,
+    "genre": "Cooking",
+    "format": "Ebook",
+    "callNumber": "EBOOK 641.555 GER C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Weeknight cooking",
+      "Meal prep",
+      "Recipes"
+    ],
+    "description": "Approachable recipes designed for busy schedules.",
+    "recordId": "CAT-0053",
+    "searchIndex": "half baked harvest super simple tieghan gerard ebook 641.555 ger c001 cooking ebook adult digital library weeknight cooking meal prep recipes"
+  },
+  {
+    "title": "Start Here",
+    "author": "Sohla El-Waylly",
+    "year": 2023,
+    "genre": "Cooking",
+    "format": "Print Book",
+    "callNumber": "641.3 ELW C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Kitchen skills",
+      "Food science",
+      "Instruction"
+    ],
+    "description": "A skill-first cookbook built around learning core techniques.",
+    "recordId": "CAT-0054",
+    "searchIndex": "start here sohla el-waylly 641.3 elw c001 cooking print book adult nonfiction kitchen skills food science instruction"
+  },
+  {
+    "title": "Dinner in One",
+    "author": "Melissa Clark",
+    "year": 2022,
+    "genre": "Cooking",
+    "format": "Print Book",
+    "callNumber": "641.555 CLA C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "One-pot meals",
+      "Practical cooking",
+      "Recipes"
+    ],
+    "description": "Streamlined recipes with minimal cleanup and strong flavor.",
+    "recordId": "CAT-0055",
+    "searchIndex": "dinner in one melissa clark 641.555 cla c001 cooking print book adult nonfiction one-pot meals practical cooking recipes"
+  },
+  {
+    "title": "The Road",
+    "author": "Cormac McCarthy",
+    "year": 2006,
+    "genre": "Literary Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC MCC C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Post-apocalyptic",
+      "Family",
+      "Survival"
+    ],
+    "description": "A father and son travel through a devastated landscape.",
+    "recordId": "CAT-0056",
+    "searchIndex": "the road cormac mccarthy fic mcc c001 literary fiction print book adult fiction stacks post-apocalyptic family survival"
+  },
+  {
+    "title": "Beloved",
+    "author": "Toni Morrison",
+    "year": 1987,
+    "genre": "Literary Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC MOR C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Memory",
+      "Slavery",
+      "Trauma"
+    ],
+    "description": "A haunting novel about history, grief, and love.",
+    "recordId": "CAT-0057",
+    "searchIndex": "beloved toni morrison fic mor c001 literary fiction print book adult fiction stacks memory slavery trauma"
+  },
+  {
+    "title": "The Underground Railroad",
+    "author": "Colson Whitehead",
+    "year": 2016,
+    "genre": "Literary Fiction",
+    "format": "Ebook",
+    "callNumber": "EBOOK FIC WHI C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Historical fiction",
+      "Freedom",
+      "Race"
+    ],
+    "description": "An alternate-history escape narrative with urgent resonance.",
+    "recordId": "CAT-0058",
+    "searchIndex": "the underground railroad colson whitehead ebook fic whi c001 literary fiction ebook adult digital library historical fiction freedom race"
+  },
+  {
+    "title": "All the Light We Cannot See",
+    "author": "Anthony Doerr",
+    "year": 2014,
+    "genre": "Literary Fiction",
+    "format": "Audiobook",
+    "callNumber": "AUDIO FIC DOE C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "World War II",
+      "Parallel lives",
+      "History"
+    ],
+    "description": "Two young people's lives intersect during wartime Europe.",
+    "recordId": "CAT-0059",
+    "searchIndex": "all the light we cannot see anthony doerr audio fic doe c001 literary fiction audiobook adult digital audio world war ii parallel lives history"
+  },
+  {
+    "title": "A Gentleman in Moscow",
+    "author": "Amor Towles",
+    "year": 2016,
+    "genre": "Literary Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC TOW C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Russia",
+      "20th century",
+      "Character study"
+    ],
+    "description": "A count under house arrest creates meaning within narrow walls.",
+    "recordId": "CAT-0060",
+    "searchIndex": "a gentleman in moscow amor towles fic tow c001 literary fiction print book adult fiction stacks russia 20th century character study"
+  },
+  {
+    "title": "The Alchemist",
+    "author": "Paulo Coelho",
+    "year": 1988,
+    "genre": "Inspirational Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC COE C001",
+    "location": "Fiction Stacks",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "Journey",
+      "Purpose",
+      "Spiritual fiction"
+    ],
+    "description": "A shepherd follows recurring dreams in search of treasure.",
+    "recordId": "CAT-0061",
+    "searchIndex": "the alchemist paulo coelho fic coe c001 inspirational fiction print book teen/adult fiction stacks journey purpose spiritual fiction"
+  },
+  {
+    "title": "The Book Thief",
+    "author": "Markus Zusak",
+    "year": 2005,
+    "genre": "Historical Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC ZUS C001",
+    "location": "Fiction Stacks",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "Nazi Germany",
+      "Books",
+      "Resistance"
+    ],
+    "description": "A young girl in wartime Germany steals books and shares stories.",
+    "recordId": "CAT-0062",
+    "searchIndex": "the book thief markus zusak fic zus c001 historical fiction print book teen/adult fiction stacks nazi germany books resistance"
+  },
+  {
+    "title": "The Nightingale",
+    "author": "Kristin Hannah",
+    "year": 2015,
+    "genre": "Historical Fiction",
+    "format": "Ebook",
+    "callNumber": "EBOOK FIC HAN C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "World War II",
+      "Sisters",
+      "Resistance"
+    ],
+    "description": "Two sisters choose different paths of courage in occupied France.",
+    "recordId": "CAT-0063",
+    "searchIndex": "the nightingale kristin hannah ebook fic han c001 historical fiction ebook adult digital library world war ii sisters resistance"
+  },
+  {
+    "title": "Pachinko",
+    "author": "Min Jin Lee",
+    "year": 2017,
+    "genre": "Historical Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC LEE C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Korean diaspora",
+      "Family saga",
+      "20th century"
+    ],
+    "description": "Generations of one family endure displacement and discrimination.",
+    "recordId": "CAT-0064",
+    "searchIndex": "pachinko min jin lee fic lee c001 historical fiction print book adult fiction stacks korean diaspora family saga 20th century"
+  },
+  {
+    "title": "Homegoing",
+    "author": "Yaa Gyasi",
+    "year": 2016,
+    "genre": "Historical Fiction",
+    "format": "Audiobook",
+    "callNumber": "AUDIO FIC GYA C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Diaspora",
+      "Generational fiction",
+      "West Africa"
+    ],
+    "description": "Two branches of a family trace diverging histories over centuries.",
+    "recordId": "CAT-0065",
+    "searchIndex": "homegoing yaa gyasi audio fic gya c001 historical fiction audiobook adult digital audio diaspora generational fiction west africa"
+  },
+  {
+    "title": "The Midnight Library",
+    "author": "Matt Haig",
+    "year": 2020,
+    "genre": "Contemporary Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC HAI C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Regret",
+      "Parallel lives",
+      "Mental health"
+    ],
+    "description": "A woman explores alternate versions of her life choices.",
+    "recordId": "CAT-0066",
+    "searchIndex": "the midnight library matt haig fic hai c001 contemporary fiction print book adult fiction stacks regret parallel lives mental health"
+  },
+  {
+    "title": "Eleanor Oliphant Is Completely Fine",
+    "author": "Gail Honeyman",
+    "year": 2017,
+    "genre": "Contemporary Fiction",
+    "format": "Ebook",
+    "callNumber": "EBOOK FIC HON C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Loneliness",
+      "Healing",
+      "Friendship"
+    ],
+    "description": "A socially isolated woman slowly reconnects with the world.",
+    "recordId": "CAT-0067",
+    "searchIndex": "eleanor oliphant is completely fine gail honeyman ebook fic hon c001 contemporary fiction ebook adult digital library loneliness healing friendship"
+  },
+  {
+    "title": "Normal People",
+    "author": "Sally Rooney",
+    "year": 2018,
+    "genre": "Contemporary Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC ROO C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Relationships",
+      "Class",
+      "Young adulthood"
+    ],
+    "description": "Two people remain linked through changing circumstances.",
+    "recordId": "CAT-0068",
+    "searchIndex": "normal people sally rooney fic roo c001 contemporary fiction print book adult fiction stacks relationships class young adulthood"
+  },
+  {
+    "title": "Tomorrow, and Tomorrow, and Tomorrow",
+    "author": "Gabrielle Zevin",
+    "year": 2022,
+    "genre": "Contemporary Fiction",
+    "format": "Audiobook",
+    "callNumber": "AUDIO FIC ZEV C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Friendship",
+      "Creativity",
+      "Gaming"
+    ],
+    "description": "Collaborators build games and navigate ambition, love, and loss.",
+    "recordId": "CAT-0069",
+    "searchIndex": "tomorrow, and tomorrow, and tomorrow gabrielle zevin audio fic zev c001 contemporary fiction audiobook adult digital audio friendship creativity gaming"
+  },
+  {
+    "title": "Demon Copperhead",
+    "author": "Barbara Kingsolver",
+    "year": 2022,
+    "genre": "Contemporary Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC KIN C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Appalachia",
+      "Poverty",
+      "Opioid crisis"
+    ],
+    "description": "A modern coming-of-age novel set in rural Virginia.",
+    "recordId": "CAT-0070",
+    "searchIndex": "demon copperhead barbara kingsolver fic kin c001 contemporary fiction print book adult fiction stacks appalachia poverty opioid crisis"
+  },
+  {
+    "title": "The Handmaid's Tale",
+    "author": "Margaret Atwood",
+    "year": 1985,
+    "genre": "Dystopian Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC ATW C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Dystopia",
+      "Gender",
+      "Theocracy"
+    ],
+    "description": "A woman survives under a regime that controls reproduction.",
+    "recordId": "CAT-0071",
+    "searchIndex": "the handmaid's tale margaret atwood fic atw c001 dystopian fiction print book adult fiction stacks dystopia gender theocracy"
+  },
+  {
+    "title": "Station Eleven",
+    "author": "Emily St. John Mandel",
+    "year": 2014,
+    "genre": "Dystopian Fiction",
+    "format": "Ebook",
+    "callNumber": "EBOOK FIC MAN C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Pandemic fiction",
+      "Art",
+      "Survival"
+    ],
+    "description": "Traveling performers keep culture alive after societal collapse.",
+    "recordId": "CAT-0072",
+    "searchIndex": "station eleven emily st. john mandel ebook fic man c001 dystopian fiction ebook adult digital library pandemic fiction art survival"
+  },
+  {
+    "title": "Parable of the Sower",
+    "author": "Octavia E. Butler",
+    "year": 1993,
+    "genre": "Dystopian Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC BUT C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Climate fiction",
+      "Community",
+      "Future US"
+    ],
+    "description": "A teen visionary leads others through a crumbling society.",
+    "recordId": "CAT-0073",
+    "searchIndex": "parable of the sower octavia e. butler fic but c001 dystopian fiction print book adult fiction stacks climate fiction community future us"
+  },
+  {
+    "title": "Fahrenheit 451",
+    "author": "Ray Bradbury",
+    "year": 1953,
+    "genre": "Dystopian Fiction",
+    "format": "Audiobook",
+    "callNumber": "AUDIO FIC BRA C001",
+    "location": "Digital Audio",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "Censorship",
+      "Books",
+      "Media"
+    ],
+    "description": "A fireman questions a society that burns books.",
+    "recordId": "CAT-0074",
+    "searchIndex": "fahrenheit 451 ray bradbury audio fic bra c001 dystopian fiction audiobook teen/adult digital audio censorship books media"
+  },
+  {
+    "title": "The Testaments",
+    "author": "Margaret Atwood",
+    "year": 2019,
+    "genre": "Dystopian Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC ATW C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Sequel",
+      "Resistance",
+      "Political fiction"
+    ],
+    "description": "Multiple narrators expose cracks in an authoritarian state.",
+    "recordId": "CAT-0075",
+    "searchIndex": "the testaments margaret atwood fic atw c001 dystopian fiction print book adult fiction stacks sequel resistance political fiction"
+  },
+  {
+    "title": "Thinking, Fast and Slow",
+    "author": "Daniel Kahneman",
+    "year": 2011,
+    "genre": "Psychology",
+    "format": "Print Book",
+    "callNumber": "153.4 KAH C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Decision-making",
+      "Cognition",
+      "Behavioral science"
+    ],
+    "description": "A landmark exploration of intuitive and deliberate thinking.",
+    "recordId": "CAT-0076",
+    "searchIndex": "thinking, fast and slow daniel kahneman 153.4 kah c001 psychology print book adult nonfiction decision-making cognition behavioral science"
+  },
+  {
+    "title": "The Body Keeps the Score",
+    "author": "Bessel van der Kolk",
+    "year": 2014,
+    "genre": "Psychology",
+    "format": "Ebook",
+    "callNumber": "EBOOK 616.8521 VAN C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Trauma",
+      "Mental health",
+      "Recovery"
+    ],
+    "description": "How trauma shapes body and mind, with paths toward healing.",
+    "recordId": "CAT-0077",
+    "searchIndex": "the body keeps the score bessel van der kolk ebook 616.8521 van c001 psychology ebook adult digital library trauma mental health recovery"
+  },
+  {
+    "title": "Attached",
+    "author": "Amir Levine",
+    "year": 2010,
+    "genre": "Psychology",
+    "format": "Print Book",
+    "callNumber": "158.2 LEV C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Relationships",
+      "Attachment theory",
+      "Communication"
+    ],
+    "description": "A practical guide to attachment styles in adult relationships.",
+    "recordId": "CAT-0078",
+    "searchIndex": "attached amir levine 158.2 lev c001 psychology print book adult nonfiction relationships attachment theory communication"
+  },
+  {
+    "title": "Quiet",
+    "author": "Susan Cain",
+    "year": 2012,
+    "genre": "Psychology",
+    "format": "Audiobook",
+    "callNumber": "AUDIO 155.232 CAI C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Introversion",
+      "Personality",
+      "Workplace"
+    ],
+    "description": "An argument for valuing introverted strengths in loud cultures.",
+    "recordId": "CAT-0079",
+    "searchIndex": "quiet susan cain audio 155.232 cai c001 psychology audiobook adult digital audio introversion personality workplace"
+  },
+  {
+    "title": "Maybe You Should Talk to Someone",
+    "author": "Lori Gottlieb",
+    "year": 2019,
+    "genre": "Psychology",
+    "format": "Print Book",
+    "callNumber": "616.8914 GOT C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Therapy",
+      "Memoir",
+      "Mental health"
+    ],
+    "description": "A therapist recounts client stories and her own counseling journey.",
+    "recordId": "CAT-0080",
+    "searchIndex": "maybe you should talk to someone lori gottlieb 616.8914 got c001 psychology print book adult nonfiction therapy memoir mental health"
+  },
+  {
+    "title": "The Queen's Gambit",
+    "author": "Walter Tevis",
+    "year": 1983,
+    "genre": "Literary Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC TEV C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Chess",
+      "Competition",
+      "Addiction"
+    ],
+    "description": "A prodigy rises through the chess world while battling dependency.",
+    "recordId": "CAT-0081",
+    "searchIndex": "the queen's gambit walter tevis fic tev c001 literary fiction print book adult fiction stacks chess competition addiction"
+  },
+  {
+    "title": "Moneyball",
+    "author": "Michael Lewis",
+    "year": 2003,
+    "genre": "Sports & Games",
+    "format": "Ebook",
+    "callNumber": "EBOOK 796.357 LEW C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Baseball",
+      "Analytics",
+      "Management"
+    ],
+    "description": "How data changed roster strategy in major league baseball.",
+    "recordId": "CAT-0082",
+    "searchIndex": "moneyball michael lewis ebook 796.357 lew c001 sports & games ebook adult digital library baseball analytics management"
+  },
+  {
+    "title": "Open",
+    "author": "Andre Agassi",
+    "year": 2009,
+    "genre": "Sports & Games",
+    "format": "Audiobook",
+    "callNumber": "AUDIO BIO AGASSI C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Tennis",
+      "Memoir",
+      "Performance"
+    ],
+    "description": "A candid memoir of talent, pressure, and reinvention.",
+    "recordId": "CAT-0083",
+    "searchIndex": "open andre agassi audio bio agassi c001 sports & games audiobook adult digital audio tennis memoir performance"
+  },
+  {
+    "title": "Shoe Dog",
+    "author": "Phil Knight",
+    "year": 2016,
+    "genre": "Business",
+    "format": "Print Book",
+    "callNumber": "338.768 KNI C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Entrepreneurship",
+      "Nike",
+      "Business memoir"
+    ],
+    "description": "The founder of Nike tells the company's improbable early story.",
+    "recordId": "CAT-0084",
+    "searchIndex": "shoe dog phil knight 338.768 kni c001 business print book adult nonfiction entrepreneurship nike business memoir"
+  },
+  {
+    "title": "The Lean Startup",
+    "author": "Eric Ries",
+    "year": 2011,
+    "genre": "Business",
+    "format": "Print Book",
+    "callNumber": "658.11 RIE C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Startups",
+      "Innovation",
+      "Product development"
+    ],
+    "description": "Methods for testing ideas quickly and learning from customers.",
+    "recordId": "CAT-0085",
+    "searchIndex": "the lean startup eric ries 658.11 rie c001 business print book adult nonfiction startups innovation product development"
+  },
+  {
+    "title": "Thinking in Bets",
+    "author": "Annie Duke",
+    "year": 2018,
+    "genre": "Business",
+    "format": "Ebook",
+    "callNumber": "EBOOK 658.403 DUK C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Decision-making",
+      "Risk",
+      "Leadership"
+    ],
+    "description": "A framework for probabilistic thinking under uncertainty.",
+    "recordId": "CAT-0086",
+    "searchIndex": "thinking in bets annie duke ebook 658.403 duk c001 business ebook adult digital library decision-making risk leadership"
+  },
+  {
+    "title": "Good to Great",
+    "author": "Jim Collins",
+    "year": 2001,
+    "genre": "Business",
+    "format": "Print Book",
+    "callNumber": "658.406 COL C001",
+    "location": "Nonfiction",
+    "audience": "Adult",
+    "subjects": [
+      "Management",
+      "Organizational strategy",
+      "Leadership"
+    ],
+    "description": "A study of how companies achieve sustained performance.",
+    "recordId": "CAT-0087",
+    "searchIndex": "good to great jim collins 658.406 col c001 business print book adult nonfiction management organizational strategy leadership"
+  },
+  {
+    "title": "The Psychology of Money",
+    "author": "Morgan Housel",
+    "year": 2020,
+    "genre": "Business",
+    "format": "Audiobook",
+    "callNumber": "AUDIO 332.024 HOU C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Finance",
+      "Behavior",
+      "Wealth"
+    ],
+    "description": "Short lessons on money habits, risk, and long-term thinking.",
+    "recordId": "CAT-0088",
+    "searchIndex": "the psychology of money morgan housel audio 332.024 hou c001 business audiobook adult digital audio finance behavior wealth"
+  },
+  {
+    "title": "The Lord of the Rings: The Return of the King",
+    "author": "J.R.R. Tolkien",
+    "year": 1955,
+    "genre": "Fantasy",
+    "format": "DVD",
+    "callNumber": "DVD 791.43 RET C001",
+    "location": "Media Collection",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "Film adaptation",
+      "Fantasy cinema",
+      "Epic"
+    ],
+    "description": "The final chapter of the film adaptation of Tolkien's trilogy.",
+    "recordId": "CAT-0089",
+    "searchIndex": "the lord of the rings: the return of the king j.r.r. tolkien dvd 791.43 ret c001 fantasy dvd teen/adult media collection film adaptation fantasy cinema epic"
+  },
+  {
+    "title": "Hidden Figures",
+    "author": "Theodore Melfi",
+    "year": 2016,
+    "genre": "History",
+    "format": "DVD",
+    "callNumber": "DVD 791.43 HID C001",
+    "location": "Media Collection",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "NASA",
+      "Civil rights",
+      "Biography film"
+    ],
+    "description": "A dramatization of Black women mathematicians at NASA.",
+    "recordId": "CAT-0090",
+    "searchIndex": "hidden figures theodore melfi dvd 791.43 hid c001 history dvd teen/adult media collection nasa civil rights biography film"
+  },
+  {
+    "title": "Planet Earth II",
+    "author": "BBC",
+    "year": 2016,
+    "genre": "Documentary",
+    "format": "Blu-ray",
+    "callNumber": "BLU 508 PLA C001",
+    "location": "Media Collection",
+    "audience": "All Ages",
+    "subjects": [
+      "Nature documentary",
+      "Wildlife",
+      "Earth science"
+    ],
+    "description": "A visually rich documentary series on global habitats.",
+    "recordId": "CAT-0091",
+    "searchIndex": "planet earth ii bbc blu 508 pla c001 documentary blu-ray all ages media collection nature documentary wildlife earth science"
+  },
+  {
+    "title": "Ken Burns: The Vietnam War",
+    "author": "Ken Burns and Lynn Novick",
+    "year": 2017,
+    "genre": "Documentary",
+    "format": "DVD",
+    "callNumber": "DVD 959.704 VIE C001",
+    "location": "Media Collection",
+    "audience": "Adult",
+    "subjects": [
+      "Vietnam War",
+      "US history",
+      "Documentary"
+    ],
+    "description": "A multi-part documentary examining a divisive conflict.",
+    "recordId": "CAT-0092",
+    "searchIndex": "ken burns: the vietnam war ken burns and lynn novick dvd 959.704 vie c001 documentary dvd adult media collection vietnam war us history documentary"
+  },
+  {
+    "title": "Free Solo",
+    "author": "Elizabeth Chai Vasarhelyi and Jimmy Chin",
+    "year": 2018,
+    "genre": "Documentary",
+    "format": "Blu-ray",
+    "callNumber": "BLU 796.522 FRE C001",
+    "location": "Media Collection",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "Climbing",
+      "Risk",
+      "Documentary film"
+    ],
+    "description": "A climber attempts an unprecedented ropeless ascent.",
+    "recordId": "CAT-0093",
+    "searchIndex": "free solo elizabeth chai vasarhelyi and jimmy chin blu 796.522 fre c001 documentary blu-ray teen/adult media collection climbing risk documentary film"
+  },
+  {
+    "title": "The Wild Robot",
+    "author": "Peter Brown",
+    "year": 2016,
+    "genre": "Children",
+    "format": "Print Book",
+    "callNumber": "J BRO C001",
+    "location": "Juvenile Fiction",
+    "audience": "Children",
+    "subjects": [
+      "Robots",
+      "Nature",
+      "Friendship"
+    ],
+    "description": "A robot learns to live among animals on a remote island.",
+    "recordId": "CAT-0094",
+    "searchIndex": "the wild robot peter brown j bro c001 children print book children juvenile fiction robots nature friendship"
+  },
+  {
+    "title": "The Wild Robot Escapes",
+    "author": "Peter Brown",
+    "year": 2018,
+    "genre": "Children",
+    "format": "Print Book",
+    "callNumber": "J BRO C001",
+    "location": "Juvenile Fiction",
+    "audience": "Children",
+    "subjects": [
+      "Adventure",
+      "Sequel",
+      "Family"
+    ],
+    "description": "Roz leaves the island and embarks on a rescue mission.",
+    "recordId": "CAT-0095",
+    "searchIndex": "the wild robot escapes peter brown j bro c001 children print book children juvenile fiction adventure sequel family"
+  },
+  {
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "author": "J.K. Rowling",
+    "year": 1997,
+    "genre": "Fantasy",
+    "format": "Print Book",
+    "callNumber": "J ROW C001",
+    "location": "Juvenile Fiction",
+    "audience": "Children/Teen",
+    "subjects": [
+      "Magic school",
+      "Friendship",
+      "Adventure"
+    ],
+    "description": "An orphan discovers he is a wizard and enters a hidden world.",
+    "recordId": "CAT-0096",
+    "searchIndex": "harry potter and the sorcerer's stone j.k. rowling j row c001 fantasy print book children/teen juvenile fiction magic school friendship adventure"
+  },
+  {
+    "title": "Percy Jackson and the Olympians: The Lightning Thief",
+    "author": "Rick Riordan",
+    "year": 2005,
+    "genre": "Fantasy",
+    "format": "Ebook",
+    "callNumber": "EBOOK J RIO C001",
+    "location": "Digital Library",
+    "audience": "Children/Teen",
+    "subjects": [
+      "Mythology",
+      "Adventure",
+      "Demigods"
+    ],
+    "description": "A modern boy learns he is the son of a Greek god.",
+    "recordId": "CAT-0097",
+    "searchIndex": "percy jackson and the olympians: the lightning thief rick riordan ebook j rio c001 fantasy ebook children/teen digital library mythology adventure demigods"
+  },
+  {
+    "title": "The Lightning Thief",
+    "author": "Rick Riordan",
+    "year": 2005,
+    "genre": "Young Adult",
+    "format": "Audiobook",
+    "callNumber": "AUDIO J RIO C001",
+    "location": "Digital Audio",
+    "audience": "Children/Teen",
+    "subjects": [
+      "Mythology",
+      "Adventure",
+      "Quest"
+    ],
+    "description": "Audio edition of the first Percy Jackson adventure.",
+    "recordId": "CAT-0098",
+    "searchIndex": "the lightning thief rick riordan audio j rio c001 young adult audiobook children/teen digital audio mythology adventure quest"
+  },
+  {
+    "title": "The House in the Cerulean Sea",
+    "author": "TJ Klune",
+    "year": 2020,
+    "genre": "Fantasy",
+    "format": "Print Book",
+    "callNumber": "FIC KLU C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Found family",
+      "Magical realism",
+      "Hopeful fiction"
+    ],
+    "description": "A caseworker discovers an extraordinary home for magical children.",
+    "recordId": "CAT-0099",
+    "searchIndex": "the house in the cerulean sea tj klune fic klu c001 fantasy print book adult fiction stacks found family magical realism hopeful fiction"
+  },
+  {
+    "title": "Lessons in Chemistry",
+    "author": "Bonnie Garmus",
+    "year": 2022,
+    "genre": "Contemporary Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC GAR C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Women in science",
+      "1960s",
+      "Satire"
+    ],
+    "description": "A chemist unexpectedly becomes a television cooking star.",
+    "recordId": "CAT-0100",
+    "searchIndex": "lessons in chemistry bonnie garmus fic gar c001 contemporary fiction print book adult fiction stacks women in science 1960s satire"
+  },
+  {
+    "title": "Daisy Jones & The Six",
+    "author": "Taylor Jenkins Reid",
+    "year": 2019,
+    "genre": "Contemporary Fiction",
+    "format": "Ebook",
+    "callNumber": "EBOOK FIC REI C001",
+    "location": "Digital Library",
+    "audience": "Adult",
+    "subjects": [
+      "Music",
+      "Oral history style",
+      "1970s"
+    ],
+    "description": "An oral-history novel about a fictional rock band's rise and fall.",
+    "recordId": "CAT-0101",
+    "searchIndex": "daisy jones & the six taylor jenkins reid ebook fic rei c001 contemporary fiction ebook adult digital library music oral history style 1970s"
+  },
+  {
+    "title": "Remarkably Bright Creatures",
+    "author": "Shelby Van Pelt",
+    "year": 2022,
+    "genre": "Contemporary Fiction",
+    "format": "Audiobook",
+    "callNumber": "AUDIO FIC VAN C001",
+    "location": "Digital Audio",
+    "audience": "Adult",
+    "subjects": [
+      "Mystery",
+      "Friendship",
+      "Community"
+    ],
+    "description": "A grieving woman and a clever octopus uncover a family secret.",
+    "recordId": "CAT-0102",
+    "searchIndex": "remarkably bright creatures shelby van pelt audio fic van c001 contemporary fiction audiobook adult digital audio mystery friendship community"
+  },
+  {
+    "title": "The Grapes of Wrath",
+    "author": "John Steinbeck",
+    "year": 1939,
+    "genre": "Classic Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC STE C001",
+    "location": "Fiction Stacks",
+    "audience": "Teen/Adult",
+    "subjects": [
+      "Great Depression",
+      "Migrant workers",
+      "Family",
+      "Oklahoma",
+      "California"
+    ],
+    "description": "The Joad family leaves Oklahoma for California in search of work during the Great Depression.",
+    "recordId": "CAT-0103",
+    "searchIndex": "the grapes of wrath john steinbeck fic ste c001 classic fiction print book teen/adult fiction stacks great depression migrant workers family oklahoma california"
+  },
+  {
+    "title": "For Whom the Bell Tolls",
+    "author": "Ernest Hemingway",
+    "year": 1940,
+    "genre": "Classic Fiction",
+    "format": "Print Book",
+    "callNumber": "FIC HEM C001",
+    "location": "Fiction Stacks",
+    "audience": "Adult",
+    "subjects": [
+      "Spanish Civil War",
+      "Military conflict",
+      "Loyalty"
+    ],
+    "description": "Robert Jordan joins a guerrilla mission during the Spanish Civil War.",
+    "recordId": "CAT-0104",
+    "searchIndex": "for whom the bell tolls ernest hemingway fic hem c001 classic fiction print book adult fiction stacks spanish civil war military conflict loyalty"
+  }
+]

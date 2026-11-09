@@ -39,7 +39,7 @@ const SERVICE_BEHAVIORS = [
   },
   {
     name: 'Referral',
-    instruction: 'Use referrals as a specific next step when access, authority, assessment, or immediate safety requires it. Provide all useful reference help you can first. Fictional fees, registration, renewals, and holds use the server service; never substitute a referral for a supported demonstration action. Do not claim a transfer or appointment occurred.'
+    instruction: 'Use referrals as a specific next step when access, authority, assessment, or immediate safety requires it. Provide all useful reference help you can first. Fees, registration, renewals, and holds use the server service; never substitute a referral for a supported action. Do not claim a transfer or appointment occurred.'
   },
   {
     name: 'Relevant service discovery',

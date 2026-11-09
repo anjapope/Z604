@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stapleton Public Library Fictional Demonstration Account</title>
+  <title>Stapleton Public Library My Account</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -31,22 +31,39 @@
 
   <main class="page-shell">
     <section class="account-card">
-      <p class="eyebrow">Fictional Demonstration Account</p>
-      <h1>Explore a fictional library account</h1>
-      <p class="account-subtitle">Choose one of three fictional classroom accounts. Changes persist on this demonstration server and are shared by everyone selecting that fictional patron. No real library account is connected.</p>
-      <p>No library card number, PIN, or password is needed. Do not enter or share real library credentials.</p>
+      <p class="eyebrow">Library Account</p>
+      <h1>My Account</h1>
+      <p class="account-subtitle">Your selected patron’s loans, holds, fees, and program registrations appear below. Renewals and holds require confirmation.</p>
       <div class="demo-account-selector">
-        <label for="demoAccount">Fictional demonstration patron</label>
+        <label for="demoAccount">Patron</label>
         <select id="demoAccount" aria-describedby="demoAccountStatus">
           <option value="">Choose A, B, or C (no sign-in)</option>
         </select>
-        <p id="demoAccountStatus" role="status">No sign-in is required. These shared classroom accounts contain fictional data only.</p>
+        <p id="demoAccountStatus" role="status">Choose a patron to view their account.</p>
       </div>
-      <p><a class="catalog-open-link" href="account-summary.html">Open fictional demonstration account</a></p>
+      <p><a href="index.html">Ask Pericles</a>: "When are my books due?", "Can you renew everything?", or "Place a hold on Dune."</p>
+      <div id="demoAccountDetails" aria-live="polite"></div>
+      <section id="demoServicesAccount" aria-label="Fees and program registrations"></section>
+      <div id="demoAccountActions" hidden>
+        <button id="demoRenewAll" type="button">Preview renewal of all loans</button>
+        <label for="demoHoldTitle">Find a catalog work to hold</label>
+        <input id="demoHoldTitle" type="text" maxlength="200" placeholder="Title, for example Dune">
+        <button id="demoFindHold" type="button">Find catalog works</button>
+        <div id="demoHoldResults"></div>
+      </div>
+      <section id="demoConfirmation" hidden aria-live="polite">
+        <h2>Confirm transaction</h2>
+        <p id="demoPreviewText" class="demo-preview"></p>
+        <button id="demoConfirm" type="button">Confirm eligible action</button>
+        <button id="demoCancel" type="button">Cancel</button>
+      </section>
+      <p id="demoTransactionStatus" role="status"></p>
+
     </section>
   </main>
   <script src="frontend-config.js"></script>
   <script src="api-client.js"></script>
   <script src="account.js"></script>
+  <script src="services-ui.js"></script>
 </body>
 </html>

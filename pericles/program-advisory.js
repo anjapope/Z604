@@ -35,8 +35,8 @@ function recommendPrograms(message, events, previous = null) {
     : e.description;
   let reply = fits.length ? `For a ${age}-year-old, I’d ${interests === 'making' && age < 8 ? 'start with these age-appropriate options' : 'suggest these options'}:\n\n${fits.map(e => `- ${e.title} — ${why(e)}. Next session: ${date(e)}. Ages ${e.minAge}–${e.maxAge}${e.caregiverRequired ? '; attend with a caregiver' : ''}.`).join('\n')}`
     : `I don’t have a dated program for age ${age} in the next two weeks. I can still help you plan an activity around what they enjoy.`;
-  if (interests === 'making' && age < 8) reply += '\n\nThe 3D-printing workshop currently starts at age 8 in our demo schedule, so I wouldn’t recommend booking it for them yet.';
-  reply += '\n\nThese are demo programs; times are local to the library. ';
+  if (interests === 'making' && age < 8) reply += '\n\nThe 3D-printing workshop currently starts at age 8 on our schedule, so I wouldn’t recommend booking it for them yet.';
+  reply += '\n\nTimes are local to the library. ';
   reply += interests ? 'Would you like to know more about one of these?' : 'What do they enjoy most—stories, making things, or games?';
   return { reply, profile: { age, interests }, options: fits };
 }

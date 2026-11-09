@@ -13,7 +13,7 @@
   }
 
   function appendLinkedText(container, text, documentRef) {
-    const urlPattern = /\[([^\]\n]+)\]\((\/catalog-detail\.html\?id=CAT-\d+|https?:\/\/[^\s<>"')]+)\)|https?:\/\/[^\s<>"']+/gi;
+    const urlPattern = /\[([^\]\n]+)\]\((\/catalog-detail\.html\?id=CAT-\d+|\/community-support\.html#[a-z-]+|https?:\/\/[^\s<>"')]+)\)|https?:\/\/[^\s<>"']+/gi;
     let currentIndex = 0;
     let match;
 

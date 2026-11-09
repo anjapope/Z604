@@ -67,6 +67,8 @@ function matchesFilter(entry, query, genre, format) {
 }
 
 function renderDetail(entry) {
+  const inventoryEntry = entry;
+  const sourceUrl = entry.sourceUrl;
   entry = safeCatalogEntry(entry);
   const subjects = (entry.subjects || []).join(' • ');
 
@@ -82,6 +84,14 @@ function renderDetail(entry) {
     <p class="catalog-subjects"><strong>Subjects:</strong> ${subjects}</p>
     <p class="catalog-open-wrap"><a class="catalog-open-link" href="catalog-detail.html?id=${encodeURIComponent(entry.recordId)}">Open full card page</a></p>
   `;
+  window.PericlesInventory?.render(catalogDetail, inventoryEntry);
+  if (/^https:\/\/openlibrary\.org\/works\/OL\d+W$/.test(sourceUrl || '')) {
+    const source = document.createElement('a');
+    source.href = sourceUrl;
+    source.textContent = 'Bibliographic source: Open Library';
+    source.rel = 'noopener noreferrer';
+    catalogDetail.appendChild(source);
+  }
 }
 
 function renderDetailPlaceholder(message) {

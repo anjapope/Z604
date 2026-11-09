@@ -45,7 +45,7 @@ function client() {
   };
 }
 
-test('three fictional accounts expose ordinary, overdue, blocked and age-appropriate situations', () => {
+test('three accounts expose ordinary, overdue, blocked and age-appropriate situations', () => {
   assert.equal(service.patrons.length, 3);
   assert.ok(service.summary(session('A')).loans.every(l => l.eligible));
   const b = service.summary(session('B'));
@@ -53,7 +53,7 @@ test('three fictional accounts expose ordinary, overdue, blocked and age-appropr
   assert.ok(b.loans.some(l => l.reasons.some(r => /active hold/.test(r))));
   assert.ok(b.loans.some(l => l.reasons.some(r => /limit/.test(r))));
   assert.equal(b.holds.length, 1);
-  assert.ok(service.summary(session('C')).loans.every(l => /Matilda|Wild Robot/.test(l.title)));
+  assert.ok(service.summary(session('C')).loans.every(l => /Matilda|Wild Robot|The Grapes of Wrath/.test(l.title)));
 });
 
 test('successful renewal requires confirmation, updates dates/counts/history and persists on disk', () => {
@@ -80,7 +80,7 @@ test('renew everything renews only eligible items; hold blocks and renewal limit
   const current = session('B');
   const before = service.summary(current);
   const preview = service.prepare(current, 'renew', { loanIds: 'all' });
-  assert.equal(preview.eligible.length, 1);
+  assert.equal(preview.eligible.length, 5);
   assert.equal(preview.blocked.length, 2);
   const result = service.confirm(current, preview.confirmationToken);
   assert.equal(result.completed[0].title, 'Educated');
@@ -106,7 +106,7 @@ test('new hold requires confirmation; duplicate work/edition holds and own check
   assert.equal(service.summary(current).holds.length, 1);
   service.confirm(current, preview.confirmationToken);
   assert.equal(service.summary(current).holds.length, 2);
-  const copy = CATALOG_ENTRIES.find(e => e.title === 'Pride and Prejudice (Copy 2)');
+  const copy = CATALOG_ENTRIES.find(e => e.title === 'Pride and Prejudice');
   const duplicate = service.prepare(current, 'hold', { recordId: copy.recordId });
   assert.equal(duplicate.eligible.length, 0);
   assert.match(duplicate.blocked[0].reasons[0], /already has an active hold/);
@@ -127,10 +127,10 @@ test('hold limits and child audience restrictions are enforced in backend', () =
 test('unknown accounts, records, loans and cross-account IDs fail without mutations', () => {
   const current = session();
   const before = service.summary(current);
-  assert.throws(() => service.select(current, '__proto__'), /Unknown fictional account/);
+  assert.throws(() => service.select(current, '__proto__'), /Unknown account/);
   assert.throws(() => service.prepare(current, 'renew', { loanIds: ['B-1'] }), /Unknown loan/);
   assert.throws(() => service.prepare(current, 'hold', { recordId: 'CAT-999999' }), /Unknown catalog record/);
-  assert.throws(() => service.prepare(current, 'delete', {}), /Only fictional/);
+  assert.throws(() => service.prepare(current, 'delete', {}), /Only renew/);
   assert.deepEqual(service.summary(current), before);
 });
 

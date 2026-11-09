@@ -17,6 +17,7 @@ function isHoursQuestion(text) {
 function classifyServiceIntent(message) {
   const text = String(message).trim();
   if (circulationIntent(text)) return 'account';
+  if (isCollectionQuestion(text)) return 'catalog';
   // Explicit source discovery retains the evidence-checked research pipeline.
   if (/\b(?:sources?|citations?|evidence)\b/i.test(text) && /\b(?:find|give|provide|need|identify|locate|research|support|opposing|credible|primary)\b/i.test(text)) return 'advanced_research';
   if (isSubstantiveReference(text)) return 'reference';
@@ -93,7 +94,7 @@ function answerLocalService(intent, message, userContext = message) {
       const hours = indices.size ? [...indices].map(index => LIBRARY_HOURS[index]) : LIBRARY_HOURS;
       return `${hours.join('\n')}\nThese are regular SPL hours. Holiday hours and exceptional closures are not established here; please confirm those with library staff.`;
     }
-    if (/\b(?:accessib\w*|wheelchair|assistive|screen reader)\b/i.test(message)) return 'Specific SPL accessibility services and accommodations are not established in the supplied library information. Please ask library staff about the accommodation you need. The demonstration catalog can be searched for Large Print and Audiobook formats; those records do not establish current availability.';
+    if (/\b(?:accessib\w*|wheelchair|assistive|screen reader)\b/i.test(message)) return 'Specific SPL accessibility services and accommodations are not established in the supplied library information. Please ask library staff about the accommodation you need. The catalog can be searched for Large Print and Audiobook formats; those records do not establish current availability.';
     if (/\bmeeting rooms?\b/i.test(message)) return 'Meeting-room availability, booking procedures, and rules are not established in the supplied SPL information. Please ask library staff; I cannot reserve a room.';
     if (/\b(?:public computers?|internet|wi-?fi|technology|tech |device)\b/i.test(message)) return `${SERVICES_CONTEXT[0]} ${SERVICES_CONTEXT[1]} Please ask library staff about specific equipment or an appointment; those details are not established here.`;
     return 'SPL’s street address, public contact details, and service-desk locations are not established in the supplied library information. Please consult library staff for confirmation. You can browse the About and Programs pages for the established service information.';
@@ -101,11 +102,11 @@ function answerLocalService(intent, message, userContext = message) {
   if (intent === 'policies') {
     return answerInstitutional('What policies?');
   }
-  if (intent === 'account') return `${SERVICES_CONTEXT[5]} Choose a fictional patron in My Account for the classroom simulation. No sign-in or real library credentials are needed. For actual loans, due dates, renewals, holds, or balances, please contact library staff; do not share card numbers or passwords here.`;
+  if (intent === 'account') return `${SERVICES_CONTEXT[5]} Choose a patron in My Account for the classroom simulation. No sign-in or real library credentials are needed. For actual loans, due dates, renewals, holds, or balances, please contact library staff; do not share card numbers or passwords here.`;
   if (intent === 'events') {
     const terms = message.toLowerCase().match(/storytime|teen|children|youth|adult|book club|lego|board meeting|tech|digital citizenship|summer reading|monster prom|frontiers|folktales/g) || [];
     const matches = EVENTS_CONTEXT.filter(event => terms.some(term => event.toLowerCase().includes(term)));
-    return `For fictional Stapleton Public Library:\n${(matches.length ? matches : EVENTS_CONTEXT).join('\n')}\nThese are recurring program descriptions, not confirmed dated bookings. See the Events calendar and confirm cancellations or registration details with library staff.`;
+    return `For Stapleton Public Library:\n${(matches.length ? matches : EVENTS_CONTEXT).join('\n')}\nThese are recurring program descriptions, not confirmed dated bookings. See the Events calendar and confirm cancellations or registration details with library staff.`;
   }
   if (intent === 'readers_advisory') {
     return answerAdvisory(userContext);

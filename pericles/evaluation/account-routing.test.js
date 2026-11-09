@@ -39,7 +39,7 @@ function client() {
 }
 const original = 'Can you tell me how many books I currently have checked out?';
 const questions = [original, 'How many books do I have checked out?', 'What do I have checked out?', 'When are my books due?', 'Do I have any holds?', 'Can I renew my book?'];
-const forbidden = /confirmationMinutes|loanDays|sessionStorage|server-side|process lifetime|JSON|confirmation expiration|Only the three fictional accounts|Dates use|No real sign-in, checkout|fictional classroom circulation policies/i;
+const forbidden = /confirmationMinutes|loanDays|sessionStorage|server-side|process lifetime|JSON|confirmation expiration|Only the three accounts|Dates use|No real sign-in, checkout|fictional classroom circulation policies/i;
 
 test('intent precedence distinguishes actions, personal state, and general borrowing limits', () => {
   for (const text of questions) assert.equal(classifyServiceIntent(text), 'account', text);
@@ -72,7 +72,7 @@ test('original failing question uses authoritative format-aware counts for all p
 test('no selection asks for one without invented counts, titles, dates or policy dumps', async () => {
   for (const question of questions) {
     const reply = await client().chat(question);
-    assert.match(reply, /(?:select|choose).*fictional.*(?:patron|account)/i);
+    assert.match(reply, /(?:select|choose).*(?:patron|account)/i);
     assert.doesNotMatch(reply, /You have \d|Educated|Atomic Habits|\d{4}-\d{2}-\d{2}/);
     assert.doesNotMatch(reply, forbidden);
   }
@@ -107,7 +107,7 @@ test('policy/account topic changes and account switching use current intent and 
   assert.match(await patron.chat('Are you open Sunday?'), /Sunday: 12:00 PM-4:00 PM/);
   assert.match(await patron.chat('How many books can I check out?'), /50 books.*10 DVDs.*3 video games/);
   await patron.select('C');
-  assert.match(await patron.chat(original, history, { accountId: 'A' }), /Patron C: You have 2 books.*2 loans/);
+  assert.match(await patron.chat(original, history, { accountId: 'A' }), /Patron C: You have 3 books.*3 loans/);
   assert.equal((await patron.account()).transactions.length, 0);
 });
 

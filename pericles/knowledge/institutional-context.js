@@ -4,8 +4,8 @@ const INSTITUTIONAL_CONTEXT = {
   identity: {
     library: 'Stapleton Public Library (SPL)',
     assistant: 'Pericles',
-    vendor: 'Zinn Systems',
-    productVersion: 'Pericles 3.2 classroom pilot'
+    vendor: 'Megalogos Enterprise Technologies',
+    productVersion: 'Pericles 3.2'
   },
   mission: 'Stapleton Public Library connects residents with information, technology, learning opportunities, and one another while protecting intellectual freedom, equitable access, privacy, and public trust.',
   community: [

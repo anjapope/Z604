@@ -3,7 +3,7 @@
   "revised": "2026-11-08",
   "institution": "Stapleton Public Library",
   "fictional": true,
-  "precedence": "Previously established hours, recurring programs, and circulation restrictions take precedence over Pass 4C suggested defaults. This file describes a fictional classroom institution, not verified facts about a real library.",
+  "precedence": "Previously established hours, recurring programs, and circulation restrictions take precedence over Pass 4C suggested defaults. ",
   "timezone": "America/Indiana/Indianapolis",
   "hours": {
     "display": [
@@ -45,7 +45,7 @@
   },
   "membership": {
     "known": "Library cards are free to local residents.",
-    "unknown": "Specific identification, residency-verification documents, nonresident eligibility, and application procedures are not established. Ask library staff; the demonstration does not issue cards or request real credentials."
+    "unknown": "Specific identification, residency-verification documents, nonresident eligibility, and application procedures are not established. Ask library staff."
   },
   "circulation": {
     "loanDays": {
@@ -58,9 +58,9 @@
     },
     "renewalLimit": 2,
     "holdLimit": 5,
-    "fines": "No overdue fines are charged. Replacement charges may apply for lost or damaged materials; real amounts and assessment procedures are not established. The classroom service has seeded replacement/damage charges. Its full outstanding balance must be settled; waivers, reductions, courtesy credits, and installment plans are not available in this scenario. Settlement is simulated, requires explicit confirmation, and never takes real money.",
+    "fines": "No overdue fines are charged. Replacement charges may apply for lost or damaged materials; real amounts and assessment procedures are not established. Replacement and damage charges are assessed on the account. Its full outstanding balance must be settled; waivers, reductions, courtesy credits, and installment plans are not available in this scenario. Settlement requires explicit confirmation.",
     "renewalRule": "Renew from the later of today or the current due date, for one format-specific loan period. Overdue loans may be renewed. Another patron's active work-level hold or two prior renewals blocks renewal.",
-    "holdRule": "One active hold per work per account; at most five active holds. No holds on a work already checked out to this account. Child account C may hold Children or All Ages works only. Holds are simulated requests, not reservations of real stock.",
+    "holdRule": "One active hold per work per account; at most five active holds. No holds on a work already checked out to this account. Child account C may hold Children or All Ages works only. Holds are requests subject to availability.",
     "checkoutLimits": {
       "books": 50,
       "dvds": 10,
@@ -85,7 +85,7 @@
     "Protect library account credentials",
     "Accept responsibility for lost or damaged materials under established policies"
   ],
-  "privacy": "The library is committed to confidentiality of library records, freedom of inquiry, and equitable information access. This is a commitment, not a promise of absolute confidentiality or a legal guarantee. Record retention and disclosure procedures are not established. The classroom accounts are fictional and shared; their demonstration histories are visible to anyone selecting the same patron. Do not enter real credentials or private borrowing information in chat.",
+  "privacy": "The library is committed to confidentiality of library records, freedom of inquiry, and equitable information access. Record retention and disclosure procedures are not established. Do not enter passwords or private borrowing information in chat.",
   "accessibility": "Patrons are entitled to reasonable accommodations for accessibility. Specific equipment, accommodations, and request procedures are not established; ask library staff about the accommodation needed.",
   "services": [
     "Reference and research assistance",
@@ -101,7 +101,7 @@
     "address": null,
     "phone": null,
     "email": null,
-    "unknown": "Official street address, telephone number, email, and service-desk locations are not established for this fictional library. Ask library staff for confirmation."
+    "unknown": "Official street address, telephone number, email, and service-desk locations are not established for this library. Ask library staff for confirmation."
   },
   "challenges": "The library supports intellectual freedom and equitable access to lawful information. Specific challenge or reconsideration procedures are not established; ask library staff for the applicable policy.",
   "events": [
@@ -120,5 +120,13 @@
   "classroomBehavior": {
     "feePersona": "strict",
     "purpose": "Classroom discussion of inflexible, pressure-based service without empathy or negotiated fee relief."
+  },
+  "researchHelp": {
+    "department": "Special Collections Department (SPC)",
+    "librarian": "Logan King",
+    "title": "Head of Research and Genealogical Services",
+    "mode": "In person",
+    "availability": "Tuesday 11:30 AM–1:00 PM and Sunday 2:00–4:00 PM only. Logan King is not available for research consultations outside these times. These service hours are separate from general library opening hours.",
+    "timezone": "America/Indiana/Indianapolis"
   }
 }

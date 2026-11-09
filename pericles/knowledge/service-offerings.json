@@ -1,7 +1,7 @@
 {
   "fictional": true,
   "timezone": "America/Indiana/Indianapolis",
-  "notice": "Classroom simulation only. Dates are generated from recurring demo schedules; no real place, appointment, volunteer, or equipment is reserved.",
+  "notice": "Times are local to the library.",
   "programs": [
     {
       "id": "storytime",
@@ -132,7 +132,7 @@
         "makerspace",
         "STEM"
       ],
-      "description": "Demo makerspace orientation: choose a simple object, understand millimeters, export an STL, and inspect a sliced preview. No real machine, material, or print job is booked.",
+      "description": "Makerspace orientation: choose a simple object, understand millimeters, export an STL, and inspect a sliced preview.",
       "minAge": 8,
       "maxAge": 99,
       "caregiverRequired": true
@@ -152,7 +152,7 @@
         "forms",
         "financial literacy"
       ],
-      "description": "Practice organizing a fictional document checklist and finding IRS tax-help resources. This is not a tax-return preparation appointment or a claim of VITA/TCE affiliation.",
+      "description": "Practice organizing a sample document checklist and finding IRS tax-help resources. This is not a tax-return preparation appointment or a claim of VITA/TCE affiliation.",
       "minAge": 18,
       "maxAge": 99,
       "caregiverRequired": false

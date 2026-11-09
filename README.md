@@ -1,5 +1,29 @@
 # Z604
 
+## Recorded checkout history
+
+Every catalog record has a circulation summary; records with no loans explicitly report zero. `pericles/knowledge/circulation-history.json` holds 114,692 anonymous authored checkout events as of November 8, 2026, with 3,276 zero-use records. This is scenario-authored data, not Open Library or real patron circulation data. `scripts/build-circulation-history.py` runs as part of the reproducible catalog build. Popularity weights favor selected perennial titles and Rowling’s Harry Potter novels; these receive 12 physical copies to support plausible high demand. Specialist and general titles have a varied low-use/zero-use tail. Usage does not establish a work’s quality or value.
+
+Events have stable loan IDs, item IDs (or a digital-record marker), checkout dates, return/resolution dates, and outcomes. Physical loans cannot overlap on a copy or fall outside accession/retirement dates. Retired and replacement copies retain separate loan histories. No borrower identifiers are generated. Current account loans and renewal transactions remain separate from the historical snapshot; answers explicitly state the date range and scope.
+
+Public access is limited to general collection-wide popularity (a leading title or a short top list), with no counts or event dates. Per-title/copy usage, dated rankings, zero-use lists, and historical records are restricted. Public catalog files, record cards, APIs, and AI grounding contain no circulation summaries. A deterministic server gate answers allowed questions and refuses detailed requests without sending private history to the model. Full histories and summaries are backend-only, Git-ignored generated snapshots. `npm start`, `npm run dev`, and `npm test` build them locally from the offline source data (Python 3 required). No production history is published as a repository asset. Tests verify event integrity and check public-file/API/chat boundaries.
+
+## Copy inventory and deaccession history
+
+Bibliographic records now carry separate item-level `copies` arrays. Local allocation gives selected popular physical titles 4–6 active copies, some general titles two, and most one. These are local collection choices, not measured demand. Digital-format records do not receive invented physical copies or license counts. See `scripts/catalog-holdings-policy.json`.
+
+Lost and withdrawn item records retain accession/retirement dates, reasons, and `replacedBy` links. Replacement copies have reciprocal `replaces` links. Retired items stay in history and are excluded from active totals. Neither active status nor a replacement constitutes a live shelf check. Patron circulation remains work-level and does not alter these static inventory statuses. Copy history appears in catalog cards and Pericles can answer title-specific and collection-wide inventory questions.
+
+## Sourced collection rebuild
+
+The catalog now contains 9,131 records representing 9,130 distinct works, including 9,027 imported Open Library works and the 104 established SPL records. The two retained Lightning Thief records are ebook/audio versions of the same work. Generated copy padding and format rotation have been removed. There are 54 browsing sections, 1,797 children’s records, and 3,645 records dated 2000 or later.
+
+Run `python3 scripts/import-catalog.py` to download missing metadata snapshots, then `python3 scripts/build-catalog.py` to reproduce the checked-in browser/server catalog offline. The importer makes sequential, spaced requests across 61 subject queries; stored responses preserve bibliographic provenance. See `scripts/catalog-manifest.json` for queries, counts, category totals, source documentation, and selection limitations. Open Library metadata can contain errors; imported dates are reported first-publication years, not edition or acquisition dates. Subject headings supply descriptions without invented plot summaries. Local shelf codes and print selections are SPL assignments; no edition ISBN, Lexile measure, ebook license, or live availability is inferred.
+
+The original 104 IDs are stable. New IDs derive from Open Library work IDs in a separate range. A one-time circulation migration maps old generated-copy references back to their original work so saved loans and holds are not reinterpreted as unrelated titles. Imported bibliographic links appear on catalog detail pages. The catalog detail renderer escapes external metadata.
+
+Sources: [Open Library Search API](https://openlibrary.org/dev/docs/api/search), [metadata licensing](https://openlibrary.org/developers/licensing).
+
 ## Account-aware borrowing
 
 Borrowing questions combine the selected session account's current loan counts, category capacity, and server-side fee balance. The fictional policy now explicitly blocks new checkouts whenever the outstanding balance exceeds zero; renewals, holds, and programs retain their separate rules. A blocked account's authoritative current result—zero additional items until full settlement—appears before the AI's explanation. Unused category capacity is distinguished from permission to borrow now. Facts refresh after confirmed settlement and account switches; a missing/corrupt account store cannot grant permission. Unselected sessions receive general policy and a selection prompt, never invented account details. Short borrowing follow-ups retain this context without granting permission based on client-supplied history.

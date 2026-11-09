@@ -2,7 +2,7 @@
 
 const levels = require('./knowledge/reading-levels.json');
 const { CATALOG_SEED, CATALOG_ENTRIES } = require('./catalog-service');
-const NOTE = 'Lexile describes text complexity, not a child’s intelligence, a diagnosis, interest level, or a precise school grade. Interests, comprehension, content, and reading support also matter. Measures below are sourced for specific editions; the demo records have no ISBN to verify an edition match.';
+const NOTE = 'Lexile describes text complexity, not a child’s intelligence, a diagnosis, interest level, or a precise school grade. Interests, comprehension, content, and reading support also matter. Measures below are sourced for specific editions; the collection records have no ISBN identifying a specific edition to verify an edition match.';
 
 function readingMetadata(entry) {
   const title = String(entry.title).replace(/ \(Copy \d+\)$/i, '');
@@ -12,7 +12,15 @@ function readingMetadata(entry) {
 function answerReadingLevel(message) {
   if (!/\b(?:lexile|reading levels?)\b|\b\d{2,4}\s*L\b/i.test(message)) return null;
   const candidates = CATALOG_ENTRIES.slice(0, CATALOG_SEED.length);
-  const named = candidates.filter(entry => message.toLowerCase().includes(entry.title.toLowerCase()));
+  const lower = message.toLowerCase();
+  const named = candidates.filter(entry => {
+    const title = entry.title.toLowerCase();
+    const at = lower.indexOf(title);
+    if (at < 0) return false;
+    const before = lower[at - 1] || ' ';
+    const after = lower[at + title.length] || ' ';
+    return !/[\p{L}\p{N}]/u.test(before) && !/[\p{L}\p{N}]/u.test(after);
+  });
   const range = message.match(/\b(\d{2,4})L?\s*(?:-|–|to|through|and)\s*(\d{2,4})L?\b/i);
   const target = message.match(/\b(\d{2,4})\s*L\b/i);
   let matches;

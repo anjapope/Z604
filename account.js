@@ -16,7 +16,7 @@
   async function request(url, body) {
     const response = await (window.PericlesApi?.fetch || fetch)(url, body === undefined ? { cache: 'no-store' } : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const payload = await response.json();
-    if (!response.ok) { const error = new Error(payload.error || 'Fictional circulation is unavailable.'); error.status = response.status; throw error; }
+    if (!response.ok) { const error = new Error(payload.error || 'Circulation is unavailable.'); error.status = response.status; throw error; }
     return payload;
   }
   function element(tag, text, parent) {
@@ -30,27 +30,44 @@
     clearTimeout(expiryTimer);
     if (confirmation) confirmation.hidden = true;
   }
+  function patronDisplayName(patron) {
+    const names = { A: 'Stephen Rojack', B: 'Robert Jordan', C: 'Rosa Sharon Joad' };
+    if (names[patron.id]) return names[patron.id];
+    return patron.name.replace(/\s*\([^)]*fictional[^)]*\)/gi, '').replace(/\bfictional\b/gi, '').trim();
+  }
   function render(account) {
+    // Older server instances may still return legacy labels.
+    const patronName = patronDisplayName(account.patron);
     selector.value = account.patron.id;
-    status.textContent = `Selected fictional Patron ${account.patron.id}: ${account.patron.name}. Shared classroom state; no real account is connected.`;
+    status.textContent = `Selected Patron ${account.patron.id}: ${patronName}. `;
     if (!details) return;
     details.replaceChildren();
-    element('h2', `Fictional Patron ${account.patron.id} — ${account.patron.name}`, details);
+    element('h2', `Patron ${account.patron.id} — ${patronName}`, details);
     element('p', `As of ${account.today}. Dates use ${account.policies.timezone}.`, details);
     element('h3', 'Current checkouts and renewal eligibility', details);
     const loans = element('ul', '', details);
     for (const loan of account.loans) element('li', `${loan.title} (${loan.id}) — ${loan.format}; due ${loan.dueDate}${loan.overdue ? ' (overdue)' : ''}; renewals ${loan.renewals}/${loan.renewalLimit}; ${loan.eligible ? 'eligible for renewal' : `blocked: ${loan.reasons.join('; ')}`}`, loans);
-    element('h3', 'Existing fictional holds', details);
+    element('h3', 'Existing holds', details);
     const holds = element('ul', '', details);
     if (!account.holds.length) element('li', 'No active holds.', holds);
-    for (const hold of account.holds) element('li', `${hold.title} — placed ${hold.placedOn}. ${hold.status}`, holds);
-    element('h3', 'Completed fictional transactions', details);
+    for (const hold of account.holds) element('li', `${hold.title} — placed ${hold.placedOn}. ${hold.status === 'Simulated request; no real availability confirmed' ? 'Requested; availability pending' : hold.status}`, holds);
+    element('h3', 'Completed transactions', details);
     const history = element('ul', '', details);
     if (!account.transactions.length) element('li', 'No completed transactions.', history);
     for (const transaction of account.transactions.slice().reverse()) element('li', `${transaction.timestamp} — ${transaction.action}: ${transaction.completed.map(item => `${item.title}${item.dueDate ? `; due ${item.dueDate}; renewals ${item.renewals}` : `; hold placed ${item.placedOn}`}`).join(' | ')}`, history);
-    element('h3', 'Fictional circulation policies', details);
+    if (account.violations?.length) {
+      element('h3', 'Library violation history', details);
+      const violations = element('ul', '', details);
+      for (const v of account.violations) element('li', `${v.date} — ${v.type}: ${v.description} ${v.outcome}`, violations);
+    }
+    if (account.recentSearches?.length) {
+      element('h3', 'Recent searches', details);
+      const searches = element('ul', '', details);
+      for (const search of account.recentSearches) element('li', `${search.date} — ${search.query}`, searches);
+    }
+    element('h3', 'Circulation policies', details);
     if (account.borrowingCapacity) element('p', Object.entries(account.borrowingCapacity).map(([category, c]) => `${category === 'videoGames' ? 'Video games' : category === 'dvds' ? 'DVDs' : 'Books'}: ${c.used}/${c.limit} checked out; ${c.remaining} below the category limit`).join(' · '), details);
-    element('p', `Print and large print: 21 days; ebooks and audiobooks: 14 days; DVD and Blu-ray: 7 days. ${account.policies.renewalRule} ${account.policies.holdRule} ${account.policies.restrictions}`, details);
+    element('p', `Print and large print: 21 days; ebooks and audiobooks: 14 days; DVD and Blu-ray: 7 days. ${account.policies.renewalRule} ${account.policies.holdRule} Confirmations expire after five minutes and are cancelled by an account switch, another chat topic, or cancellation.`, details);
     actions.hidden = false;
     if (typeof window.dispatchEvent === 'function') window.dispatchEvent(new Event('fictional-account-updated'));
   }
@@ -86,12 +103,12 @@
   async function preview(body) {
     clearPreview();
     const result = await request('/api/circulation/preview', body);
-    const lines = [`Fictional Patron ${result.accountId}; action: ${result.action}.`, ...result.eligible.map(item => `${item.title}: ${result.action === 'renew' ? `due ${item.dueDate} → ${item.newDueDate}; renewals ${item.renewals} → ${item.renewals + 1}` : 'eligible for one simulated hold'}`), ...result.blocked.map(item => `Blocked; unchanged: ${item.title} — ${item.reasons.join('; ')}`)];
+    const lines = [`Patron ${result.accountId}; action: ${result.action}.`, ...result.eligible.map(item => `${item.title}: ${result.action === 'renew' ? `due ${item.dueDate} → ${item.newDueDate}; renewals ${item.renewals} → ${item.renewals + 1}` : 'eligible for one hold'}`), ...result.blocked.map(item => `Blocked; unchanged: ${item.title} — ${item.reasons.join('; ')}`)];
     if (!result.confirmationToken) { transactionStatus.textContent = `${lines.join('\n')} No eligible items; nothing changed.`; return; }
     token = result.confirmationToken;
     document.getElementById('demoPreviewText').textContent = `${lines.join('\n')}\nConfirm only the eligible items? Expires ${result.expiresAt}.`;
     confirmation.hidden = false;
-    expiryTimer = setTimeout(() => { clearPreview(); transactionStatus.textContent = 'Fictional confirmation expired. Request a fresh preview.'; }, Math.max(0, new Date(result.expiresAt) - Date.now()));
+    expiryTimer = setTimeout(() => { clearPreview(); transactionStatus.textContent = 'Confirmation expired. Request a fresh preview.'; }, Math.max(0, new Date(result.expiresAt) - Date.now()));
   }
   selector.addEventListener('change', () => run(async () => {
     clearPreview();
@@ -105,13 +122,13 @@
     const confirmationToken = token;
     clearPreview();
     const result = await request('/api/circulation/confirm', { confirmationToken });
-    transactionStatus.textContent = `Fictional server-confirmed ${result.action}: ${result.completed.map(item => item.title).join('; ')}. ${result.blocked.length} blocked item(s) unchanged. No real transaction occurred.`;
+    transactionStatus.textContent = `Server-confirmed ${result.action}: ${result.completed.map(item => item.title).join('; ')}. ${result.blocked.length} blocked item(s) unchanged. `;
     changed();
   }));
   document.getElementById('demoCancel')?.addEventListener('click', () => run(async () => {
     clearPreview();
     await request('/api/circulation/cancel', {});
-    transactionStatus.textContent = 'Fictional action cancelled; nothing changed.';
+    transactionStatus.textContent = 'Action cancelled; nothing changed.';
   }));
   document.getElementById('demoFindHold')?.addEventListener('click', () => run(async () => {
     clearPreview();
@@ -139,7 +156,7 @@
   if (details) setInterval(() => { if (!document.hidden) refresh(); }, 5000);
   window.FictionalAccounts = { refresh, changed, clearPreview };
   request('/api/circulation/patrons').then(payload => {
-    for (const patron of payload.patrons) { const option = element('option', `Patron ${patron.id}: ${patron.name} — ${patron.situation}`, selector); option.value = patron.id; }
+    for (const patron of payload.patrons) { const option = element('option', `Patron ${patron.id}: ${patronDisplayName(patron)} — ${patron.situation}`, selector); option.value = patron.id; }
     refresh();
   }).catch(error => { status.textContent = error.message; });
 })();

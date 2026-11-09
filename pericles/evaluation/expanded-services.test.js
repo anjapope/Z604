@@ -72,8 +72,8 @@ test('program lists are dated, week-filtered, useful without selection, and unkn
   const list = await c.chat('What programs are happening this week?');
   assert.match(list, /2026-11-0[4-8]/);
   assert.doesNotMatch(list, /2026-11-(?:09|1\d)/);
-  assert.match(list, /Classroom simulation only/);
-  assert.match(await c.chat('When is Monster Prom?'), /no dated, bookable session/i);
+  assert.match(list, /Times are local to the library/);
+  assert.match(await c.chat('When is Monster Prom?'), /registration dates are not yet available/i);
   const programs = (await c.request('/api/services/programs')).body.programs;
   assert.ok(programs.every(e => e.eventId.endsWith(e.date) && e.remaining >= 0));
   assert.equal(upcomingPrograms(new Date('2026-11-07T20:00:00Z')).some(e => e.date === '2026-11-07'), false, 'Started programs disappear');
@@ -95,7 +95,7 @@ test('registration previews, date clarification, confirmation, duplicate prevent
   assert.equal((await c.request('/api/services/account')).body.registrations.length, 0);
 });
 
-test('fee explanation is read-only; courtesy credit and simulated settlement need separate confirmations', async () => {
+test('fee explanation is read-only; courtesy credit and settlement need separate confirmations', async () => {
   const c = client();
   await c.select('B');
   assert.match(await c.chat('What are my fees?'), /balance \$16.00/);
@@ -104,10 +104,10 @@ test('fee explanation is read-only; courtesy credit and simulated settlement nee
   assert.equal((await c.request('/api/services/account')).body.balanceCents, 1600);
   assert.match(await c.chat('yes'), /remaining balance \$1.00/);
   assert.match(await c.chat('Waive my fees'), /already been used/);
-  assert.match(await c.chat('Pay my fees'), /simulated payment.*\$1.00/);
+  assert.match(await c.chat('Pay my fees'), /payment.*\$1.00/);
   assert.match(await c.chat('yes'), /remaining balance \$0.00/);
   assert.equal((await c.request('/api/services/account')).body.history.length, 2);
-  assert.match(await c.chat('yes'), /no pending fictional transaction/i);
+  assert.match(await c.chat('yes'), /no pending transaction/i);
   assert.equal((await c.request('/api/services/account')).body.history.length, 2);
 });
 
@@ -116,11 +116,11 @@ test('account switches, unrelated questions, cancellation and timeout invalidate
   await c.select('B');
   await c.chat('Waive my fees');
   await c.select('A');
-  assert.match(await c.chat('yes'), /no pending fictional transaction/i);
+  assert.match(await c.chat('yes'), /no pending transaction/i);
   await c.select('B');
   await c.chat('Waive my fees');
   await c.chat('What are your hours?');
-  assert.match(await c.chat('yes'), /no pending fictional transaction/i);
+  assert.match(await c.chat('yes'), /no pending transaction/i);
   await c.chat('Waive my fees');
   assert.match(await c.chat('cancel'), /cancelled/);
   await c.chat('Waive my fees');
@@ -201,7 +201,7 @@ test('a six-year-old receives three explained age-appropriate choices, without r
   assert.match(reply, /Build and Explore.*blocks and cardboard/s);
   assert.equal((reply.match(/^- /gm) || []).length, 3);
   assert.equal((reply.match(/Storytime/g) || []).length, 1);
-  assert.doesNotMatch(reply, /ID:|@[\d-]+|Select fictional patron|Adult Book Club|Tax Preparation|3D Printing: First Design/);
+  assert.doesNotMatch(reply, /ID:|@[\d-]+|Select patron|Adult Book Club|Tax Preparation|3D Printing: First Design/);
   assert.match(reply, /What do they enjoy most/);
   assert.equal(calls.length, 0, 'A useful recommendation works without the AI provider');
 });

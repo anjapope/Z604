@@ -68,7 +68,7 @@ function selectWorks(p) {
   const seen = new Set();
   return CATALOG_ENTRIES.map(entry => {
     const metadata = `${entry.genre} ${entry.subjects.join(' ')} ${entry.description}`;
-    const fiction = /\bFIC\b|\bJ\b|\bYA\b|^E /i.test(entry.callNumber) || /fiction|fantasy|mystery|young adult|children/i.test(entry.genre);
+    const fiction = typeof entry.isFiction === 'boolean' ? entry.isFiction : /\bFIC\b|\bJ\b|\bYA\b|^E /i.test(entry.callNumber) || /fiction|fantasy|mystery|young adult|children/i.test(entry.genre);
     const matches = p.interests.filter(name => matchesConcept(name, metadata));
     const score = matches.reduce((total, name) => total + (matchesConcept(name, entry.genre) ? 4 : matchesConcept(name, entry.subjects.join(' ')) ? 2 : 1), 0);
     return { entry, metadata, fiction, matches, score };
@@ -91,8 +91,8 @@ function answerAdvisory(context) {
   // Broad fiction alone leaves an interview opportunity; a supplied format is enough to proceed.
   if (!p.interests.length && !p.format) return 'What reading preferences should I use—for example, adventure, friendship, or a favorite genre?';
   const works = selectWorks(p);
-  const note = 'These are demonstration-catalog records, not confirmed circulation availability. Generated copies and editions do not represent distinct works.';
-  if (!works.length) return `I found no appropriate works matching all of those preferences in the demonstration catalog. ${note}`;
+  const note = 'Current circulation availability is not confirmed. Copies and editions do not represent distinct works.';
+  if (!works.length) return `I found no appropriate works matching all of those preferences in the catalog. ${note}`;
   const lines = works.map(({ entry: e, matches }) => `- [${e.title.replace(/ \(Copy \d+\)$/i, '')}](/catalog-detail.html?id=${e.recordId}) — ${e.author}. ${e.format}; audience: ${e.audience}; genre: ${e.genre}. Why it fits: ${matches.length ? `the catalog describes ${matches.join(' and ')}; ` : ''}${e.description.replace(/ Catalog copy .*$/, '')}`);
   return `${works.length < 3 ? `I found ${works.length} appropriate distinct work${works.length === 1 ? '' : 's'}.` : 'Here are three matching distinct works.'}\n${lines.join('\n')}\n${p.unsupportedAppeal ? 'The catalog does not establish reading level, length, or pace, so I cannot verify those qualities. ' : ''}${note}`;
 }

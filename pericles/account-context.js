@@ -20,10 +20,10 @@ function accountContext(circulation, services) {
   };
 }
 function borrowingAnswer(context) {
-  if (!context) return `${lendingLimitsText()} Select a fictional patron if you want me to apply this to your loans and balance.`;
+  if (!context) return `${lendingLimitsText()} Select a patron if you want me to apply this to your loans and balance.`;
   const money = `$${(context.balanceCents / 100).toFixed(2)}`;
   const counts = Object.entries(context.capacity).map(([key, c]) => `${c.used}/${c.limit} ${key === 'videoGames' ? 'video games' : key === 'dvds' ? 'DVDs' : 'books'} checked out (${c.remaining} below the category limit)`).join('; ');
-  if (context.newCheckouts.feeBlocked) return `For fictional Patron ${context.accountId}, you can borrow 0 additional items right now: your ${money} outstanding balance blocks new checkouts until fully settled. ${counts}. Those unused category capacities become available only AFTER confirmed full settlement, subject to item availability. ${lendingLimitsText()} No payment or checkout was initiated.`;
-  return `For fictional Patron ${context.accountId}: ${counts}. Your balance is ${money}; there is no fee block. You may borrow up to the remaining category capacities, subject to actual item availability. ${lendingLimitsText()} No checkout was initiated.`;
+  if (context.newCheckouts.feeBlocked) return `For Patron ${context.accountId}, you can borrow 0 additional items right now: your ${money} outstanding balance blocks new checkouts until fully settled. ${counts}. Those unused category capacities become available only AFTER confirmed full settlement, subject to item availability. ${lendingLimitsText()} No payment or checkout was initiated.`;
+  return `For Patron ${context.accountId}: ${counts}. Your balance is ${money}; there is no fee block. You may borrow up to the remaining category capacities, subject to actual item availability. ${lendingLimitsText()} No checkout was initiated.`;
 }
 module.exports = { accountContext, borrowingAnswer, isBorrowingEligibilityQuestion };

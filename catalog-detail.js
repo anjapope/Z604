@@ -10,7 +10,10 @@ function renderMissingRecord() {
 }
 
 function renderRecord(entry) {
-  const subjects = (entry.subjects || []).join(' • ');
+  const raw = entry;
+  const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  entry = {...Object.fromEntries(Object.entries(entry).map(([key,value]) => [key,typeof value === 'string' ? escape(value) : value])),subjects:(entry.subjects || []).map(escape)};
+  const subjects = entry.subjects.join(' • ');
 
   catalogDetailPage.innerHTML = `
     <p class="catalog-call">${entry.callNumber}</p>
@@ -24,6 +27,14 @@ function renderRecord(entry) {
     <p class="catalog-description">${entry.description}</p>
     <p class="catalog-subjects"><strong>Subjects:</strong> ${subjects}</p>
   `;
+  window.PericlesInventory?.render(catalogDetailPage, raw);
+  if (/^https:\/\/openlibrary\.org\/works\/OL\d+W$/.test(raw.sourceUrl || '')) {
+    const source = document.createElement('a');
+    source.href = raw.sourceUrl;
+    source.textContent = 'Bibliographic source: Open Library';
+    source.rel = 'noopener noreferrer';
+    catalogDetailPage.appendChild(source);
+  }
 }
 
 const recordId = getRecordIdFromQuery();

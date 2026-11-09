@@ -93,8 +93,8 @@ function createGuard(config, now = Date.now) {
   }
   function tryAcquireAI(req) {
     const value = client(req);
-    if ((config.classroomLimit !== null && jobs >= config.classroomLimit) || (config.providerLimit !== null && providerCalls >= config.providerLimit)) return { error: 'The classroom AI allowance has been reached. Catalog and fictional account services remain available.', retry: 600 };
-    if (!value || value.ai >= config.aiLimit) return { error: 'Please pause before another AI research request. Catalog and fictional account services remain available.', retry: Math.ceil(config.aiWindowMs / 1000) };
+    if ((config.classroomLimit !== null && jobs >= config.classroomLimit) || (config.providerLimit !== null && providerCalls >= config.providerLimit)) return { error: 'The classroom AI allowance has been reached. Catalog and account services remain available.', retry: 600 };
+    if (!value || value.ai >= config.aiLimit) return { error: 'Please pause before another AI research request. Catalog and account services remain available.', retry: Math.ceil(config.aiWindowMs / 1000) };
     if (active >= config.concurrentLimit) return { error: 'The AI service is busy. Please try again shortly.', retry: 15 };
     value.ai++;
     if (config.classroomLimit !== null) jobs++;

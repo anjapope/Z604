@@ -203,7 +203,7 @@ test('borrowing answers apply the selected account balance, capacity and fee blo
   const a = r.body.accountContext;
   assert.equal(a.accountId, 'B');
   assert.equal(a.balanceCents, 1600);
-  assert.deepEqual(a.capacity.books, { used: 3, limit: 50, remaining: 47 });
+  assert.deepEqual(a.capacity.books, { used: 6, limit: 50, remaining: 44 });
   assert.equal(a.newCheckouts.feeBlocked, true);
   assert.equal(a.newCheckouts.availableByCategory.books, 0);
   const messages = calls.at(-1).messages;
@@ -228,7 +228,7 @@ test('borrowing capacity changes only after a confirmed settlement and is refres
   await c.chat('yes');
   const cleared = (await c.chat('How many books can I check out?')).body.accountContext;
   assert.equal(cleared.balanceCents, 0);
-  assert.equal(cleared.newCheckouts.availableByCategory.books, 47);
+  assert.equal(cleared.newCheckouts.availableByCategory.books, 44);
   await c.select('A');
   const other = (await c.chat('How many books can I check out?')).body.accountContext;
   assert.equal(other.accountId, 'A');
@@ -239,7 +239,7 @@ test('no account means general policy, while unavailable account state cannot gr
   const c = client();
   const general = await c.chat('How many books can I check out?');
   assert.equal(general.body.accountContext, undefined);
-  assert.match(calls.at(-1).messages.find(m => m.content.startsWith('Backend facts')).content, /Select a fictional patron/);
+  assert.match(calls.at(-1).messages.find(m => m.content.startsWith('Backend facts')).content, /Select a patron/);
   await c.select('B');
   const badFile = path.join(directory, 'corrupt-context.json');
   fs.writeFileSync(badFile, '{broken');
