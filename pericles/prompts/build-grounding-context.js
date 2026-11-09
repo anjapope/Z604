@@ -8,6 +8,7 @@ const {
 } = require('../knowledge/library-facts');
 const { INSTITUTIONAL_CONTEXT } = require('../knowledge/institutional-context');
 const { CATALOG_ENTRIES } = require('../catalog-service');
+const { lendingLimitsText } = require('../lending-policy');
 
 function formatCatalogMatches(catalogMatches) {
   if (!catalogMatches.length) {
@@ -28,6 +29,9 @@ function buildGroundingContext({ catalogMatches = [] } = {}) {
     `Events Calendar Context:\n- ${EVENTS_CONTEXT.join('\n- ')}`,
     `Services Context:\n- ${SERVICES_CONTEXT.join('\n- ')}`,
     `Policy Context:\n- ${POLICY_CONTEXT.join('\n- ')}`,
+    `Lending limits:\n${lendingLimitsText()}`,
+    `Fee policy:\n${require('../knowledge/library-knowledge.json').circulation.fines}`,
+    'New checkout rule: any outstanding balance blocks new checkouts until settled in full. This does not change renewal, hold, or program eligibility. Apply it only to a verified account balance; do not infer a debt from the patron’s messages.',
     `Community Context:\n- ${INSTITUTIONAL_CONTEXT.community.join('\n- ')}`,
     formatCatalogMatches(catalogMatches),
     `Catalog Scope Note:\n- The demonstration catalog contains ${CATALOG_ENTRIES.length} generated records; this is not a verified inventory of the library's complete real-world holdings.\n- Catalog records do not indicate current availability, checkout status, or whether an item is on the shelf.\n- A missing match does not prove that a real library would not own the item.`

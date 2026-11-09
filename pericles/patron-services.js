@@ -6,6 +6,11 @@ const { randomUUID } = require('node:crypto');
 const offerings = require('./knowledge/service-offerings.json');
 const { dateAt, addDays } = require('./circulation-service');
 const { childAge, recommendPrograms } = require('./program-advisory');
+const knowledge = require('./knowledge/library-knowledge.json');
+const waiversAllowed = () => knowledge.circulation.feeWaiversAllowed !== false;
+const feeOptions = () => waiversAllowed()
+  ? 'In this demo you may request a one-time courtesy credit up to $15 or a simulated payment. Ask “waive my fees” or “pay my fees” for a preview.'
+  : 'The full outstanding balance must be settled. Waivers, reductions, courtesy credits, and installment plans are not available in this classroom scenario. Ask “pay my fees” for a simulated settlement preview; confirmation is required.';
 
 function fail(message, status = 409) { const error = new Error(message); error.status = status; throw error; }
 function localMinute(now) {
@@ -56,7 +61,7 @@ function isProgramRequest(message) {
     && !/\b(?:programming language|computer programs?|program in (?:python|javascript)|school programs? in)\b/i.test(message);
 }
 function isFeeRequest(message) {
-  return /\b(?:my|our|these|the|library)\s+(?:(?:overdue|replacement)\s+)?(?:fees?|fines?|charges?|penalt\w*|balance)\b|\b(?:waiv\w*|disput\w*|pay|clear|settle|resolv\w*|appeal)\b.*\b(?:fees?|fines?|charges?|balance|penalt\w*)\b/i.test(message)
+  return /\b(?:my|our|these|the|library)\s+(?:(?:overdue|replacement)\s+)?(?:fees?|fines?|charges?|penalt\w*|balance)\b|\b(?:waiv\w*|disput\w*|pay|clear|settle|resolv\w*|appeal)\b.*\b(?:fees?|fines?|charges?|balance|penalt\w*)\b|\b(?:what|which) (?:fees?|fines?|charges?) do (?:i|we) owe\b|\bhow much do (?:i|we) owe\b/i.test(message)
     && !/\b(?:tax|3[- ]?d|printing)\b/i.test(message);
 }
 function serviceInterest(message) {
@@ -103,7 +108,9 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
   }
   function summary(session) {
     const a = account(session);
-    return { fictional: true, accountId: session.accountId, balanceCents: a.charges.reduce((sum, c) => sum + c.cents, 0), ...structuredClone(a) };
+    const balanceCents = a.charges.reduce((sum, c) => sum + c.cents, 0);
+    const threshold = knowledge.circulation.newCheckoutBlockAboveCents;
+    return { fictional: true, accountId: session.accountId, balanceCents, feePolicy: { waiversAllowed: waiversAllowed(), description: feeOptions(), newCheckoutBlocked: Number.isInteger(threshold) && balanceCents > threshold }, ...structuredClone(a) };
   }
   function prepare(session, action, parameters = {}) {
     session.servicePending = null;
@@ -124,6 +131,7 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
     } else if (action === 'waive_fees') {
       const balance = a.charges.reduce((sum, c) => sum + c.cents, 0);
       if (!balance) fail('Your fictional balance is already $0.00. No adjustment is needed.');
+      if (!waiversAllowed()) fail(`The full balance of ${money(balance)} remains due. I cannot waive or reduce it. ${feeOptions()} No real money is accepted.`);
       if (a.courtesyUsed) fail('The one-time simulated courtesy credit has already been used. The remaining balance can be settled with a simulated payment; no real money is accepted.');
       payload = { balance, creditCents: Math.min(balance, 1500), remainingCents: Math.max(0, balance - 1500) };
     } else if (action === 'settle_fees') {
@@ -147,6 +155,7 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
     if (p.action === 'cancel_registration' && !a.registrations.some(r => r.eventId === p.eventId)) fail('The registration has already changed. Ask for a fresh preview.');
     const balance = a.charges.reduce((sum, c) => sum + c.cents, 0);
     if (p.action.endsWith('_fees') && (balance !== p.balance || (p.action === 'waive_fees' && a.courtesyUsed))) fail('The balance changed; ask for a fresh preview.');
+    if (p.action === 'waive_fees' && !waiversAllowed()) fail('Waivers are not available under the current classroom policy. The balance was not changed.');
     const next = structuredClone(load()), target = next.accounts[session.accountId];
     if (p.action === 'register') target.registrations.push({ eventId: p.eventId, title: p.title, date: p.date, time: p.time });
     else if (p.action === 'cancel_registration') target.registrations = target.registrations.filter(r => r.eventId !== p.eventId);
@@ -210,11 +219,11 @@ function createPatronServices({ filePath = path.join(__dirname, 'data', 'patron-
     if (pending && /^(?:no|no thanks|cancel|cancel it)[.!]?$/i.test(text)) return 'Fictional demonstration: the service preview was cancelled; no change was made.';
     if (isFeeRequest(text)) {
       session.pending = null;
-      if (/\b(?:policy|policies|do you charge)\b/i.test(text) && !/\b(?:my|our)\b/i.test(text)) return 'The fictional library charges no overdue fines. The demo seeds replacement/damage charges on Patron B. A one-time simulated courtesy credit up to $15 or simulated settlement is available after selection, preview, and confirmation. No real money is taken.';
+      if (/\b(?:policy|policies|do you charge)\b/i.test(text) && !/\b(?:my|our)\b/i.test(text)) return `The fictional library charges no overdue fines. The demo seeds replacement/damage charges on Patron B. ${feeOptions()} No real money is taken.`;
       const a = summary(session);
       if (/\b(?:waiv\w*|resolv\w*|clear|appeal|disput\w*)\b/i.test(text) && !/\b(?:how|policy|policies|can i|do you)\b/i.test(text)) return previewText(prepare(session, 'waive_fees'));
       if (/\b(?:pay|settle)\b/i.test(text) && !/\b(?:how|policy|policies|can i|do you)\b/i.test(text)) return previewText(prepare(session, 'settle_fees'));
-      return `Fictional Patron ${session.accountId}: balance ${money(a.balanceCents)}.\n${a.charges.map(c => `- ${c.label}: ${money(c.cents)}`).join('\n') || 'No charges.'}\nNo overdue fines are charged. These are seeded replacement/damage charges, not charges computed from real borrowing. In this demo you may request a one-time courtesy credit up to $15 or a simulated payment. Ask “waive my fees” or “pay my fees” for a preview. No card or payment details are needed.`;
+      return `Fictional Patron ${session.accountId}: balance ${money(a.balanceCents)}.\n${a.charges.map(c => `- ${c.label}: ${money(c.cents)}`).join('\n') || 'No charges.'}\nNo overdue fines are charged. These are seeded replacement/damage charges, not charges computed from real borrowing. ${a.balanceCents ? feeOptions() : 'No payment or adjustment is needed.'} No card or payment details are needed.`;
     }
     if (session.programAction && /^(?:\d{4}-\d{2}-\d{2}|[a-z-]+@\d{4}-\d{2}-\d{2}|the next one|next)[.!]?$/i.test(text)) {
       const choices = session.programAction;

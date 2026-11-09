@@ -10,6 +10,8 @@ const {
   normalizeHistory,
   extractStructuredResearch
 } = require('../../server');
+// Isolate the existing domain/provenance contracts; conversational generation has its own HTTP suite.
+app.locals.composeServiceReply = async ({ payload }) => payload;
 const { CATALOG_ENTRIES, searchCatalog } = require('../catalog-service');
 const { cleanResearchAnswer } = require('../research-quality');
 const { renderMessageContent, safeHttpUrl } = require('../citation-renderer');

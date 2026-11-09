@@ -171,3 +171,15 @@ test('catalog APIs and health remain accessible without AI configuration', async
     await response.json();
   }
 });
+
+test('unconfigured AI is reported honestly while local facts remain usable', async () => {
+  const status = await (await fetch(origin() + '/api/chat/status')).json();
+  assert.equal(status.aiConfigured, false);
+  const response = await fetch(origin() + '/api/chat', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'What are your hours?' })
+  });
+  const body = await response.json();
+  assert.equal(body.responseMode, 'local');
+  assert.match(body.notice, /AI is not configured/);
+  assert.match(body.reply, /Monday-Friday/);
+});

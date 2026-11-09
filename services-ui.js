@@ -25,10 +25,11 @@
       accountPanel.replaceChildren();
       element('h2', 'Fictional fees and program registrations', accountPanel);
       element('p', `Patron ${a.accountId} — simulated balance $${(a.balanceCents / 100).toFixed(2)}. No overdue fines or real payments.`, accountPanel);
+      if (a.feePolicy?.newCheckoutBlocked) element('p', 'New checkouts are blocked until the full balance is settled. Unused category capacity does not override this block. Renewals, holds, and program access retain their separate rules.', accountPanel);
       const fees = element('ul', '', accountPanel);
       for (const charge of a.charges) element('li', `${charge.label}: $${(charge.cents / 100).toFixed(2)}`, fees);
       if (!a.charges.length) element('li', 'No charges.', fees);
-      element('p', 'Ask Pericles “waive my fees” for a one-time courtesy credit up to $15, or “pay my fees” for a simulated settlement. Both show a preview and need confirmation. Never enter real payment information.', accountPanel);
+      element('p', `${a.feePolicy?.description || 'Ask Pericles about the current fee settlement policy.'} Never enter real payment information.`, accountPanel);
       element('h3', 'Registered demonstration sessions', accountPanel);
       const registrations = element('ul', '', accountPanel);
       for (const r of a.registrations) element('li', `${r.title}: ${r.date} at ${r.time} (America/Indiana/Indianapolis). ID: ${r.eventId}`, registrations);

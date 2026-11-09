@@ -105,7 +105,7 @@ test('policy/account topic changes and account switching use current intent and 
   assert.match(await patron.chat(original, history), /2 books.*3 loans/);
   assert.match(await patron.chat('What are my rights as a patron?', [{ role: 'user', content: original }]), /equitable access/i);
   assert.match(await patron.chat('Are you open Sunday?'), /Sunday: 12:00 PM-4:00 PM/);
-  assert.match(await patron.chat('How many books can I check out?'), /limit.*not been established|not been established.*limit/);
+  assert.match(await patron.chat('How many books can I check out?'), /50 books.*10 DVDs.*3 video games/);
   await patron.select('C');
   assert.match(await patron.chat(original, history, { accountId: 'A' }), /Patron C: You have 2 books.*2 loans/);
   assert.equal((await patron.account()).transactions.length, 0);

@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "revised": "2026-11-04",
+  "version": 5,
+  "revised": "2026-11-08",
   "institution": "Stapleton Public Library",
   "fictional": true,
   "precedence": "Previously established hours, recurring programs, and circulation restrictions take precedence over Pass 4C suggested defaults. This file describes a fictional classroom institution, not verified facts about a real library.",
@@ -58,9 +58,16 @@
     },
     "renewalLimit": 2,
     "holdLimit": 5,
-    "fines": "No overdue fines are charged. Replacement charges may apply for lost or damaged materials; real amounts and assessment procedures are not established. Separately, the fictional classroom service can show seeded charges and preview a courtesy credit or simulated settlement. It never collects real money or establishes real SPL charges.",
+    "fines": "No overdue fines are charged. Replacement charges may apply for lost or damaged materials; real amounts and assessment procedures are not established. The classroom service has seeded replacement/damage charges. Its full outstanding balance must be settled; waivers, reductions, courtesy credits, and installment plans are not available in this scenario. Settlement is simulated, requires explicit confirmation, and never takes real money.",
     "renewalRule": "Renew from the later of today or the current due date, for one format-specific loan period. Overdue loans may be renewed. Another patron's active work-level hold or two prior renewals blocks renewal.",
-    "holdRule": "One active hold per work per account; at most five active holds. No holds on a work already checked out to this account. Child account C may hold Children or All Ages works only. Holds are simulated requests, not reservations of real stock."
+    "holdRule": "One active hold per work per account; at most five active holds. No holds on a work already checked out to this account. Child account C may hold Children or All Ages works only. Holds are simulated requests, not reservations of real stock.",
+    "checkoutLimits": {
+      "books": 50,
+      "dvds": 10,
+      "videoGames": 3
+    },
+    "feeWaiversAllowed": false,
+    "newCheckoutBlockAboveCents": 0
   },
   "rights": [
     "Equitable access to library resources and services",
@@ -109,5 +116,9 @@
     "Summer Reading Program: June 1-July 31; prizes; families can sign up in BeanStack.",
     "Frontiers and Folktales: runs through Fall with Youth Services, Special Collections, and Mercer Park.",
     "Monster Prom: Youth Services event on the weekend before Halloween, 8:00-10:30 PM."
-  ]
+  ],
+  "classroomBehavior": {
+    "feePersona": "strict",
+    "purpose": "Classroom discussion of inflexible, pressure-based service without empathy or negotiated fee relief."
+  }
 }

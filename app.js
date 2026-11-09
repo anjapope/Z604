@@ -23,20 +23,20 @@ function updateStatusPill(mode) {
     return;
   }
 
-  statusPill.textContent = 'Guided Mode';
+  statusPill.textContent = 'Limited mode · AI unavailable';
   statusPill.classList.add('status-fallback');
   statusPill.classList.remove('status-live');
 }
 
 async function initializeChatMode() {
   try {
-    const response = await (window.PericlesApi?.fetch || fetch)('/api/health');
+    const response = await (window.PericlesApi?.fetch || fetch)('/api/chat/status');
     if (!response.ok) {
       throw new Error('Health check failed');
     }
 
     const payload = await response.json();
-    isLiveAiMode = Boolean(payload.ok);
+    isLiveAiMode = payload.aiConfigured === true;
   } catch (_error) {
     isLiveAiMode = false;
   }
@@ -64,6 +64,9 @@ function updateBubbleText(bubble, text, sources = []) {
     return;
   }
 
+  bubble.classList.remove('is-pending');
+  bubble.removeAttribute('role');
+  bubble.removeAttribute('aria-label');
   window.PericlesCitationRenderer.renderMessageContent(bubble, text, sources);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
@@ -113,12 +116,16 @@ async function fetchAssistantReply(prompt) {
 
   return {
     reply: payload.reply,
-    sources: Array.isArray(payload.sources) ? payload.sources : []
+    sources: Array.isArray(payload.sources) ? payload.sources : [],
+    responseMode: payload.responseMode,
+    notice: typeof payload.notice === 'string' ? payload.notice : ''
   };
 }
 
 function setChatPendingState(isPending) {
   isAwaitingReply = isPending;
+  chatWindow?.setAttribute('aria-busy', String(isPending));
+  quickActions.forEach(button => { button.disabled = isPending; });
   if (sendButton) {
     sendButton.disabled = isPending;
     sendButton.textContent = isPending ? 'Sending…' : 'Send';
@@ -139,14 +146,29 @@ async function sendPrompt(prompt) {
   conversationHistory.push({ role: 'user', content: trimmed });
   conversationHistory.splice(0, Math.max(0, conversationHistory.length - MAX_HISTORY_MESSAGES));
 
-  const pendingBubble = addMessage('assistant', 'Thinking...');
+  const pendingBubble = addMessage('assistant', '');
+  pendingBubble.classList.add('is-pending');
+  pendingBubble.setAttribute('role', 'status');
+  pendingBubble.setAttribute('aria-label', 'Pericles is responding');
+  for (let i = 0; i < 3; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'pending-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    pendingBubble.appendChild(dot);
+  }
   setChatPendingState(true);
 
   try {
     const assistantResult = await fetchAssistantReply(trimmed);
-    isLiveAiMode = true;
-    updateStatusPill('live');
+    isLiveAiMode = assistantResult.responseMode === 'ai';
+    updateStatusPill(isLiveAiMode ? 'live' : 'fallback');
     updateBubbleText(pendingBubble, assistantResult.reply, assistantResult.sources);
+    if (assistantResult.notice) {
+      const notice = document.createElement('small');
+      notice.className = 'response-notice';
+      notice.textContent = assistantResult.notice;
+      pendingBubble.appendChild(notice);
+    }
     const sourceContext = assistantResult.sources
       .map((source) => `${source.title} ${source.url}`)
       .join('\n');
@@ -180,6 +202,12 @@ quickActions.forEach((button) => {
 });
 
 if (chatForm) {
+  userPrompt?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' || event.shiftKey || event.isComposing || event.keyCode === 229) return;
+    event.preventDefault();
+    if (!isAwaitingReply && userPrompt.value.trim()) chatForm.requestSubmit();
+  });
+
   chatForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     await sendPrompt(userPrompt.value);

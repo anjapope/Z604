@@ -27,10 +27,13 @@ const {
 const { enrichSources } = require('./pericles/source-inspection');
 const { routeServiceRequest, answerLocalService } = require('./pericles/service-router');
 const { createCirculationService } = require('./pericles/circulation-service');
-const { answerInstitutional, splitInstitutionalRequest } = require('./pericles/institutional-service');
-const { createPatronServices } = require('./pericles/patron-services');
+const { answerInstitutional, splitInstitutionalRequest, institutionalTopic } = require('./pericles/institutional-service');
+const { createPatronServices, isFeeRequest } = require('./pericles/patron-services');
+const { feePersonaInstructions } = require('./pericles/fee-persona');
+const { accountContext, borrowingAnswer, isBorrowingEligibilityQuestion } = require('./pericles/account-context');
 const { answerReadingLevel, readingMetadata } = require('./pericles/learning-service');
 const { isSubstantiveReference } = require('./pericles/reference-intent');
+const { serviceReplyMessages, protectsAction } = require('./pericles/conversational-reply');
 
 dotenv.config();
 
@@ -49,6 +52,7 @@ const MAX_MESSAGE_LENGTH = 4000;
 const MAX_HISTORY_MESSAGES = 12;
 const MAX_HISTORY_CHARACTERS = 16000;
 const OPENAI_REQUEST_TIMEOUT_MS = deployment.providerTimeoutMs;
+app.locals.composeServiceReply = composeServiceReply;
 
 app.use('/api', (req, res, next) => app.locals.deploymentGuard.middleware(req, res, next));
 app.use(express.json({ limit: '32kb' }));
@@ -296,6 +300,28 @@ app.get('/api/health', (_req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   res.json({ ok: true });
 });
+app.get('/api/chat/status', (_req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ aiConfigured: Boolean(OPENAI_API_KEY) });
+});
+
+async function composeServiceReply({ payload, message, history, req }) {
+  const fallback = notice => ({ ...payload, responseMode: 'local', notice });
+  if (!OPENAI_API_KEY) return fallback('AI is not configured. This answer uses local library information.');
+  const admission = app.locals.deploymentGuard.tryAcquireAI(req);
+  if (admission.error) return fallback(`${admission.error} This answer uses local library information.`);
+  const protectedAction = protectsAction(payload, req.demoSession);
+  try {
+    const messages = serviceReplyMessages({ systemPrompt: buildSystemPrompt(), message, history, facts: payload.reply, protectedAction, feeRelated: payload.feeRelated, account: payload.accountContext });
+    const result = await aiRequestScope.run(AbortSignal.timeout(deployment.responseTimeoutMs), () => requestOpenAI(messages, false));
+    if (result.error) return fallback('AI is unavailable. This answer uses the server’s library information; any transaction details below remain authoritative.');
+    const blocked = payload.borrowingQuestion && payload.accountContext?.newCheckouts?.feeBlocked;
+    const decision = blocked ? `Right now, you can check out 0 additional items. Your $${(payload.accountContext.balanceCents / 100).toFixed(2)} balance must be settled in full first.\n\n` : '';
+    return { ...payload, reply: decision + (protectedAction ? `${result.reply}\n\n${payload.reply}` : result.reply), responseMode: 'ai' };
+  } catch (_error) {
+    return fallback('AI is unavailable. This answer uses local library information.');
+  } finally { admission.release(); }
+}
 
 app.get('/api/catalog/search', (req, res) => {
   const query = typeof req.query.q === 'string' ? req.query.q.trim() : '';
@@ -353,6 +379,8 @@ app.post('/api/circulation/selection', circulationRoute((service, req) => {
   req.demoSession.lastProgramRecommendation = false;
   req.demoSession.programProfile = null;
   req.demoSession.programRecommendations = null;
+  req.demoSession.lastFeeTopic = false;
+  req.demoSession.lastBorrowingQuestion = false;
   return service.select(req.demoSession, circulationBody(req, ['accountId']).accountId);
 }));
 app.post('/api/circulation/preview', circulationRoute((service, req) => {
@@ -400,6 +428,18 @@ app.post('/api/services/cancel', serviceRoute((_service, req) => {
 app.post('/api/chat', async (req, res) => {
   const message = typeof req.body?.message === 'string' ? req.body.message.trim() : '';
   const history = normalizeHistory(req.body?.history);
+  const feeRelated = isFeeRequest(message) || institutionalTopic(message) === 'fees'
+    || /_fees$/.test(req.demoSession.servicePending?.action || '')
+    || (req.demoSession.lastFeeTopic && /^(?:(?:that|this|it|these|they) (?:seems?|is|are|isn['’]t|aren['’]t)|(?:but )?i (?:can['’]t|cannot) afford|why(?: not)?[?.!]*$|(?:can|could) you (?:make an exception|waive))/i.test(message));
+  req.demoSession.lastFeeTopic = Boolean(feeRelated);
+  const sendServiceReply = async payload => {
+    let snapshot = payload.accountContext;
+    if (!snapshot && req.demoSession.accountId && /\b(?:my|borrow|borrowing|check out|checkout|renew\w*|holds?|fees?|balance)\b/i.test(message)) {
+      try { snapshot = accountContext(app.locals.circulation.summary(req.demoSession), app.locals.patronServices.summary(req.demoSession)); }
+      catch (_error) { snapshot = { unavailable: true, instruction: 'Current account context could not be verified. Do not invent a balance, fee block, or borrowing permission.' }; }
+    }
+    return res.json(await app.locals.composeServiceReply({ payload: { ...payload, ...(snapshot ? { accountContext: snapshot } : {}), feeRelated: Boolean(payload.feeRelated || feeRelated || (snapshot?.newCheckouts?.feeBlocked && isBorrowingEligibilityQuestion(message))) }, message, history, req }));
+  };
 
   if (!message) return res.status(400).json({ error: 'Message is required.' });
   if (message.length > MAX_MESSAGE_LENGTH) {
@@ -408,18 +448,33 @@ app.post('/api/chat', async (req, res) => {
 
   const service = routeServiceRequest(message, history);
   const { userContext } = service;
+  const borrowingFollowup = req.demoSession.lastBorrowingQuestion && /^(?:(?:and |what about )?(?:books?|dvds?|video games?|games)|how many more|what if i pay)[?.!]*$/i.test(message.trim());
+  req.demoSession.lastBorrowingQuestion = false;
+  if (service.intent !== 'advanced_research' && (isBorrowingEligibilityQuestion(message) || borrowingFollowup)) {
+    req.demoSession.pending = null;
+    req.demoSession.servicePending = null;
+    req.demoSession.lastWasCirculation = false;
+    try {
+      const snapshot = req.demoSession.accountId ? accountContext(app.locals.circulation.summary(req.demoSession), app.locals.patronServices.summary(req.demoSession)) : null;
+      req.demoSession.lastFeeTopic = Boolean(snapshot?.newCheckouts.feeBlocked);
+      req.demoSession.lastBorrowingQuestion = true;
+      return sendServiceReply({ reply: borrowingAnswer(snapshot), sources: [], borrowingQuestion: true, feeRelated: Boolean(snapshot?.newCheckouts.feeBlocked), ...(snapshot ? { accountContext: snapshot } : {}) });
+    } catch (_error) {
+      return res.status(503).json({ error: 'I could not verify your current loans and balance, so I cannot confirm what you may borrow right now. Please try again.' });
+    }
+  }
   // Handle authoritative simulations before policy/general-language routing.
   try {
     const reply = app.locals.patronServices.chat(req.demoSession, message);
-    if (reply) return res.json({ reply, sources: [], fictionalServices: true });
+    if (reply) return sendServiceReply({ reply, sources: [], fictionalServices: true });
   } catch (error) {
-    if (error.status) return res.json({ reply: `Fictional demonstration: ${error.message}`, sources: [], fictionalServices: true });
+    if (error.status) return sendServiceReply({ reply: `Fictional demonstration: ${error.message}`, sources: [], fictionalServices: true });
     return res.status(503).json({ error: 'Demonstration services storage is unavailable. No success is confirmed.' });
   }
   const learningReply = answerReadingLevel(message);
   if (learningReply && !/\b(?:practice|plan|teach|struggl\w*|phonics|learn\w*|dyslex\w*|homework)\b/i.test(message)) {
     req.demoSession.pending = null;
-    return res.json({ reply: learningReply + app.locals.patronServices.suggestion(req.demoSession, message, history), sources: [] });
+    return sendServiceReply({ reply: learningReply + app.locals.patronServices.suggestion(req.demoSession, message, history), sources: [] });
   }
   // Policy explanations never pass through transaction parsing. Explicit action
   // clauses still use the selected account's existing preview/confirmation flow.
@@ -445,7 +500,7 @@ app.post('/api/chat', async (req, res) => {
           }
         }
         req.demoSession.lastWasCirculation = accountReply;
-        return res.json({ reply: answers.join('\n\n'), sources: [], ...(accountReply ? { fictionalCirculation: true } : {}) });
+        return sendServiceReply({ reply: answers.join('\n\n'), sources: [], ...(accountReply ? { fictionalCirculation: true } : {}) });
       } catch (_error) {
         req.demoSession.pending = null;
         return res.status(503).json({ error: 'Fictional circulation is unavailable. No transaction success is confirmed.' });
@@ -456,28 +511,28 @@ app.post('/api/chat', async (req, res) => {
       if (reply) {
         req.demoSession.pending = null;
         req.demoSession.lastWasCirculation = false;
-        return res.json({ reply, sources: [] });
+        return sendServiceReply({ reply, sources: [] });
       }
     }
   }
   try {
     const reply = app.locals.circulation.chat(req.demoSession, message, service.intent);
     req.demoSession.lastWasCirculation = Boolean(reply);
-    if (reply) return res.json({ reply, sources: [], fictionalCirculation: true });
+    if (reply) return sendServiceReply({ reply, sources: [], fictionalCirculation: true });
   } catch (_error) {
     return res.status(503).json({ error: 'Fictional circulation storage is unavailable. No success is confirmed; reload the account before retrying.' });
   }
   const localReply = service.intent === 'reference' && isSubstantiveReference(userContext) && service.history.length
     ? null : answerLocalService(service.intent, message, userContext);
-  if (localReply) return res.json({ reply: localReply, sources: [] });
+  if (localReply) return sendServiceReply({ reply: localReply, sources: [] });
 
   if (service.intent === 'catalog') {
     const reply = answerCatalogQuestion(message, userContext)
       || 'I could not establish matching demonstration-catalog records. What title, author, or subject should I search?';
-    return res.json({ reply, sources: [] });
+    return sendServiceReply({ reply, sources: [] });
   }
   if (service.intent === 'advanced_research' && needsGenealogyClarification(userContext)) {
-    return res.json({ reply: 'Could you share the full name of the ancestor and either an approximate decade or a more specific city or county? Those details help narrow the records to search.', sources: [] });
+    return sendServiceReply({ reply: 'Could you share the full name of the ancestor and either an approximate decade or a more specific city or county? Those details help narrow the records to search.', sources: [] });
   }
 
   if (!OPENAI_API_KEY) {
@@ -495,8 +550,9 @@ app.post('/api/chat', async (req, res) => {
     { role: 'system', content: `# Current classroom service context\nLibrary date: ${new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Indiana/Indianapolis' }).format(new Date())}.\n${JSON.stringify(require('./pericles/knowledge/service-offerings.json'))}\nOnly the separate server service can confirm balances, registrations, credits, renewals, and holds. You have no transaction tools in this response. Never assert that an action or referral occurred. Provide practical topic assistance first; when relevant the server appends one dated program suggestion.` },
     { role: 'system', content: 'Curated official external resource: IRS free tax return preparation programs, https://www.irs.gov/individuals/irs-free-tax-return-preparation-programs (reviewed 2026-11-04). VITA/TCE offer free preparation to qualifying taxpayers. Use its current site locator and eligibility details; no local provider or current threshold is verified in this chat. The fictional Tax Preparation Readiness program is educational, not tax filing or VITA affiliation.' },
     ...(learningReply ? [{ role: 'system', content: `Sourced reading context for this question:\n${learningReply}\nUse this metadata while answering the patron’s substantive learning/practice question. Do not just repeat the book list.` }] : []),
+    ...(feePersonaInstructions(feeRelated) ? [{ role: 'system', content: feePersonaInstructions(feeRelated) }] : []),
     ...(useWebSearch ? [{ role: 'system', content: buildResearchInstructions(userContext) }] : []),
-    ...service.history,
+    ...(feeRelated ? history.filter((item, i) => !(i === history.length - 1 && item.role === 'user' && item.content === message)) : service.history),
     { role: 'user', content: message }
   ];
 
@@ -511,7 +567,7 @@ app.post('/api/chat', async (req, res) => {
     if (result.error) {
       return res.status(502).json({ error: 'The reference service could not return a verified response. Please try again.' });
     }
-    return res.json({ reply: result.reply + app.locals.patronServices.suggestion(req.demoSession, message, history), sources: result.sources || [] });
+    return res.json({ reply: result.reply + app.locals.patronServices.suggestion(req.demoSession, message, history), sources: result.sources || [], responseMode: 'ai' });
   } catch (error) {
     console.error(JSON.stringify({
       event: 'openai_request_failure',

@@ -11,6 +11,8 @@ const { routeServiceRequest } = require('../service-router');
 require('dotenv').config = () => ({ parsed: {} });
 process.env.OPENAI_API_KEY = 'offline-test-placeholder';
 const { app } = require('../../server');
+// Isolate the existing domain/provenance contracts; conversational generation has its own HTTP suite.
+app.locals.composeServiceReply = async ({ payload }) => payload;
 const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pericles-expanded-'));
 let clock, serial = 0, filePath, calls = [];
 const now = () => clock;
@@ -23,6 +25,8 @@ global.fetch = async (url, options) => {
   return new Response(JSON.stringify({ choices: [{ message: { content: 'Here is a practical first step for your question.' } }] }), { headers: { 'Content-Type': 'application/json' } });
 };
 beforeEach(() => {
+  // Exercise the optional courtesy-credit mechanism independently of the active strict classroom policy.
+  require('../knowledge/library-knowledge.json').circulation.feeWaiversAllowed = true;
   clock = new Date('2026-11-04T16:00:00Z');
   calls = [];
   filePath = path.join(directory, `services-${++serial}.json`);

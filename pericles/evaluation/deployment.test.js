@@ -11,6 +11,8 @@ const { buildFrontend } = require('../../scripts/prepare-frontend.cjs');
 require('dotenv').config = () => ({ parsed: {} });
 process.env.OPENAI_API_KEY = 'deployment-test-not-a-credential';
 const { app } = require('../../server');
+// Isolate the existing domain/provenance contracts; conversational generation has its own HTTP suite.
+app.locals.composeServiceReply = async ({ payload }) => payload;
 const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pericles-deploy-test-'));
 const originalFetch = global.fetch;
 const server = app.listen(0, '127.0.0.1');

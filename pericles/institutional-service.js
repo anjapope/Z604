@@ -1,6 +1,7 @@
 'use strict';
 const KNOWLEDGE = require('./knowledge/library-knowledge.json');
 const { circulationIntent } = require('./circulation-intent');
+const { lendingLimitsText } = require('./lending-policy');
 const PREFIX = 'For fictional Stapleton Public Library: ';
 
 function institutionalTopic(text) {
@@ -16,7 +17,7 @@ function institutionalTopic(text) {
   if (/\b(?:overdue fines?|replacement charges?|lost or damaged|lost (?:a |my )?book|damaged (?:a |my )?book)\b/i.test(text) && !/\b(?:pay|my (?:fine|balance))\b/i.test(text)) return 'fees';
   if (/\b(?:renewal (?:policy|policies|rules?|limits?)|renew\w*.*(?:another patron|someone else|on hold)|how many (?:times|renewals))\b/i.test(text) || /\bcan i renew (?:a book|an item|something|materials?)[?.!]*$/i.test(text)) return 'renewals';
   if (/\b(?:loan periods?|loan lengths?|how long.*(?:borrow|check out|checkout|keep)|borrowing rules)\b/i.test(text)) return 'loans';
-  if (/\bhow many (?:books|items|materials)\b.*\b(?:can|may|allowed)\b/i.test(text)) return 'checkoutLimit';
+  if (/\bhow many (?:more )?(?:books|items|materials|dvds?|video games?|games)\b.*\b(?:can|may|allowed)\b|\b(?:maximum|max|limit|limits)\b.*\b(?:checkout|checkouts|check out|books?|dvds?|video games?|borrow\w*)\b|\b(?:checkout|checkouts|borrowing)\s+limits?\b/i.test(text)) return 'checkoutLimit';
   if (/\b(?:hold (?:policy|rules?|limits?)|how many.*holds|how (?:do|can) i.*(?:place|request).*hold)\b/i.test(text)) return 'holds';
   if (/\b(?:circulation polic\w*)\b/i.test(text)) return 'circulation';
   if (/\b(?:phone|telephone|email|street address|contact|where is (?:the )?library|where (?:is|are) (?:the )?(?:archive room|reference desk))\b/i.test(text)) return 'contact';
@@ -61,6 +62,7 @@ function answerHours(text, now) {
 
 function answerInstitutional(message, context = message, { now = new Date() } = {}) {
   let topic = institutionalTopic(message);
+  if (!topic && /^(?:and |what about )?(?:dvds?|video games?|games|books?)[?.!]*$/i.test(message.trim()) && /\b(?:limit|maximum|how many)\b/i.test(context)) topic = 'checkoutLimit';
   if (!topic && /^(?:and |what about )?(?:audio(?:books?)?|ebooks?|digital|video|print|large print)[?.!]*$/i.test(message.trim()) && /\b(?:borrow|loan|check out)\b/i.test(context)) topic = 'loans';
   if (!topic) return null;
   const c = KNOWLEDGE.circulation;
@@ -76,8 +78,8 @@ function answerInstitutional(message, context = message, { now = new Date() } = 
     case 'renewals': answer = `You can renew eligible items up to ${c.renewalLimit} times. A hold from another patron blocks renewal. No renewal was initiated.`; break;
     case 'holds': answer = `You can have up to ${c.holdLimit} active holds, one per title. You cannot place a hold on a title you already have checked out. No hold was initiated.`; break;
     case 'loans': answer = `Loan periods: print and large print ${c.loanDays['Print Book']} days; ebooks and audiobooks ${c.loanDays.Ebook} days; DVD and Blu-ray ${c.loanDays.DVD} days. These are general policies; eligibility for a particular loan depends on the selected fictional account. No transaction was initiated.`; break;
-    case 'checkoutLimit': answer = 'A maximum number of simultaneous checkouts has not been established. Ask library staff about that limit.'; break;
-    case 'circulation': answer = `Books are loaned for ${c.loanDays['Print Book']} days, digital materials for ${c.loanDays.Ebook} days, and videos for ${c.loanDays.DVD} days. Eligible items can be renewed up to ${c.renewalLimit} times unless another patron has a hold. You may have up to ${c.holdLimit} active holds. Which part would you like to know more about?`; break;
+    case 'checkoutLimit': answer = `${lendingLimitsText()} Outstanding balances block new checkouts until settled in full. This does not change renewal, hold, or program eligibility.`; break;
+    case 'circulation': answer = `At once, per account: ${c.checkoutLimits.books} books, ${c.checkoutLimits.dvds} DVDs, and ${c.checkoutLimits.videoGames} video games. Print/large print: ${c.loanDays['Print Book']} days; ebooks/audio: ${c.loanDays.Ebook} days; DVD/Blu-ray: ${c.loanDays.DVD} days. Up to ${c.renewalLimit} renewals if eligible; another patron’s hold blocks renewal. Up to ${c.holdLimit} active holds. No overdue fines; replacement charges may apply.`; break;
     case 'contact': answer = KNOWLEDGE.contact.unknown; break;
     case 'technology': answer = KNOWLEDGE.technology; break;
     case 'accessibility': answer = KNOWLEDGE.accessibility; break;

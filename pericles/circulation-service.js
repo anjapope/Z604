@@ -7,10 +7,12 @@ const { CATALOG_ENTRIES, CATALOG_SEED } = require('./catalog-service');
 const { workKey } = require('./readers-advisory');
 const { KNOWLEDGE } = require('./institutional-service');
 const { circulationIntent, accountFollowup } = require('./circulation-intent');
+const { borrowingCapacity, lendingLimitsText } = require('./lending-policy');
 
 const POLICIES = Object.freeze({
   fictional: true, timezone: KNOWLEDGE.timezone,
   loanDays: Object.freeze(KNOWLEDGE.circulation.loanDays),
+  checkoutLimits: Object.freeze(KNOWLEDGE.circulation.checkoutLimits),
   renewalLimit: KNOWLEDGE.circulation.renewalLimit, holdLimit: KNOWLEDGE.circulation.holdLimit, confirmationMinutes: 5,
   renewalRule: KNOWLEDGE.circulation.renewalRule,
   holdRule: KNOWLEDGE.circulation.holdRule,
@@ -120,6 +122,7 @@ function createCirculationService({ filePath = path.join(__dirname, 'data', 'cir
   function summary(session) {
     const account = selected(session);
     return { fictional: true, patron: PATRONS.find(p => p.id === session.accountId), today: dateAt(now()), policies: POLICIES,
+      borrowingCapacity: borrowingCapacity(account.loans.map(loan => ({ format: records.get(loan.recordId).format }))),
       loans: account.loans.map(loan => renewal(session.accountId, loan)),
       holds: account.holds.map(hold => ({ ...hold, title: records.get(hold.recordId).title, status: 'Simulated request; no real availability confirmed' })),
       transactions: getState().transactions.filter(t => t.accountId === session.accountId).map(t => ({ ...t })) };
@@ -194,7 +197,7 @@ function createCirculationService({ filePath = path.join(__dirname, 'data', 'cir
     return result;
   }
   function policyText() {
-    return `Fictional classroom circulation policies: print and large print loans: 21 days; ebooks and audiobooks: 14 days; DVD and Blu-ray: 7 days. Renewal limit: ${POLICIES.renewalLimit}. ${POLICIES.renewalRule} ${POLICIES.holdRule} Dates use ${POLICIES.timezone}. ${POLICIES.restrictions} These rules do not establish real SPL policies.`;
+    return `Fictional classroom circulation policies: ${lendingLimitsText()} Print and large print loans: 21 days; ebooks and audiobooks: 14 days; DVD and Blu-ray: 7 days. Renewal limit: ${POLICIES.renewalLimit}. ${POLICIES.renewalRule} ${POLICIES.holdRule} Dates use ${POLICIES.timezone}. ${POLICIES.restrictions} These rules do not establish real SPL policies.`;
   }
   function previewText(preview) {
     const eligible = preview.eligible.map(item => preview.action === 'renew' ? `${item.title} (${item.id}): due ${item.dueDate} → ${item.newDueDate}; renewals ${item.renewals} → ${item.renewals + 1}/${POLICIES.renewalLimit}` : `${item.title} (${item.recordId}): one simulated work-level hold`);

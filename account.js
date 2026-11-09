@@ -49,6 +49,7 @@
     if (!account.transactions.length) element('li', 'No completed transactions.', history);
     for (const transaction of account.transactions.slice().reverse()) element('li', `${transaction.timestamp} — ${transaction.action}: ${transaction.completed.map(item => `${item.title}${item.dueDate ? `; due ${item.dueDate}; renewals ${item.renewals}` : `; hold placed ${item.placedOn}`}`).join(' | ')}`, history);
     element('h3', 'Fictional circulation policies', details);
+    if (account.borrowingCapacity) element('p', Object.entries(account.borrowingCapacity).map(([category, c]) => `${category === 'videoGames' ? 'Video games' : category === 'dvds' ? 'DVDs' : 'Books'}: ${c.used}/${c.limit} checked out; ${c.remaining} below the category limit`).join(' · '), details);
     element('p', `Print and large print: 21 days; ebooks and audiobooks: 14 days; DVD and Blu-ray: 7 days. ${account.policies.renewalRule} ${account.policies.holdRule} ${account.policies.restrictions}`, details);
     actions.hidden = false;
     if (typeof window.dispatchEvent === 'function') window.dispatchEvent(new Event('fictional-account-updated'));

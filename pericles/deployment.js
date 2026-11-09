@@ -91,16 +91,20 @@ function createGuard(config, now = Date.now) {
     if (!value || ++value.api > config.apiLimit) return reject(res, 'Too many requests. Please wait a minute and try again.');
     next();
   }
-  function acquireAI(req, res) {
+  function tryAcquireAI(req) {
     const value = client(req);
-    if ((config.classroomLimit !== null && jobs >= config.classroomLimit) || (config.providerLimit !== null && providerCalls >= config.providerLimit)) return reject(res, 'The classroom AI allowance has been reached. Catalog and fictional account services remain available.', 600);
-    if (!value || value.ai >= config.aiLimit) return reject(res, 'Please pause before another AI research request. Catalog and fictional account services remain available.', Math.ceil(config.aiWindowMs / 1000));
-    if (active >= config.concurrentLimit) return reject(res, 'The AI service is busy. Please try again shortly.', 15);
+    if ((config.classroomLimit !== null && jobs >= config.classroomLimit) || (config.providerLimit !== null && providerCalls >= config.providerLimit)) return { error: 'The classroom AI allowance has been reached. Catalog and fictional account services remain available.', retry: 600 };
+    if (!value || value.ai >= config.aiLimit) return { error: 'Please pause before another AI research request. Catalog and fictional account services remain available.', retry: Math.ceil(config.aiWindowMs / 1000) };
+    if (active >= config.concurrentLimit) return { error: 'The AI service is busy. Please try again shortly.', retry: 15 };
     value.ai++;
     if (config.classroomLimit !== null) jobs++;
     active++;
     let released = false;
-    return () => { if (!released) { released = true; active--; } };
+    return { release: () => { if (!released) { released = true; active--; } } };
+  }
+  function acquireAI(req, res) {
+    const result = tryAcquireAI(req);
+    return result.error ? reject(res, result.error, result.retry) : result.release;
   }
   function admitProviderCall() {
     if (config.providerLimit !== null) {
@@ -109,6 +113,6 @@ function createGuard(config, now = Date.now) {
     }
     return true;
   }
-  return { middleware, acquireAI, admitProviderCall };
+  return { middleware, acquireAI, tryAcquireAI, admitProviderCall };
 }
 module.exports = { configuration, createGuard };

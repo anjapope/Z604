@@ -998,3 +998,91 @@ body {
   background: #f8faf8;
 }
 #demoPrograms { margin-block: 1.5rem 2rem; }
+.is-pending { display: flex; gap: 0.35rem; align-items: center; min-height: 1.5rem; }
+.pending-dot { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: currentColor; animation: reply-pulse 1.2s infinite ease-in-out; }
+.pending-dot:nth-child(2) { animation-delay: 0.15s; }
+.pending-dot:nth-child(3) { animation-delay: 0.3s; }
+.response-notice { display: block; margin-top: 0.75rem; opacity: 0.8; }
+@keyframes reply-pulse { 0%, 80%, 100% { opacity: 0.35; } 40% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .pending-dot { animation: none; } }
+
+
+/* The kiosk homepage keeps the conversation in the available viewport. */
+.kiosk-page {
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.kiosk-page .topnav {
+  max-width: none;
+  gap: 0.75rem 1.25rem;
+}
+
+.kiosk-page .nav-links {
+  flex: 1;
+}
+
+.kiosk-patron-selector {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+  max-width: 18rem;
+  color: white;
+}
+
+.kiosk-patron-selector label {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.kiosk-patron-selector select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+
+.kiosk-main {
+  min-height: 0;
+  padding: clamp(0.5rem, 1.5vw, 1.25rem);
+}
+
+.kiosk-main .chat-shell {
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: clamp(0.75rem, 1.5vw, 1.5rem);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.kiosk-main .chat-header {
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.kiosk-main .chat-header h1 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.kiosk-main .chat-window {
+  min-height: 0;
+  max-height: none;
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 600px) {
+  .kiosk-page .topnav { padding: 0.65rem; }
+  .kiosk-page .brand { flex: 1; }
+  .kiosk-page .nav-links { order: 3; flex-basis: 100%; gap: 0.15rem; }
+  .kiosk-page .nav-links a { padding: 0.4rem 0.5rem; font-size: 0.85rem; }
+  .kiosk-patron-selector { max-width: 10rem; }
+}
